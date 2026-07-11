@@ -6,7 +6,7 @@
 | **Members & roles** | @danganroma (design lead · tech lead · art lead · producer) |
 | **Engine / platform** | Godot 4.7 / Windows, Linux (primary), macOS (secondary) |
 | **Repo** | [add once the course namespace is created] |
-| **Doc version** | v0.2 |
+| **Doc version** | v0.3 |
 | **Last updated** | 2026-07-12 |
 
 ## Changelog
@@ -15,6 +15,7 @@
 |---|---|---|---|
 | v0.1 | 2026-07-12 | Initial concept and core gameplay drafted | Romart Danganan |
 | v0.2 | 2026-07-12 | Expanded scope definition, priorities, and player controls | Romart Danganan |
+| v0.3 | 2026-07-12 | Expanded combat, enemy types, typing and mistake systems | Romart Danganan |
 
 ---
 
@@ -106,4 +107,38 @@ Stylised, slightly cartoonish 2D top-down, closer to Plants vs. Zombies than Lef
 | Fire | Left mouse button | 0.5 s cooldown at base fire rate (2 shots/s), upgradeable to 4 shots/s | Consumes 1 ammo unit per shot |
 | Call Supply | Q | 3 s helicopter flight time before crate lands | Only usable if at least 1 supply call remains this mission |
 | Select ability / mission | Mouse click, UI | Pre-mission only | Locked once the mission starts |
+
+## 2.2 Systems & rules
+
+### 2.2.1 Ammunition System
+
+- **Intent:** pillar 1, typing generates the resource; it never deals damage directly.
+- **Rules:** word length maps to reward tier: 3-4 letters = 1 bullet, 5-7 letters = 2 bullets, 8-10 letters = 1 charged bullet, 11+ letters = 1 explosive round. Words are drawn from a per-mission, difficulty-tiered word list (data-driven, see §10). Ammo sits in inventory until manually fired; there is no auto-fire.
+- **Edge cases:** if two on-screen zombies share the same word, the earliest-spawned matching zombie is targeted, ties broken by proximity to the wall. If the player finishes typing while ammo capacity is already at its cap, the reward is discarded rather than lost as an error state (capacity limit set by the weapon's magazine-size upgrade tier).
+
+### 2.2.2 Mistake System
+
+- **Intent:** pillar 3, immediate and legible consequences.
+- **Rules:** each incorrect keystroke costs 1 bullet from current ammo. Three consecutive mistakes (no correct keystroke between them) trigger a 2 second weapon jam, during which the Fire input is ignored. The combo counter (§2.7) resets to 0 on any mistake.
+- **Edge cases:** if a mistake happens while ammo is already 0, no bullet is lost, but the consecutive-mistake counter still increments toward the jam threshold. If a jam triggers while a shot is mid-cooldown, the pending shot is discarded and the jam timer starts immediately.
+
+### 2.2.3 Ability System
+
+- **Intent:** pillar 2, a class-like choice made before the mission, not a mid-run pickup.
+- **Rules:** exactly one ability is equipped from the Ability Select screen before a mission starts; it cannot be changed or stacked once the mission begins. *Design note: the original pitch described some abilities as streak-triggered and others (Piercing, Explosive) as triggering on the very next shot with no requirement. For a consistent, programmer-testable rule, all 8 abilities now use the same trigger: a 5-kill streak charges the ability, and it fires on the player's next shot after that.* Streak resets to 0 if a zombie reaches the wall; it does **not** reset on a player mistake (mistakes are already punished by §2.2.2, double-punishing them here would blur two separate systems).
+- **Edge cases:** an earned ability charge persists until the next shot is fired, even if the streak resets in the meantime, once earned, it isn't lost. If the mission ends before the charge is spent, it is discarded (abilities do not carry between missions).
+
+![Fig. 3: Pre-mission ability loadout screen](images/fig3_ability_select.png)
+
+*Fig. 3 — one ability equipped; no switching once the mission starts.*
+
+### 2.2.4 Mission Supplies System
+
+- **Intent:** pillar 2 (secondary layer) plus an ongoing coin sink (§2.6).
+- **Rules:** before a mission, coins purchase Supplies (Ammo Crate, Medical Crate, Combat Crate, Emergency Crate); each purchased supply grants one supply call for that mission. *Design note: the original pitch didn't cap purchases; a cap of 3 supplies per mission is added here to keep the HUD to 3 call-icons and stop supplies from trivialising the wall-health economy.* Pressing Call Supply (Q) while at least one call remains triggers a helicopter drop; the crate lands within 4 m of the player's position after a 3 s flight. A word then appears above the crate; the player has 8 seconds to type it before the crate is removed, whichever comes first: the timer expiring, or a zombie colliding with the crate. A successful type opens it immediately and consumes one call. Only one crate can be active at a time; a new call cannot be issued while a crate is live and unclaimed.
+- **Edge cases:** pressing Call Supply with 0 calls remaining does nothing (UI shows "0 remaining"). Supplies are never lost for a mission ending early, since the call is player-triggered, not scheduled (this preserves the original pitch's core insight about player agency).
+
+![Fig. 6: Mission Supplies drop sequence](images/fig6_supply_drop.png)
+
+*Fig. 6 — the player calls a drop, then types the crate's word before it expires or is destroyed.*
 ```
