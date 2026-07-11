@@ -6,7 +6,7 @@
 | **Members & roles** | @danganroma (design lead · tech lead · art lead · producer) |
 | **Engine / platform** | Godot 4.7 / Windows, Linux (primary), macOS (secondary) |
 | **Repo** | [add once the course namespace is created] |
-| **Doc version** | v0.1 |
+| **Doc version** | v0.2 |
 | **Last updated** | 2026-07-12 |
 
 ## Changelog
@@ -14,6 +14,7 @@
 | Version | Date | Change | Who |
 |---|---|---|---|
 | v0.1 | 2026-07-12 | Initial concept and core gameplay drafted | Romart Danganan |
+| v0.2 | 2026-07-12 | Expanded scope definition, priorities, and player controls | Romart Danganan |
 
 ---
 
@@ -59,4 +60,50 @@ Casual-to-mid-core PC players aged roughly 12 and up: the existing typing-game a
 
 - **Epistory: Typing Chronicles / ZType** — typing games where typing itself is the damage action. We take the readable floating-word convention, reject the direct-damage model, since it caps the skill ceiling at typing speed alone.
 - **Plants vs. Zombies** — casual tower/base-defense structure and tone. We take the stylised, non-horror zombie aesthetic and the permanent, deterministic upgrade economy; we reject its lane-based grid, since our combat is free-aim.
+
+## 1.5 Look, feel, and tone
+
+Stylised, slightly cartoonish 2D top-down, closer to Plants vs. Zombies than Left 4 Dead: high-contrast silhouettes, minimal visual noise around zombie heads and the typing input area (both must be readable at a glance mid-combat), upbeat arcade-tense music rather than dread-horror scoring. Full direction in §9.
+
+## 1.6 Scope: goals and non-goals
+
+### Non-goals
+
+- No open world or free player movement; the player is stationed at a fixed base position, missions are discrete hand-authored encounters.
+- No randomised loot, gacha-style unlocks, or mid-mission power-up pickups; all progression is coin-purchased and deterministic.
+- No online multiplayer or networking this trimester.
+- No controller support at launch; keyboard and mouse only, since typing is the core mechanic.
+- No procedurally generated levels or navmesh pathfinding; arenas are open lanes, zombies move straight toward the wall (see §8.1).
+- No dedicated skippable tutorial level; onboarding happens inside Mission 1 (see §5.1).
+- No cheats or easter eggs this trimester.
+
+### MoSCoW scope table
+
+| Feature | Priority | Milestone | Owner | Status |
+|---|---|---|---|---|
+| TypingController + AmmoSystem | Must | Prototype (wk 3-5) | Romart Danganan | not started |
+| Manual aim/fire + mistake system | Must | Prototype (wk 3-5) | Romart Danganan | not started |
+| Home base, shop, ProgressionManager | Should | Vertical slice (wk 6-8) | Romart Danganan | not started |
+| Ability loadout system (4 abilities) | Should | Vertical slice (wk 6-8) | Romart Danganan | not started |
+| Mission Supplies system | Should | Vertical slice (wk 6-8) | Romart Danganan | not started |
+| Missions 1-3 + first boss | Should | Vertical slice (wk 6-8) | Romart Danganan | not started |
+| Remaining 4 abilities | Could | Final (wk 9-10) | Romart Danganan | not started |
+| Missions 4-6 + second boss | Could | Final (wk 9-10) | Romart Danganan | not started |
+| Mission rating / medals | Could | Final (wk 9-10) | Romart Danganan | not started |
+| Online multiplayer | Won't | — | — | non-goal |
+| Controller support | Won't | — | — | non-goal |
+
+---
+
+# 2. Gameplay & Mechanics — owner: Romart Danganan
+
+## 2.1 Player verbs & controls
+
+| Verb | Input | Timing / numbers | Notes |
+|---|---|---|---|
+| Type word | Keyboard (A-Z) | 1 to 3 s per word, validated character by character | Only the currently-targeted zombie's word is checked against keystrokes |
+| Aim | Mouse move | Continuous, no acceleration curve, free 360° | Independent of typing |
+| Fire | Left mouse button | 0.5 s cooldown at base fire rate (2 shots/s), upgradeable to 4 shots/s | Consumes 1 ammo unit per shot |
+| Call Supply | Q | 3 s helicopter flight time before crate lands | Only usable if at least 1 supply call remains this mission |
+| Select ability / mission | Mouse click, UI | Pre-mission only | Locked once the mission starts |
 ```
