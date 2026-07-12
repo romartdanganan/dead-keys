@@ -194,3 +194,67 @@ Missions unlock linearly: complete mission N to unlock N+1, no branching. Diffic
 Save model: checkpoint-based, one checkpoint per completed mission, persisting coins, unlocked equipment, and each mission's best medal. There is no mid-mission save; abandoning a mission mid-run does not bank partial coin earnings, which stays consistent with the Mission Supplies design (progress only banks on completion, never on an interrupted attempt). Options: word-difficulty assist, typing-speed assist (extends crate expiry time and the combo window), master/music/SFX volume sliders, colourblind-safe palette toggle, screen-shake and flash toggle. No cheats or easter eggs planned this trimester (see non-goals).
 
 ---
+
+# 3. Screen Flow & Game States — owner: Romart Danganan
+
+````mermaid
+stateDiagram-v2
+    [*] --> Title
+    Title --> HomeBase
+    Title --> Settings
+    HomeBase --> Shop
+    HomeBase --> AbilitySelect
+    HomeBase --> MissionSelect
+    Shop --> HomeBase
+    AbilitySelect --> MissionSelect
+    MissionSelect --> Gameplay
+    Gameplay --> Pause
+    Pause --> Gameplay
+    Pause --> Settings
+    Pause --> HomeBase
+    Gameplay --> MissionEnd
+    MissionEnd --> HomeBase
+````
+
+Title: engine splash and Start/Settings/Quit. Home Base: hub for Shop, Ability Select, and Mission Select. Shop: spend coins on permanent upgrades and this mission's Supplies. Ability Select: choose the one equipped ability. Gameplay: the mission itself. Pause: resume, settings, or quit to Home Base. Mission End: rating screen (medal, stats), returns to Home Base.
+
+---
+
+# 4. Story, Setting & Characters — owner: Romart Danganan
+
+## 4.1 Narrative
+
+Narrative is intentionally minimal (see non-goals: no cutscenes). Story is told entirely through mission title cards and escalating locations, implying a worsening outbreak without dedicated scenes or dialogue.
+
+## 4.2 World & areas
+
+Six mission settings, each self-contained with no explicit overworld map: Suburbs → Hospital → Shopping Centre → Rescue site → Military Base → Downtown. The arc implies spreading infection through increasingly critical infrastructure. Full list in §5.2.
+
+## 4.3 Characters
+
+The player character is an unnamed defender with no dialogue or animation budget beyond idle/aim/fire. The zombie roster (§2.5, §8.1) functions as the game's only "cast," differentiated by type rather than individual identity, which keeps the character-animation budget to one shared rig (see §9).
+
+---
+
+# 5. Levels & Content Plan — owner: Romart Danganan
+
+## 5.1 Onboarding / training
+
+Mission 1 (Defend the Suburbs) is the tutorial: Walkers only, short common words, a forced first supply call and a forced first ability-trigger prompt, each introduced with a one-line on-screen callout the first time it's relevant. At roughly 4 minutes, it matches the session loop defined in §1.3, so onboarding doesn't run long against the game's own pacing.
+
+## 5.2 Level list
+
+| Level | Synopsis | Introduces | Assets implied | Milestone |
+|---|---|---|---|---|
+| 1. Defend the Suburbs | Tutorial mission, first wave | Walker, Runner, tutorial prompts | 1 background, 2 enemy types | Vertical slice |
+| 2. Hold the Hospital | Longer, medical-themed word list | Medic | Medic enemy, medical word list | Vertical slice |
+| 3. Secure the Shopping Centre | First boss fight | Tank boss | Boss model, arena | Vertical slice |
+| 4. Rescue the Survivors | Objective pressure alongside waves | Spitter, Exploder | 2 enemy types, escort objective UI | Final |
+| 5. Protect the Military Base | Enemy combinations | Commander, Armoured | 2 enemy types | Final |
+| 6. Final Stand: Downtown | Second boss, hardest word tier | Mutant boss | Boss model, arena | Final |
+
+![Fig. 5: Mission progression](images/fig5_mission_map.png)
+
+*Fig. 5 — difficulty increases across the run: more enemies, longer words, harsher mistake penalties.*
+
+---
