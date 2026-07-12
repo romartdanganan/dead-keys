@@ -141,4 +141,38 @@ Stylised, slightly cartoonish 2D top-down, closer to Plants vs. Zombies than Lef
 ![Fig. 6: Mission Supplies drop sequence](images/fig6_supply_drop.png)
 
 *Fig. 6 — the player calls a drop, then types the crate's word before it expires or is destroyed.*
-```
+
+
+## 2.3 Movement & physics
+
+The player character does not move; combat is entirely aim-and-fire from a fixed base position (there is no player movement verb, deliberately, see non-goals). Bullets are simple projectiles, not hitscan, so leading a moving target is part of the aim skill: base bullet speed 18 m/s, no gravity (top-down), linear travel, circle-collider hit detection. This is an explicit decision, not an engine default, chosen because projectile travel time is what makes aiming skill-expressive rather than trivial.
+
+## 2.4 Objects & interactions
+
+| Object | Interaction | State carried |
+|---|---|---|
+| Zombie | Type its word to load ammo; aim and shoot to kill | Word, health, speed, word-difficulty tier |
+| Supply crate | Type its word within 8 s to claim | Word, effect type, time-to-live |
+| Base wall | Takes damage from zombies that reach it | Current health, current lives |
+| Ability charge | Earned via kill streak, spent on next shot | Charged / uncharged |
+
+## 2.5 Combat / conflict
+
+Base fire rate 2 shots/s (0.5 s cooldown), upgradeable to 4 shots/s. Bullet damage: standard bullet 10, charged bullet 30 (small splash), explosive round 50 (2 m radius AoE). Enemy health and behaviour:
+
+| Enemy | Health | Notes |
+|---|---|---|
+| Walker | 30 | Baseline, no special behaviour |
+| Runner | 15 | Fast approach, short words |
+| Brute | 150 | Slow, long words |
+| Medic | 25 | Heals nearby zombies 10 HP/s within 3 m |
+| Spitter | 25 | Attacks the wall from 6 m range, 5 dmg/hit |
+| Exploder | 20 | Deals 40 dmg burst to the wall on contact, then dies |
+| Commander | 40 | Buffs zombies within 4 m by +20% speed |
+| Armoured | 80 | Takes 50% reduced damage from non-Piercing/Explosive sources |
+
+*Design note: "extra lives" appears as a Base upgrade in the original pitch's progression list, but no fail-state used it. Formalised here: each mission starts with 1 life (purchasable up to 3). When wall health hits 0, one life is lost and the wall resets to 50% health if a life remains; the mission fails only once the last life is lost.*
+
+![Fig. 4: Enemy roster comparison](images/fig4_enemy_chart.png)
+
+*Fig. 4 — speed, health, and word length across the enemy roster.*
