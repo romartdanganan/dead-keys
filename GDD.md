@@ -6,8 +6,8 @@
 | **Members & roles** | @danganroma (design lead · tech lead · art lead · producer) |
 | **Engine / platform** | Godot 4.7 / Windows, Linux (primary), macOS (secondary) |
 | **Repo** | [add once the course namespace is created] |
-| **Doc version** | v0.3 |
-| **Last updated** | 2026-07-12 |
+| **Doc version** | v0.6 |
+| **Last updated** | 2026-07-13 |
 
 ## Changelog
 
@@ -16,6 +16,10 @@
 | v0.1 | 2026-07-12 | Initial concept and core gameplay drafted | Romart Danganan |
 | v0.2 | 2026-07-12 | Expanded scope definition, priorities, and player controls | Romart Danganan |
 | v0.3 | 2026-07-12 | Expanded combat, enemy types, typing and mistake systems | Romart Danganan |
+| v0.4 | 2026-07-12 | Added movement rules, interactive objects, and combat balance data | Romart Danganan |
+| v0.5 | 2026-07-12 | Defined economy, progression, and save model | Romart Danganan |
+| v0.6 | 2026-07-12 | Added screen flow, narrative, and level content plan | Romart Danganan |
+| v0.7 | 2026-07-13 | Added interface, controls, accessibility, and AI design | Romart Danganan |
 
 ---
 
@@ -256,5 +260,52 @@ Mission 1 (Defend the Suburbs) is the tutorial: Walkers only, short common words
 ![Fig. 5: Mission progression](images/fig5_mission_map.png)
 
 *Fig. 5 — difficulty increases across the run: more enemies, longer words, harsher mistake penalties.*
+
+---
+
+# 6. Interface — owner: Romart Danganan
+
+## 6.1 Visual / HUD
+
+Fixed top-down camera, no camera movement (the player doesn't move, see §2.3). HUD elements, each justified: ammo counter, typing input box, combo counter, wall health/lives, supply-call counter with an active-crate timer when relevant. Menus: Home Base hub (Shop / Ability Select / Mission Select buttons), Pause menu (Resume / Settings / Quit to Home Base).
+
+![Fig. 2: Combat screen mockup](images/fig2_combat_hud.png)
+
+*Fig. 2 — words float above zombies; typing loads ammo; aim and fire are separate inputs.*
+
+## 6.2 Audio, music, sound effects
+
+Music direction: upbeat, arcade-tense, reinforcing the action-arcade identity rather than horror dread. SFX per verb/event: correct keystroke (soft click), mistake (short buzz), weapon fire (per weapon tier), weapon jam (mechanical stutter), zombie death (per type), crate landing (thud and beep), crate claimed (chime), mission complete (fanfare, tiered by medal). Mixing rule: SFX ducks music by roughly 3 dB on a weapon jam or boss intro, so the moment reads clearly.
+
+## 6.3 Help system
+
+First-time contextual tooltips when a new enemy, ability, or supply type appears; a "How to Play" page in the pause menu. No dedicated tutorial level beyond Mission 1 (see non-goals).
+
+---
+
+# 7. Controls & Accessibility — owner: Romart Danganan
+
+- Full input remapping: **yes** for aim, fire, and Call Supply. **No** for the typing keys themselves, since they must match the displayed word exactly; this is flagged as a known accessibility limitation, mitigated by the word-difficulty and typing-speed assist options below rather than remapping.
+- Hold-to-toggle alternative for Fire: **yes**, once the higher fire-rate weapon upgrade is unlocked.
+- Colour is never the only information channel: **yes**, enemy types are differentiated by silhouette and word-label border colour together, and the palette is checked for colour-blindness.
+- Subtitle size/contrast options: **yes**, for on-screen callouts. Screen-shake and flash toggles: **yes**.
+- Difficulty options framed as player choice (assist modes), not shame: **yes**, word-difficulty assist and typing-speed assist are named as such.
+- Text size minimum: **16 pt at 1080p** for floating word labels, larger than typical UI text since they must be read at a glance mid-combat.
+
+---
+
+# 8. Artificial Intelligence — owner: Romart Danganan
+
+## 8.1 Opponent / enemy AI
+
+All zombie types share one state machine: Spawn → Approach (straight-line toward the base wall, since arenas are open lanes with no obstacles, see non-goals) → Attack (on contact with the wall) → Dead. Medic, Spitter, Commander, and Exploder each add one extra state (Support/Ranged Attack/Buff Aura/Detonate respectively) layered on the same base machine, rather than separate logic, keeping every enemy variant a scene-level configuration change (§10) rather than new code. Readability: each type has a distinct silhouette and a distinct word-label border colour, so the player can triage the wave at a glance without reading every word first. Since zombies target the wall rather than the player, and the player doesn't move, there's no "can't reach the player" case to design for, only separation/flocking so overlapping zombies don't visually stack.
+
+## 8.2 Friendly / non-combat characters
+
+None (non-goal).
+
+## 8.3 Support AI
+
+The Drone ability hovers at a fixed offset near the player's last aim position and fires automatically at the nearest zombie within range for its duration, using a naive nearest-enemy-in-radius check each tick with no line-of-sight requirement. This is an explicit scope simplification, acceptable because arenas are unobstructed (§2.3); it would need revisiting if level design later adds cover.
 
 ---
