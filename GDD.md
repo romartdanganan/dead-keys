@@ -176,3 +176,21 @@ Base fire rate 2 shots/s (0.5 s cooldown), upgradeable to 4 shots/s. Bullet dama
 ![Fig. 4: Enemy roster comparison](images/fig4_enemy_chart.png)
 
 *Fig. 4 — speed, health, and word length across the enemy roster.*
+
+## 2.6 Economy & resources
+
+- **What resources does the player have:** a single currency, coins.
+- **How do they earn them:** a base reward per completed mission (50 to 150 coins depending on mission), plus a mission-rating bonus (+25 bronze, +50 silver, +100 gold), plus a perfect-accuracy bonus from the Typing upgrade track (+10% of that mission's reward).
+- **How do they spend them:** permanent one-time Weapon/Base/Typing upgrades (100 to 500 coins each), and Mission Supplies, which must be repurchased every mission (40 to 120 coins each), keeping coins useful even after most permanent gear is bought out.
+- **Why do they want more:** to unlock the remaining permanent upgrades, and because Supplies are a recurring cost that never runs out of relevance.
+- **Starting values:** 0 coins. Mission 1 (Defend the Suburbs) is completable with no purchased upgrades or supplies, so there is no economic gate on entry.
+
+## 2.7 Progression & difficulty
+
+Missions unlock linearly: complete mission N to unlock N+1, no branching. Difficulty increases via word length, enemy variety, and (from Mission 4 onward) a tighter 3-mistake jam threshold as an explicit difficulty lever. The player sees progress through rising coin totals, unlock notifications, mission medals, and a brief on-screen callout the first time a new enemy type appears. Typing itself functions as a repeated micro-puzzle: each word has exactly one correct input, and success or failure is immediate.
+
+## 2.8 Game options, saving, replay
+
+Save model: checkpoint-based, one checkpoint per completed mission, persisting coins, unlocked equipment, and each mission's best medal. There is no mid-mission save; abandoning a mission mid-run does not bank partial coin earnings, which stays consistent with the Mission Supplies design (progress only banks on completion, never on an interrupted attempt). Options: word-difficulty assist, typing-speed assist (extends crate expiry time and the combo window), master/music/SFX volume sliders, colourblind-safe palette toggle, screen-shake and flash toggle. No cheats or easter eggs planned this trimester (see non-goals).
+
+---
