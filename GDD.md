@@ -6,8 +6,8 @@
 | **Members & roles** | @danganroma (design lead · tech lead · art lead · producer) |
 | **Engine / platform** | Godot 4.7 / Windows, Linux (primary), macOS (secondary) |
 | **Repo** | [add once the course namespace is created] |
-| **Doc version** | v0.6 |
-| **Last updated** | 2026-07-13 |
+| **Doc version** | v0.8 |
+| **Last updated** | 2026-07-14 |
 
 ## Changelog
 
@@ -20,7 +20,7 @@
 | v0.5 | 2026-07-12 | Defined economy, progression, and save model | Romart Danganan |
 | v0.6 | 2026-07-12 | Added screen flow, narrative, and level content plan | Romart Danganan |
 | v0.7 | 2026-07-13 | Added interface, controls, accessibility, and AI design | Romart Danganan |
-
+| v0.8 | 2026-07-14 | Final Draft For Assignment 1 Submission, further tweaks needed to GDD before Final Submission. | Romart Danganan |
 ---
 
 # 1. Page One — The Core
@@ -309,3 +309,67 @@ None (non-goal).
 The Drone ability hovers at a fixed offset near the player's last aim position and fires automatically at the nearest zombie within range for its duration, using a naive nearest-enemy-in-radius check each tick with no line-of-sight requirement. This is an explicit scope simplification, acceptable because arenas are unobstructed (§2.3); it would need revisiting if level design later adds cover.
 
 ---
+
+# 9. Art Direction — owner: Romart Danganan
+
+Stylised, high-contrast 2D top-down, favouring clear silhouettes over horror detail (§1.5). Enemy variants share one base rig and animation set (idle, approach, attack, death), differentiated by recolour, scale, and silhouette accessories rather than unique animations per type, protecting the animation budget across 8 enemy types and 2 bosses. Camera is fixed-distance top-down (§6.1), which also caps the texture budget, since no close-up detail level is ever required.
+
+---
+
+# 10. Technical — owner: Romart Danganan
+
+Engine: Godot 4.7 (GDScript), pinned. Target: Windows and Linux desktop primary, macOS secondary. Minimum spec target is deliberately low, no 3D lighting or large asset streaming, so the game should run on integrated graphics from the last decade. Toolchain: Godot editor, GUT (Godot Unit Test) for automated tests, GitLab CI for import/test validation on every push (see repo `docs/TechSpec.md`). Data formats: word lists, mission configs, and supply definitions are external `.tres`/JSON resources, not hard-coded, so tuning doesn't require a rebuild. Network requirements: none, see non-goals. Vertical-slice risks to prove early: raw keystroke capture reliability via Godot's `InputEventKey` across keyboard layouts (the entire game depends on this working correctly, so it's the first thing built in Week 3), and HUD performance with 20+ concurrent floating word labels on screen at once.
+
+---
+
+# 11. Playtesting Plan — owner: Romart Danganan
+
+- **What we measure:** the timings claimed in §1.3 (2 to 4 s moment loop, 4 to 8 minute session loop) and the numbers in §2 (mistake penalties, ability trigger thresholds, crate timers). The gap between claimed and observed becomes the tuning backlog.
+- **Cadence:** informal self/friend playtests weekly from Week 5 (first prototype checkpoint); first external test at the vertical slice, roughly Week 8.
+- **Methods:** observation notes, think-aloud, and a short 5-question survey after each session (clarity of the mistake system, clarity of the ability-select screen, word readability, a fun rating, one open-text question).
+- **Findings loop:** results are recorded as dated markdown notes in a `playtesting/` folder in the repo; each finding either becomes a changelog entry (accepted) or is explicitly logged as rejected, with a reason.
+- **Ethics & privacy:** internal course playtesting with friends/classmates, no recording of non-consenting participants. If any screen recording happens during a session, testers are told and asked verbally beforehand. No personally identifying data is collected beyond first-name session notes, deleted at the end of the trimester.
+
+---
+
+# 12. Production Notes — owner: Romart Danganan
+
+## 12.1 Cultural material
+
+Dead Keys does not reference any specific real culture, taonga, or living tradition; it draws on generic, genre-standard zombie-apocalypse conventions. No consultation was required, stated explicitly rather than left blank.
+
+## 12.2 AI use declaration
+
+This GDD was drafted collaboratively with Claude (Anthropic), per the CGRA 359 AI Assistance Policy. AI was used to expand the original pitch document into full prose across every template section, to structure the production plan and GitLab milestone/issue breakdown. The game concept, mechanics, and content (ammo table, mistake system, ability list, mission list, supply system) all originate from my own (Romart Danganan) original pitch/idea. Where the original pitch left a rule ambiguous, AI-proposed resolutions are flagged inline with a "Design note" (§2.2.3 ability-trigger standardisation, §2.5 lives/wall-reset mechanic, §2.2.4 supply cap) so they can be reviewed, kept, or overridden rather than passing silently. I can defend every section of this document, out loud and without notice, per the standing test below.
+
+## 12.3 Document practice
+
+- This file changes via commits/PRs; section owners review changes to their own sections.
+- Standing sprint agenda item: where do the doc and the build disagree? Fix one within the week.
+- Stale text is deleted, not hoarded, git remembers it.
+
+---
+
+# Appendix A — Reader's checklist (before you build from this doc)
+
+- [ ] I can state the hook and pillars from memory
+- [ ] I know which loop my task sits on
+- [ ] I have the numbers I need (or have asked for them)
+- [ ] I checked the changelog since I last read
+- [ ] Ambiguities are written down and assigned to an owner
+- [ ] I know what is explicitly out of scope
+- [ ] The answers to my questions went back into the doc
+
+# Appendix B — Writer's checklist (before you commit)
+
+- [ ] Could two readers build different things from this? (fix it)
+- [ ] Every quantity has a number, a unit, and a default
+- [ ] Each feature traces to a pillar and sits on a loop
+- [ ] Spatial/temporal structure is drawn, not described
+- [ ] The section has an owner and today's date
+- [ ] Non-goals updated if scope moved
+- [ ] Changelog entry written; stale text deleted
+
+# Appendix C — Red flags (self-review)
+
+A GDD is failing when: "fun/immersive/polished" appears where numbers should be; "etc./various/many" hides scope; there is no non-goals section; one author and no other committers; last updated five weeks ago; sections describe features nobody is building this trimester; the same fact appears twice with different values; you read a section and can't say what was decided.
