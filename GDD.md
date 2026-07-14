@@ -1,4 +1,4 @@
-# Dead Keys — Game Design Document
+# Dead Keys - Game Design Document
 
 | | |
 |---|---|
@@ -6,8 +6,8 @@
 | **Members & roles** | @danganroma (design lead · tech lead · art lead · producer) |
 | **Engine / platform** | Godot 4.7 / Windows, Linux (primary), macOS (secondary) |
 | **Repo** | [add once the course namespace is created] |
-| **Doc version** | v0.8 |
-| **Last updated** | 2026-07-14 |
+| **Doc version** | v0.9 |
+| **Last updated** | 2026-07-15 |
 
 ## Changelog
 
@@ -21,9 +21,10 @@
 | v0.6 | 2026-07-12 | Added screen flow, narrative, and level content plan | Romart Danganan |
 | v0.7 | 2026-07-13 | Added interface, controls, accessibility, and AI design | Romart Danganan |
 | v0.8 | 2026-07-14 | Final Draft For Assignment 1 Submission, further tweaks needed to GDD before Final Submission. | Romart Danganan |
+| v0.9 | 2026-07-15 | Large review and edits to logic and game mechanics: Call Supply moved Q→RMB, ammo tiers now scale bullet count only (not type), added mistake-system accessibility toggle, unified combo/kill-streak into one Combo counter, added Permanent Upgrade Tracks table (§2.6.1); locked scope to a single upgradeable weapon (multi-weapon flagged as deferred stretch idea); removed player-position-based supply drop and zombie-collision crate removal; removed on-screen player-character framing (no player model), simplified help-system tooltips, added word-label overlap/priority rule | Romart Danganan |
 ---
 
-# 1. Page One — The Core
+# 1. Page One - The Core
 
 ## 1.1 Hook
 
@@ -57,14 +58,14 @@ flowchart LR
 
 ![Fig. 1: Core Gameplay Loop](images/fig1_core_loop.png)
 
-*Fig. 1 — the meta loop shown above, as it appears to the player: Home Base to Mission and back.*
+*Fig. 1 - the meta loop shown above, as it appears to the player: Home Base to Mission and back.*
 
 ## 1.4 Audience & genre
 
 Casual-to-mid-core PC players aged roughly 12 and up: the existing typing-game audience (students, ESL learners, edutainment crossover players) plus twin-stick/arena-shooter fans wanting a lighter, session-based game. Comparisons:
 
-- **Epistory: Typing Chronicles / ZType** — typing games where typing itself is the damage action. We take the readable floating-word convention, reject the direct-damage model, since it caps the skill ceiling at typing speed alone.
-- **Plants vs. Zombies** — casual tower/base-defense structure and tone. We take the stylised, non-horror zombie aesthetic and the permanent, deterministic upgrade economy; we reject its lane-based grid, since our combat is free-aim.
+- **Epistory: Typing Chronicles / ZType** - typing games where typing itself is the damage action. We take the readable floating-word convention, reject the direct-damage model, since it caps the skill ceiling at typing speed alone.
+- **Plants vs. Zombies** - casual tower/base-defense structure and tone. We take the stylised, non-horror zombie aesthetic and the permanent, deterministic upgrade economy; we reject its lane-based grid, since our combat is free-aim.
 
 ## 1.5 Look, feel, and tone
 
@@ -81,6 +82,8 @@ Stylised, slightly cartoonish 2D top-down, closer to Plants vs. Zombies than Lef
 - No procedurally generated levels or navmesh pathfinding; arenas are open lanes, zombies move straight toward the wall (see §8.1).
 - No dedicated skippable tutorial level; onboarding happens inside Mission 1 (see §5.1).
 - No cheats or easter eggs this trimester.
+- No multiple purchasable weapons at launch; a single weapon with upgradeable fire rate and damage covers the Weapon upgrade track (§2.6.1). A pistol → heavy pistol → rifle weapon-swap progression was discussed as an appealing option for immersion but is deliberately deferred as a stretch idea, not committed scope, given the one-trimester timeline.
+- No rendered player character/avatar on screen; the player experiences the game from a fixed POV (aim reticle + HUD only, see §4.3).
 
 ### MoSCoW scope table
 
@@ -92,15 +95,17 @@ Stylised, slightly cartoonish 2D top-down, closer to Plants vs. Zombies than Lef
 | Ability loadout system (4 abilities) | Should | Vertical slice (wk 6-8) | Romart Danganan | not started |
 | Mission Supplies system | Should | Vertical slice (wk 6-8) | Romart Danganan | not started |
 | Missions 1-3 + first boss | Should | Vertical slice (wk 6-8) | Romart Danganan | not started |
+| Mistake-system accessibility toggle | Could | Vertical slice (wk 6-8) | Romart Danganan | not started |
 | Remaining 4 abilities | Could | Final (wk 9-10) | Romart Danganan | not started |
 | Missions 4-6 + second boss | Could | Final (wk 9-10) | Romart Danganan | not started |
 | Mission rating / medals | Could | Final (wk 9-10) | Romart Danganan | not started |
-| Online multiplayer | Won't | — | — | non-goal |
-| Controller support | Won't | — | — | non-goal |
+| Multiple purchasable weapons | Won't (this trimester) | - | - | deferred stretch idea |
+| Online multiplayer | Won't | - | - | non-goal |
+| Controller support | Won't | - | - | non-goal |
 
 ---
 
-# 2. Gameplay & Mechanics — owner: Romart Danganan
+# 2. Gameplay & Mechanics - owner: Romart Danganan
 
 ## 2.1 Player verbs & controls
 
@@ -109,47 +114,51 @@ Stylised, slightly cartoonish 2D top-down, closer to Plants vs. Zombies than Lef
 | Type word | Keyboard (A-Z) | 1 to 3 s per word, validated character by character | Only the currently-targeted zombie's word is checked against keystrokes |
 | Aim | Mouse move | Continuous, no acceleration curve, free 360° | Independent of typing |
 | Fire | Left mouse button | 0.5 s cooldown at base fire rate (2 shots/s), upgradeable to 4 shots/s | Consumes 1 ammo unit per shot |
-| Call Supply | Q | 3 s helicopter flight time before crate lands | Only usable if at least 1 supply call remains this mission |
+| Call Supply | Right mouse button (RMB) | 3 s helicopter flight time before crate lands | Only usable if at least 1 supply call remains this mission |
 | Select ability / mission | Mouse click, UI | Pre-mission only | Locked once the mission starts |
+
+*Design note: Call Supply was moved from Q to RMB. Q collided with the typing input - a word containing the letter Q could trigger an accidental supply call mid-type. RMB was free (LMB is Fire, aiming is mouse-movement only), so it was the natural home for a second mouse action.*
 
 ## 2.2 Systems & rules
 
 ### 2.2.1 Ammunition System
 
 - **Intent:** pillar 1, typing generates the resource; it never deals damage directly.
-- **Rules:** word length maps to reward tier: 3-4 letters = 1 bullet, 5-7 letters = 2 bullets, 8-10 letters = 1 charged bullet, 11+ letters = 1 explosive round. Words are drawn from a per-mission, difficulty-tiered word list (data-driven, see §10). Ammo sits in inventory until manually fired; there is no auto-fire.
-- **Edge cases:** if two on-screen zombies share the same word, the earliest-spawned matching zombie is targeted, ties broken by proximity to the wall. If the player finishes typing while ammo capacity is already at its cap, the reward is discarded rather than lost as an error state (capacity limit set by the weapon's magazine-size upgrade tier).
+- **Rules:** word length maps to **bullet count only, not bullet type**: 3-4 letters = 1 bullet, 5-7 letters = 2 bullets, 8-10 letters = 3 bullets, 11+ letters = 4 bullets. All bullets are the same type and deal the same base damage (see §2.5). Words are drawn from a per-mission, difficulty-tiered word list (data-driven, see §10). Ammo sits in inventory until manually fired; there is no auto-fire.
+  *Design note: earlier drafts had the 8-10 and 11+ tiers produce special "charged" and "explosive" bullet types. This is simplified to a single bullet type at increasing quantity - bullet-type variety (Piercing/Explosive-style effects) now belongs solely to the Ability system (§2.2.3) if implemented, so the Ammo System's only job stays "how much," not "what kind," consistent with pillar 1.*
+- **Edge cases:** if two on-screen zombies share the same word, the earliest-spawned matching zombie is targeted, ties broken by proximity to the wall. If the player finishes typing while ammo capacity is already at its cap, the reward is discarded rather than lost as an error state (capacity limit set by the weapon's magazine-size upgrade tier). If two or more zombies are close enough that their floating word labels would visually overlap, the zombie closest to the wall (the more immediate threat) gets display priority; if several zombies are equidistant from the wall at the same time, the system staggers/offsets the labels rather than hiding them, guaranteeing at least one word remains fully readable at all times.
 
 ### 2.2.2 Mistake System
 
 - **Intent:** pillar 3, immediate and legible consequences.
-- **Rules:** each incorrect keystroke costs 1 bullet from current ammo. Three consecutive mistakes (no correct keystroke between them) trigger a 2 second weapon jam, during which the Fire input is ignored. The combo counter (§2.7) resets to 0 on any mistake.
+- **Rules:** each incorrect keystroke costs 1 bullet from current ammo. Three consecutive mistakes (no correct keystroke between them) trigger a 2 second weapon jam, during which the Fire input is ignored. The Combo counter (§2.7) resets to 0 on any mistake (see §2.2.3 for how this now also affects ability progress). The entire mistake system (bullet loss + jam) can be switched off as an accessibility/assist option (§2.8) - with it off, incorrect keystrokes simply aren't counted toward the word and cost nothing. This is offered as a difficulty/assist choice, not forced on.
 - **Edge cases:** if a mistake happens while ammo is already 0, no bullet is lost, but the consecutive-mistake counter still increments toward the jam threshold. If a jam triggers while a shot is mid-cooldown, the pending shot is discarded and the jam timer starts immediately.
 
 ### 2.2.3 Ability System
 
 - **Intent:** pillar 2, a class-like choice made before the mission, not a mid-run pickup.
-- **Rules:** exactly one ability is equipped from the Ability Select screen before a mission starts; it cannot be changed or stacked once the mission begins. *Design note: the original pitch described some abilities as streak-triggered and others (Piercing, Explosive) as triggering on the very next shot with no requirement. For a consistent, programmer-testable rule, all 8 abilities now use the same trigger: a 5-kill streak charges the ability, and it fires on the player's next shot after that.* Streak resets to 0 if a zombie reaches the wall; it does **not** reset on a player mistake (mistakes are already punished by §2.2.2, double-punishing them here would blur two separate systems).
-- **Edge cases:** an earned ability charge persists until the next shot is fired, even if the streak resets in the meantime, once earned, it isn't lost. If the mission ends before the charge is spent, it is discarded (abilities do not carry between missions).
+- **Rules:** exactly one ability is equipped from the Ability Select screen before a mission starts; it cannot be changed or stacked once the mission begins. Kill streak and combo are unified into a single **Combo** counter (also shown in the HUD, §6.1): landing 5 kills in a row without a mistake charges the ability, and it fires automatically on the player's next shot after that. The Combo resets to 0 if the player makes a mistake (§2.2.2) **or** if a zombie reaches the wall, whichever happens first; either reset also cancels any in-progress (uncharged) ability build-up.
+  *Design note: earlier drafts kept a separate kill-streak (for abilities) and combo (HUD/scoring) counter, with the streak deliberately surviving a mistake so the two systems wouldn't double-punish the player. On review, a single unified Combo counter that resets on both a mistake and a zombie reaching the wall was chosen instead - it reads to the player as "one number, one rule," and better matches the intended combo feel.*
+- **Edge cases:** an earned ability charge persists until the next shot is fired, even if the Combo resets in the meantime - once earned, it isn't lost. If the mission ends before the charge is spent, it is discarded (abilities do not carry between missions).
 
 ![Fig. 3: Pre-mission ability loadout screen](images/fig3_ability_select.png)
 
-*Fig. 3 — one ability equipped; no switching once the mission starts.*
+*Fig. 3 - one ability equipped; no switching once the mission starts.*
 
 ### 2.2.4 Mission Supplies System
 
 - **Intent:** pillar 2 (secondary layer) plus an ongoing coin sink (§2.6).
-- **Rules:** before a mission, coins purchase Supplies (Ammo Crate, Medical Crate, Combat Crate, Emergency Crate); each purchased supply grants one supply call for that mission. *Design note: the original pitch didn't cap purchases; a cap of 3 supplies per mission is added here to keep the HUD to 3 call-icons and stop supplies from trivialising the wall-health economy.* Pressing Call Supply (Q) while at least one call remains triggers a helicopter drop; the crate lands within 4 m of the player's position after a 3 s flight. A word then appears above the crate; the player has 8 seconds to type it before the crate is removed, whichever comes first: the timer expiring, or a zombie colliding with the crate. A successful type opens it immediately and consumes one call. Only one crate can be active at a time; a new call cannot be issued while a crate is live and unclaimed.
+- **Rules:** before a mission, coins purchase Supplies (Ammo Crate, Medical Crate, Combat Crate, Emergency Crate); each purchased supply grants one supply call for that mission (capped at 3 supplies per mission to keep the HUD to 3 call-icons and stop supplies from trivialising the wall-health economy). Pressing Call Supply (RMB) while at least one call remains triggers a helicopter drop; the crate lands at a designated supply-drop landing spot (a fixed point per arena) after a 3 s flight. A word then appears above the crate; the player has 8 seconds to type it before the crate expires and is removed. A successful type opens it immediately and consumes one call. Only one crate can be active at a time; a new call cannot be issued while a crate is live and unclaimed.
+  *Design note: the crate's landing point was originally described as "within 4 m of the player's position" - but there is no on-screen player character to anchor that to (§4.3), so it's now a fixed designated drop spot per arena instead. The earlier rule where a zombie colliding with the crate also removed it has been cut; the 8 s timer alone is enough pressure without adding a second failure state.*
 - **Edge cases:** pressing Call Supply with 0 calls remaining does nothing (UI shows "0 remaining"). Supplies are never lost for a mission ending early, since the call is player-triggered, not scheduled (this preserves the original pitch's core insight about player agency).
 
 ![Fig. 6: Mission Supplies drop sequence](images/fig6_supply_drop.png)
 
-*Fig. 6 — the player calls a drop, then types the crate's word before it expires or is destroyed.*
-
+*Fig. 6 - the player calls a drop, then types the crate's word before it expires.*
 
 ## 2.3 Movement & physics
 
-The player character does not move; combat is entirely aim-and-fire from a fixed base position (there is no player movement verb, deliberately, see non-goals). Bullets are simple projectiles, not hitscan, so leading a moving target is part of the aim skill: base bullet speed 18 m/s, no gravity (top-down), linear travel, circle-collider hit detection. This is an explicit decision, not an engine default, chosen because projectile travel time is what makes aiming skill-expressive rather than trivial.
+There is no player character to move; combat is entirely aim-and-fire from a fixed POV (there is no player movement verb, deliberately, see non-goals). Bullets are simple projectiles, not hitscan, so leading a moving target is part of the aim skill: base bullet speed 18 m/s, no gravity (top-down), linear travel, circle-collider hit detection. This is an explicit decision, not an engine default, chosen because projectile travel time is what makes aiming skill-expressive rather than trivial.
 
 ## 2.4 Objects & interactions
 
@@ -158,11 +167,11 @@ The player character does not move; combat is entirely aim-and-fire from a fixed
 | Zombie | Type its word to load ammo; aim and shoot to kill | Word, health, speed, word-difficulty tier |
 | Supply crate | Type its word within 8 s to claim | Word, effect type, time-to-live |
 | Base wall | Takes damage from zombies that reach it | Current health, current lives |
-| Ability charge | Earned via kill streak, spent on next shot | Charged / uncharged |
+| Ability charge | Earned via Combo, spent on next shot | Charged / uncharged |
 
 ## 2.5 Combat / conflict
 
-Base fire rate 2 shots/s (0.5 s cooldown), upgradeable to 4 shots/s. Bullet damage: standard bullet 10, charged bullet 30 (small splash), explosive round 50 (2 m radius AoE). Enemy health and behaviour:
+Base fire rate 2 shots/s (0.5 s cooldown), upgradeable to 4 shots/s. Bullet damage: all bullets deal 10 base damage per hit (bullet **count** scales with word length per §2.2.1, not bullet type). Piercing/Explosive-style damage modifiers, if implemented, come from the Ability system (§2.2.3) rather than from the ammo tier. Enemy health and behaviour:
 
 | Enemy | Health | Notes |
 |---|---|---|
@@ -173,21 +182,38 @@ Base fire rate 2 shots/s (0.5 s cooldown), upgradeable to 4 shots/s. Bullet dama
 | Spitter | 25 | Attacks the wall from 6 m range, 5 dmg/hit |
 | Exploder | 20 | Deals 40 dmg burst to the wall on contact, then dies |
 | Commander | 40 | Buffs zombies within 4 m by +20% speed |
-| Armoured | 80 | Takes 50% reduced damage from non-Piercing/Explosive sources |
+| Armoured | 80 | Takes 50% reduced damage from non-Piercing/Explosive ability sources |
 
-*Design note: "extra lives" appears as a Base upgrade in the original pitch's progression list, but no fail-state used it. Formalised here: each mission starts with 1 life (purchasable up to 3). When wall health hits 0, one life is lost and the wall resets to 50% health if a life remains; the mission fails only once the last life is lost.*
+*Design note: "extra lives" appears as a Base upgrade in the original pitch's progression list, but no fail-state used it. Formalised here: each mission starts with 1 life (purchasable up to 3, see §2.6.1). When wall health hits 0, one life is lost and the wall resets to 50% health if a life remains; the mission fails only once the last life is lost.*
 
 ![Fig. 4: Enemy roster comparison](images/fig4_enemy_chart.png)
 
-*Fig. 4 — speed, health, and word length across the enemy roster.*
+*Fig. 4 - speed, health, and word length across the enemy roster.*
 
 ## 2.6 Economy & resources
 
 - **What resources does the player have:** a single currency, coins.
 - **How do they earn them:** a base reward per completed mission (50 to 150 coins depending on mission), plus a mission-rating bonus (+25 bronze, +50 silver, +100 gold), plus a perfect-accuracy bonus from the Typing upgrade track (+10% of that mission's reward).
-- **How do they spend them:** permanent one-time Weapon/Base/Typing upgrades (100 to 500 coins each), and Mission Supplies, which must be repurchased every mission (40 to 120 coins each), keeping coins useful even after most permanent gear is bought out.
+- **How do they spend them:** permanent one-time Weapon/Base/Typing upgrades (100 to 500 coins each, see §2.6.1), and Mission Supplies, which must be repurchased every mission (40 to 120 coins each), keeping coins useful even after most permanent gear is bought out.
 - **Why do they want more:** to unlock the remaining permanent upgrades, and because Supplies are a recurring cost that never runs out of relevance.
 - **Starting values:** 0 coins. Mission 1 (Defend the Suburbs) is completable with no purchased upgrades or supplies, so there is no economic gate on entry.
+
+### 2.6.1 Permanent Upgrade Tracks
+
+The game ships with **one weapon** (see §1.6 non-goals), so weapon progression is entirely upgrade-driven rather than gear-swap-driven. Costs below are a rough first pass, scaled against the 50-150 coins/mission earn rate in §2.6 - early levels should be affordable off 1-2 missions, later levels are a multi-mission save.
+
+| Upgrade | Track | Effect per level | Levels | Rough cost (coins, per level) |
+|---|---|---|---|---|
+| Fire Rate | Weapon | 2.0 → 2.5 → 3.0 → 4.0 shots/s | 3 | 150 / 250 / 400 |
+| Bullet Damage | Weapon | +2 dmg/hit per level (10 base) | 3 | 150 / 300 / 500 |
+| Magazine Capacity | Weapon | Raises max stored ammo | 3 | 100 / 200 / 350 |
+| Fortified Wall | Base | +25 max wall health per level | 3 | 100 / 200 / 350 |
+| Extra Life | Base | +1 life (starts at 1, caps at 3) | 2 | 300 / 500 |
+| Jam Duration | Base | Jam length 2.0s → 1.5s → 1.0s | 2 | 150 / 250 |
+| Mistake Leniency | Base | Mistakes-before-bullet-loss: 1 → 2 → 3 | 2 | 200 / 350 |
+| Typing Accuracy Bonus | Typing | Existing +10% mission-coin bonus (already in §2.6) | 1 | - |
+
+*Design note: Extra Life and the highest Fire Rate/Bullet Damage tiers are priced deliberately steep since they're the most build-defining purchases - this keeps a meaningful late-game coin sink alongside Supplies (§2.6, §2.6.1 above). Mistake Leniency and Jam Duration are cheaper and earlier, since they're accessibility-adjacent quality-of-life picks rather than power spikes. These are a first-pass proposal, not final balance - happy to revisit priority/ordering once playtesting (§11) gives real data.*
 
 ## 2.7 Progression & difficulty
 
@@ -195,11 +221,11 @@ Missions unlock linearly: complete mission N to unlock N+1, no branching. Diffic
 
 ## 2.8 Game options, saving, replay
 
-Save model: checkpoint-based, one checkpoint per completed mission, persisting coins, unlocked equipment, and each mission's best medal. There is no mid-mission save; abandoning a mission mid-run does not bank partial coin earnings, which stays consistent with the Mission Supplies design (progress only banks on completion, never on an interrupted attempt). Options: word-difficulty assist, typing-speed assist (extends crate expiry time and the combo window), master/music/SFX volume sliders, colourblind-safe palette toggle, screen-shake and flash toggle. No cheats or easter eggs planned this trimester (see non-goals).
+Save model: checkpoint-based, one checkpoint per completed mission, persisting coins, unlocked equipment, and each mission's best medal. There is no mid-mission save; abandoning a mission mid-run does not bank partial coin earnings, which stays consistent with the Mission Supplies design (progress only banks on completion, never on an interrupted attempt). Options: word-difficulty assist, typing-speed assist (extends crate expiry time and the combo window), mistake-system toggle (disables bullet loss and jam on incorrect keystrokes, see §2.2.2), master/music/SFX volume sliders, colourblind-safe palette toggle, screen-shake and flash toggle. No cheats or easter eggs planned this trimester (see non-goals).
 
 ---
 
-# 3. Screen Flow & Game States — owner: Romart Danganan
+# 3. Screen Flow & Game States - owner: Romart Danganan
 
 ````mermaid
 stateDiagram-v2
@@ -220,11 +246,11 @@ stateDiagram-v2
     MissionEnd --> HomeBase
 ````
 
-Title: engine splash and Start/Settings/Quit. Home Base: hub for Shop, Ability Select, and Mission Select. Shop: spend coins on permanent upgrades and this mission's Supplies. Ability Select: choose the one equipped ability. Gameplay: the mission itself. Pause: resume, settings, or quit to Home Base. Mission End: rating screen (medal, stats), returns to Home Base.
+Title: engine splash and Start/Settings/Quit. Home Base: hub for Shop, Ability Select, and Mission Select. Shop: spend coins on permanent upgrades (§2.6.1) and this mission's Supplies. Ability Select: choose the one equipped ability. Gameplay: the mission itself. Pause: resume, settings, or quit to Home Base. Mission End: rating screen (medal, stats), returns to Home Base.
 
 ---
 
-# 4. Story, Setting & Characters — owner: Romart Danganan
+# 4. Story, Setting & Characters - owner: Romart Danganan
 
 ## 4.1 Narrative
 
@@ -236,11 +262,11 @@ Six mission settings, each self-contained with no explicit overworld map: Suburb
 
 ## 4.3 Characters
 
-The player character is an unnamed defender with no dialogue or animation budget beyond idle/aim/fire. The zombie roster (§2.5, §8.1) functions as the game's only "cast," differentiated by type rather than individual identity, which keeps the character-animation budget to one shared rig (see §9).
+There is no rendered player character or avatar on screen; the player experiences the game from a fixed POV - aim reticle and HUD only (see §2.3, §6.1). The zombie roster (§2.5, §8.1) is therefore the game's only "cast," differentiated by type rather than individual identity, which puts the entire character-animation budget on the zombie side (one shared rig, see §9) with no player-character animation needed at all.
 
 ---
 
-# 5. Levels & Content Plan — owner: Romart Danganan
+# 5. Levels & Content Plan - owner: Romart Danganan
 
 ## 5.1 Onboarding / training
 
@@ -259,46 +285,46 @@ Mission 1 (Defend the Suburbs) is the tutorial: Walkers only, short common words
 
 ![Fig. 5: Mission progression](images/fig5_mission_map.png)
 
-*Fig. 5 — difficulty increases across the run: more enemies, longer words, harsher mistake penalties.*
+*Fig. 5 - difficulty increases across the run: more enemies, longer words, harsher mistake penalties.*
 
 ---
 
-# 6. Interface — owner: Romart Danganan
+# 6. Interface - owner: Romart Danganan
 
 ## 6.1 Visual / HUD
 
-Fixed top-down camera, no camera movement (the player doesn't move, see §2.3). HUD elements, each justified: ammo counter, typing input box, combo counter, wall health/lives, supply-call counter with an active-crate timer when relevant. Menus: Home Base hub (Shop / Ability Select / Mission Select buttons), Pause menu (Resume / Settings / Quit to Home Base).
+Fixed top-down camera, no camera movement (there is no player character to follow, see §2.3, §4.3). HUD elements, each justified: ammo counter, typing input box, Combo counter (§2.2.3, §2.7), wall health/lives, supply-call counter with an active-crate timer when relevant. Menus: Home Base hub (Shop / Ability Select / Mission Select buttons), Pause menu (Resume / Settings / Quit to Home Base).
 
 ![Fig. 2: Combat screen mockup](images/fig2_combat_hud.png)
 
-*Fig. 2 — words float above zombies; typing loads ammo; aim and fire are separate inputs.*
+*Fig. 2 - words float above zombies; typing loads ammo; aim and fire are separate inputs.*
 
 ## 6.2 Audio, music, sound effects
 
-Music direction: upbeat, arcade-tense, reinforcing the action-arcade identity rather than horror dread. SFX per verb/event: correct keystroke (soft click), mistake (short buzz), weapon fire (per weapon tier), weapon jam (mechanical stutter), zombie death (per type), crate landing (thud and beep), crate claimed (chime), mission complete (fanfare, tiered by medal). Mixing rule: SFX ducks music by roughly 3 dB on a weapon jam or boss intro, so the moment reads clearly.
+Music direction: upbeat, arcade-tense, reinforcing the action-arcade identity rather than horror dread. SFX per verb/event: correct keystroke (soft click), mistake (short buzz), weapon fire (single weapon sound, layered/pitched to reflect the current fire-rate and damage upgrade tier - see §2.6.1), weapon jam (mechanical stutter), zombie death (per type), crate landing (thud and beep), crate claimed (chime), mission complete (fanfare, tiered by medal). Mixing rule: SFX ducks music by roughly 3 dB on a weapon jam or boss intro, so the moment reads clearly.
 
 ## 6.3 Help system
 
-First-time contextual tooltips when a new enemy, ability, or supply type appears; a "How to Play" page in the pause menu. No dedicated tutorial level beyond Mission 1 (see non-goals).
+A "How to Play" page in the pause menu, plus the on-screen callouts already committed for Mission 1 onboarding (§5.1) and first-enemy-appearance (§2.7). No separate, full contextual-tooltip system for every ability/supply/enemy type - that was judged too costly for a one-trimester scope on top of the callouts above. No dedicated tutorial level beyond Mission 1 (see non-goals).
 
----
+*Design note: this removes the standalone per-instance tooltip system that was previously listed here. §2.7 and §5.1 already commit to lighter on-screen callouts for new enemies/prompts - worth confirming during implementation whether those two are actually the same feature described twice, so it isn't accidentally built twice either.*
 
-# 7. Controls & Accessibility — owner: Romart Danganan
+## 7. Controls & Accessibility - owner: Romart Danganan
 
-- Full input remapping: **yes** for aim, fire, and Call Supply. **No** for the typing keys themselves, since they must match the displayed word exactly; this is flagged as a known accessibility limitation, mitigated by the word-difficulty and typing-speed assist options below rather than remapping.
+- Full input remapping: **yes** for aim, fire, and Call Supply. **No** for the typing keys themselves, since they must match the displayed word exactly; this is flagged as a known accessibility limitation, mitigated by the word-difficulty, typing-speed, and mistake-system toggle assist options below rather than remapping.
 - Hold-to-toggle alternative for Fire: **yes**, once the higher fire-rate weapon upgrade is unlocked.
 - Colour is never the only information channel: **yes**, enemy types are differentiated by silhouette and word-label border colour together, and the palette is checked for colour-blindness.
 - Subtitle size/contrast options: **yes**, for on-screen callouts. Screen-shake and flash toggles: **yes**.
-- Difficulty options framed as player choice (assist modes), not shame: **yes**, word-difficulty assist and typing-speed assist are named as such.
+- Difficulty options framed as player choice (assist modes), not shame: **yes**, word-difficulty assist, typing-speed assist, and the mistake-system toggle (§2.2.2, §2.8) are all named as such.
 - Text size minimum: **16 pt at 1080p** for floating word labels, larger than typical UI text since they must be read at a glance mid-combat.
 
 ---
 
-# 8. Artificial Intelligence — owner: Romart Danganan
+# 8. Artificial Intelligence - owner: Romart Danganan
 
 ## 8.1 Opponent / enemy AI
 
-All zombie types share one state machine: Spawn → Approach (straight-line toward the base wall, since arenas are open lanes with no obstacles, see non-goals) → Attack (on contact with the wall) → Dead. Medic, Spitter, Commander, and Exploder each add one extra state (Support/Ranged Attack/Buff Aura/Detonate respectively) layered on the same base machine, rather than separate logic, keeping every enemy variant a scene-level configuration change (§10) rather than new code. Readability: each type has a distinct silhouette and a distinct word-label border colour, so the player can triage the wave at a glance without reading every word first. Since zombies target the wall rather than the player, and the player doesn't move, there's no "can't reach the player" case to design for, only separation/flocking so overlapping zombies don't visually stack.
+All zombie types share one state machine: Spawn → Approach (straight-line toward the base wall, since arenas are open lanes with no obstacles, see non-goals) → Attack (on contact with the wall) → Dead. Medic, Spitter, Commander, and Exploder each add one extra state (Support/Ranged Attack/Buff Aura/Detonate respectively) layered on the same base machine, rather than separate logic, keeping every enemy variant a scene-level configuration change (§10) rather than new code. Readability: each type has a distinct silhouette and a distinct word-label border colour, so the player can triage the wave at a glance without reading every word first - see §2.2.1 for how overlapping word labels are prioritised when zombies bunch up. Since zombies target the wall rather than the player, and there is no player character to reach, there's no "can't reach the player" case to design for, only separation/flocking so overlapping zombies don't visually stack.
 
 ## 8.2 Friendly / non-combat characters
 
@@ -306,25 +332,25 @@ None (non-goal).
 
 ## 8.3 Support AI
 
-The Drone ability hovers at a fixed offset near the player's last aim position and fires automatically at the nearest zombie within range for its duration, using a naive nearest-enemy-in-radius check each tick with no line-of-sight requirement. This is an explicit scope simplification, acceptable because arenas are unobstructed (§2.3); it would need revisiting if level design later adds cover.
+The Drone ability hovers at a fixed offset near the current aim/reticle position and fires automatically at the nearest zombie within range for its duration, using a naive nearest-enemy-in-radius check each tick with no line-of-sight requirement. This is an explicit scope simplification, acceptable because arenas are unobstructed (§2.3); it would need revisiting if level design later adds cover.
 
 ---
 
-# 9. Art Direction — owner: Romart Danganan
+# 9. Art Direction - owner: Romart Danganan
 
-Stylised, high-contrast 2D top-down, favouring clear silhouettes over horror detail (§1.5). Enemy variants share one base rig and animation set (idle, approach, attack, death), differentiated by recolour, scale, and silhouette accessories rather than unique animations per type, protecting the animation budget across 8 enemy types and 2 bosses. Camera is fixed-distance top-down (§6.1), which also caps the texture budget, since no close-up detail level is ever required.
+Stylised, high-contrast 2D top-down, favouring clear silhouettes over horror detail (§1.5). Enemy variants share one base rig and animation set (idle, approach, attack, death), differentiated by recolour, scale, and silhouette accessories rather than unique animations per type, protecting the animation budget across 8 enemy types and 2 bosses. Camera is fixed-distance top-down (§6.1), which also caps the texture budget, since no close-up detail level is ever required. There is no player-character art or animation budget, since the player is never rendered on screen (§4.3).
 
 ---
 
-# 10. Technical — owner: Romart Danganan
+# 10. Technical - owner: Romart Danganan
 
 Engine: Godot 4.7 (GDScript), pinned. Target: Windows and Linux desktop primary, macOS secondary. Minimum spec target is deliberately low, no 3D lighting or large asset streaming, so the game should run on integrated graphics from the last decade. Toolchain: Godot editor, GUT (Godot Unit Test) for automated tests, GitLab CI for import/test validation on every push (see repo `docs/TechSpec.md`). Data formats: word lists, mission configs, and supply definitions are external `.tres`/JSON resources, not hard-coded, so tuning doesn't require a rebuild. Network requirements: none, see non-goals. Vertical-slice risks to prove early: raw keystroke capture reliability via Godot's `InputEventKey` across keyboard layouts (the entire game depends on this working correctly, so it's the first thing built in Week 3), and HUD performance with 20+ concurrent floating word labels on screen at once.
 
 ---
 
-# 11. Playtesting Plan — owner: Romart Danganan
+# 11. Playtesting Plan - owner: Romart Danganan
 
-- **What we measure:** the timings claimed in §1.3 (2 to 4 s moment loop, 4 to 8 minute session loop) and the numbers in §2 (mistake penalties, ability trigger thresholds, crate timers). The gap between claimed and observed becomes the tuning backlog.
+- **What we measure:** the timings claimed in §1.3 (2 to 4 s moment loop, 4 to 8 minute session loop) and the numbers in §2 (mistake penalties, ability trigger thresholds, crate timers, upgrade costs in §2.6.1). The gap between claimed and observed becomes the tuning backlog.
 - **Cadence:** informal self/friend playtests weekly from Week 5 (first prototype checkpoint); first external test at the vertical slice, roughly Week 8.
 - **Methods:** observation notes, think-aloud, and a short 5-question survey after each session (clarity of the mistake system, clarity of the ability-select screen, word readability, a fun rating, one open-text question).
 - **Findings loop:** results are recorded as dated markdown notes in a `playtesting/` folder in the repo; each finding either becomes a changelog entry (accepted) or is explicitly logged as rejected, with a reason.
@@ -332,7 +358,7 @@ Engine: Godot 4.7 (GDScript), pinned. Target: Windows and Linux desktop primary,
 
 ---
 
-# 12. Production Notes — owner: Romart Danganan
+# 12. Production Notes - owner: Romart Danganan
 
 ## 12.1 Cultural material
 
@@ -340,7 +366,7 @@ Dead Keys does not reference any specific real culture, taonga, or living tradit
 
 ## 12.2 AI use declaration
 
-This GDD was drafted collaboratively with Claude (Anthropic), per the CGRA 359 AI Assistance Policy. AI was used to expand the original pitch document into full prose across every template section, to structure the production plan and GitLab milestone/issue breakdown. The game concept, mechanics, and content (ammo table, mistake system, ability list, mission list, supply system) all originate from my own (Romart Danganan) original pitch/idea. Where the original pitch left a rule ambiguous, AI-proposed resolutions are flagged inline with a "Design note" (§2.2.3 ability-trigger standardisation, §2.5 lives/wall-reset mechanic, §2.2.4 supply cap) so they can be reviewed, kept, or overridden rather than passing silently. I can defend every section of this document, out loud and without notice, per the standing test below.
+This GDD was drafted collaboratively with Claude (Anthropic), per the CGRA 359 AI Assistance Policy. AI was used to expand the original pitch document into full prose across every template section, to structure the production plan and GitLab milestone/issue breakdown, and (in v0.9) to apply a round of author-directed revisions and flag the few remaining ambiguous calls inline as "Design notes" (§2.2.1 ammo-type simplification, §2.2.3 combo/streak unification, §2.2.4 supply-drop location, §6.3 help-system overlap, §1.6 weapon-scope decision) so they can be reviewed, kept, or overridden rather than passing silently. The game concept, mechanics, and content (ammo table, mistake system, ability list, mission list, supply system, upgrade ideas) all originate from my own (Romart Danganan) original pitch/idea. I can defend every section of this document, out loud and without notice, per the standing test below.
 
 ## 12.3 Document practice
 
@@ -350,7 +376,7 @@ This GDD was drafted collaboratively with Claude (Anthropic), per the CGRA 359 A
 
 ---
 
-# Appendix A — Reader's checklist (before you build from this doc)
+# Appendix A - Reader's checklist (before you build from this doc)
 
 - [ ] I can state the hook and pillars from memory
 - [ ] I know which loop my task sits on
@@ -360,7 +386,7 @@ This GDD was drafted collaboratively with Claude (Anthropic), per the CGRA 359 A
 - [ ] I know what is explicitly out of scope
 - [ ] The answers to my questions went back into the doc
 
-# Appendix B — Writer's checklist (before you commit)
+# Appendix B - Writer's checklist (before you commit)
 
 - [ ] Could two readers build different things from this? (fix it)
 - [ ] Every quantity has a number, a unit, and a default
@@ -370,6 +396,6 @@ This GDD was drafted collaboratively with Claude (Anthropic), per the CGRA 359 A
 - [ ] Non-goals updated if scope moved
 - [ ] Changelog entry written; stale text deleted
 
-# Appendix C — Red flags (self-review)
+# Appendix C - Red flags (self-review)
 
 A GDD is failing when: "fun/immersive/polished" appears where numbers should be; "etc./various/many" hides scope; there is no non-goals section; one author and no other committers; last updated five weeks ago; sections describe features nobody is building this trimester; the same fact appears twice with different values; you read a section and can't say what was decided.
