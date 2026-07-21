@@ -5,9 +5,9 @@
 | **Team** | Dead Keys (solo for Milestone 1; open to recruits from the design presentation) |
 | **Members & roles** | @danganroma (design lead · tech lead · art lead · producer) |
 | **Engine / platform** | Godot 4.7 / Windows, Linux (primary), macOS (secondary) |
-| **Repo** | [add once the course namespace is created] |
-| **Doc version** | v0.9 |
-| **Last updated** | 2026-07-15 |
+| **Repo** | https://gitlab.ecs.vuw.ac.nz/course-work/cgra359/2026/assignments/danganroma/dead-keys |
+| **Doc version** | v1.0 |
+| **Last updated** | 22/07/2026 |
 
 ## Changelog
 
@@ -22,6 +22,7 @@
 | v0.7 | 2026-07-13 | Added interface, controls, accessibility, and AI design | Romart Danganan |
 | v0.8 | 2026-07-14 | Final Draft For Assignment 1 Submission, further tweaks needed to GDD before Final Submission. | Romart Danganan |
 | v0.9 | 2026-07-15 | Large review and edits to logic and game mechanics: Call Supply moved Q→RMB, ammo tiers now scale bullet count only (not type), added mistake-system accessibility toggle, unified combo/kill-streak into one Combo counter, added Permanent Upgrade Tracks table (§2.6.1); locked scope to a single upgradeable weapon (multi-weapon flagged as deferred stretch idea); removed player-position-based supply drop and zombie-collision crate removal; removed on-screen player-character framing (no player model), simplified help-system tooltips, added word-label overlap/priority rule | Romart Danganan |
+| v1.0 | 2026-07-22 | Retouched Call Supply from RMB→Nums(1 to 3) and added enemy types to scope | Romart Danganan |
 ---
 
 # 1. Page One - The Core
@@ -95,7 +96,9 @@ Stylised, slightly cartoonish 2D top-down, closer to Plants vs. Zombies than Lef
 | Ability loadout system (4 abilities) | Should | Vertical slice (wk 6-8) | Romart Danganan | not started |
 | Mission Supplies system | Should | Vertical slice (wk 6-8) | Romart Danganan | not started |
 | Missions 1-3 + first boss | Should | Vertical slice (wk 6-8) | Romart Danganan | not started |
+| First 4 enemy types (Walker, Runner, Brute, Medic) | Should | Vertical slice (wk 6-8) | Romart Danganan | not started |
 | Mistake-system accessibility toggle | Could | Vertical slice (wk 6-8) | Romart Danganan | not started |
+| Remaining 4 enemy types (Spitter, Exploder, Commander, Armoured) | Could | Final (wk 9-10) | Romart Danganan | not started |
 | Remaining 4 abilities | Could | Final (wk 9-10) | Romart Danganan | not started |
 | Missions 4-6 + second boss | Could | Final (wk 9-10) | Romart Danganan | not started |
 | Mission rating / medals | Could | Final (wk 9-10) | Romart Danganan | not started |
@@ -114,10 +117,10 @@ Stylised, slightly cartoonish 2D top-down, closer to Plants vs. Zombies than Lef
 | Type word | Keyboard (A-Z) | 1 to 3 s per word, validated character by character | Only the currently-targeted zombie's word is checked against keystrokes |
 | Aim | Mouse move | Continuous, no acceleration curve, free 360° | Independent of typing |
 | Fire | Left mouse button | 0.5 s cooldown at base fire rate (2 shots/s), upgradeable to 4 shots/s | Consumes 1 ammo unit per shot |
-| Call Supply | Right mouse button (RMB) | 3 s helicopter flight time before crate lands | Only usable if at least 1 supply call remains this mission |
+| Use Supply | Number keys 1-3 | 3 s helicopter flight time before crate lands | Each key activates the supply shown in the matching numbered HUD slot; only usable if that slot contains a supply |
 | Select ability / mission | Mouse click, UI | Pre-mission only | Locked once the mission starts |
 
-*Design note: Call Supply was moved from Q to RMB. Q collided with the typing input - a word containing the letter Q could trigger an accidental supply call mid-type. RMB was free (LMB is Fire, aiming is mouse-movement only), so it was the natural home for a second mouse action.*
+*Design note: Supplies use the number keys 1-3 rather than letter keys, because letter keys are reserved for typing zombie and crate words. Each numbered key maps directly to the supply icon carrying the same number in the HUD, allowing the player to choose a specific purchased supply without interfering with normal typing.*
 
 ## 2.2 Systems & rules
 
@@ -148,9 +151,9 @@ Stylised, slightly cartoonish 2D top-down, closer to Plants vs. Zombies than Lef
 ### 2.2.4 Mission Supplies System
 
 - **Intent:** pillar 2 (secondary layer) plus an ongoing coin sink (§2.6).
-- **Rules:** before a mission, coins purchase Supplies (Ammo Crate, Medical Crate, Combat Crate, Emergency Crate); each purchased supply grants one supply call for that mission (capped at 3 supplies per mission to keep the HUD to 3 call-icons and stop supplies from trivialising the wall-health economy). Pressing Call Supply (RMB) while at least one call remains triggers a helicopter drop; the crate lands at a designated supply-drop landing spot (a fixed point per arena) after a 3 s flight. A word then appears above the crate; the player has 8 seconds to type it before the crate expires and is removed. A successful type opens it immediately and consumes one call. Only one crate can be active at a time; a new call cannot be issued while a crate is live and unclaimed.
+- **Rules:** before a mission, coins purchase Supplies (Ammo Crate, Medical Crate, Combat Crate, Emergency Crate); up to 3 purchased supplies are placed into numbered HUD slots 1-3 for that mission, with one supply in each occupied slot. Pressing the number key that matches a supply's HUD icon triggers that specific helicopter drop; the crate lands at a designated supply-drop landing spot (a fixed point per arena) after a 3 s flight. A word then appears above the crate; the player has 8 seconds to type it before the crate expires and is removed. A successful type opens it immediately and consumes the selected supply, leaving that numbered slot empty. Only one crate can be active at a time; another supply cannot be activated while a crate is live and unclaimed.
   *Design note: the crate's landing point was originally described as "within 4 m of the player's position" - but there is no on-screen player character to anchor that to (§4.3), so it's now a fixed designated drop spot per arena instead. The earlier rule where a zombie colliding with the crate also removed it has been cut; the 8 s timer alone is enough pressure without adding a second failure state.*
-- **Edge cases:** pressing Call Supply with 0 calls remaining does nothing (UI shows "0 remaining"). Supplies are never lost for a mission ending early, since the call is player-triggered, not scheduled (this preserves the original pitch's core insight about player agency).
+- **Edge cases:** pressing a number whose supply slot is empty does nothing, and its HUD icon remains visibly empty. Pressing another occupied supply slot while a crate is already active also does nothing. Supplies are never lost for a mission ending early, since activation is player-triggered rather than scheduled (this preserves the original pitch's core insight about player agency).
 
 ![Fig. 6: Mission Supplies drop sequence](images/fig6_supply_drop.png)
 
@@ -277,7 +280,7 @@ Mission 1 (Defend the Suburbs) is the tutorial: Walkers only, short common words
 | Level | Synopsis | Introduces | Assets implied | Milestone |
 |---|---|---|---|---|
 | 1. Defend the Suburbs | Tutorial mission, first wave | Walker, Runner, tutorial prompts | 1 background, 2 enemy types | Vertical slice |
-| 2. Hold the Hospital | Longer, medical-themed word list | Medic | Medic enemy, medical word list | Vertical slice |
+| 2. Hold the Hospital | Longer, medical-themed word list | Medic, Brute | 2 enemy types, medical word list | Vertical slice |
 | 3. Secure the Shopping Centre | First boss fight | Tank boss | Boss model, arena | Vertical slice |
 | 4. Rescue the Survivors | Objective pressure alongside waves | Spitter, Exploder | 2 enemy types, escort objective UI | Final |
 | 5. Protect the Military Base | Enemy combinations | Commander, Armoured | 2 enemy types | Final |
@@ -293,7 +296,7 @@ Mission 1 (Defend the Suburbs) is the tutorial: Walkers only, short common words
 
 ## 6.1 Visual / HUD
 
-Fixed top-down camera, no camera movement (there is no player character to follow, see §2.3, §4.3). HUD elements, each justified: ammo counter, typing input box, Combo counter (§2.2.3, §2.7), wall health/lives, supply-call counter with an active-crate timer when relevant. Menus: Home Base hub (Shop / Ability Select / Mission Select buttons), Pause menu (Resume / Settings / Quit to Home Base).
+Fixed top-down camera, no camera movement (there is no player character to follow, see §2.3, §4.3). HUD elements, each justified: ammo counter, typing input box, Combo counter (§2.2.3, §2.7), wall health/lives, three numbered supply slots (1-3) with an active-crate timer when relevant. Menus: Home Base hub (Shop / Ability Select / Mission Select buttons), Pause menu (Resume / Settings / Quit to Home Base).
 
 ![Fig. 2: Combat screen mockup](images/fig2_combat_hud.png)
 
@@ -311,7 +314,7 @@ A "How to Play" page in the pause menu, plus the on-screen callouts already comm
 
 ## 7. Controls & Accessibility - owner: Romart Danganan
 
-- Full input remapping: **yes** for aim, fire, and Call Supply. **No** for the typing keys themselves, since they must match the displayed word exactly; this is flagged as a known accessibility limitation, mitigated by the word-difficulty, typing-speed, and mistake-system toggle assist options below rather than remapping.
+- Full input remapping: **yes** for aim, fire, and the three supply-slot actions. **No** for the typing keys themselves, since they must match the displayed word exactly; this is flagged as a known accessibility limitation, mitigated by the word-difficulty, typing-speed, and mistake-system toggle assist options below rather than remapping. The default supply inputs are number keys 1-3 so they do not conflict with letter-based word typing.
 - Hold-to-toggle alternative for Fire: **yes**, once the higher fire-rate weapon upgrade is unlocked.
 - Colour is never the only information channel: **yes**, enemy types are differentiated by silhouette and word-label border colour together, and the palette is checked for colour-blindness.
 - Subtitle size/contrast options: **yes**, for on-screen callouts. Screen-shake and flash toggles: **yes**.
