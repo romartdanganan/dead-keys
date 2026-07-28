@@ -1,0 +1,318 @@
+[gd_scene load_steps=4 format=3 uid="uid://c722iqq3v14iy"]
+
+[ext_resource type="Script" uid="uid://dwgmuxj6ali8m" path="res://scripts/ui/home_base.gd" id="1_xlecv"]
+[ext_resource type="Texture2D" uid="uid://bgmlfxoymbhlh" path="res://icon.svg" id="3_mkrqy"]
+[ext_resource type="PackedScene" uid="uid://k1bityq7o6hv" path="res://scenes/ui/mission_card.tscn" id="4_nywag"]
+
+[node name="HomeBase" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_xlecv")
+
+[node name="BackgroundColor" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.307571, 0.494309, 0.348993, 1)
+
+[node name="BackgroundImage" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="MainMargin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="MainLayout" type="VBoxContainer" parent="MainMargin"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="TopBar" type="HBoxContainer" parent="MainMargin/MainLayout"]
+custom_minimum_size = Vector2(0, 65)
+layout_mode = 2
+
+[node name="GoldPanel" type="PanelContainer" parent="MainMargin/MainLayout/TopBar"]
+custom_minimum_size = Vector2(180, 60)
+layout_mode = 2
+
+[node name="GoldMargin" type="MarginContainer" parent="MainMargin/MainLayout/TopBar/GoldPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 8
+
+[node name="GoldContent" type="HBoxContainer" parent="MainMargin/MainLayout/TopBar/GoldPanel/GoldMargin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="GoldIcon" type="TextureRect" parent="MainMargin/MainLayout/TopBar/GoldPanel/GoldMargin/GoldContent"]
+custom_minimum_size = Vector2(36, 36)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("3_mkrqy")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="GoldLabel" type="Label" parent="MainMargin/MainLayout/TopBar/GoldPanel/GoldMargin/GoldContent"]
+layout_mode = 2
+text = "GOLD: 0"
+
+[node name="TopSpacer" type="Control" parent="MainMargin/MainLayout/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SettingsButton" type="Button" parent="MainMargin/MainLayout/TopBar"]
+custom_minimum_size = Vector2(130, 60)
+layout_mode = 2
+tooltip_text = "Settings will be implemented in a later issue"
+disabled = true
+text = "SETTINGS"
+
+[node name="MainMenuButton" type="Button" parent="MainMargin/MainLayout/TopBar"]
+custom_minimum_size = Vector2(130, 60)
+layout_mode = 2
+text = "MAIN MENU"
+
+[node name="HubContent" type="HBoxContainer" parent="MainMargin/MainLayout"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 80
+
+[node name="LeftColumn" type="VBoxContainer" parent="MainMargin/MainLayout/HubContent"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+
+[node name="HubLogoContainer" type="AspectRatioContainer" parent="MainMargin/MainLayout/HubContent/LeftColumn"]
+custom_minimum_size = Vector2(250, 115)
+layout_mode = 2
+ratio = 2.2
+
+[node name="HubLogoimage" type="TextureRect" parent="MainMargin/MainLayout/HubContent/LeftColumn/HubLogoContainer"]
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("3_mkrqy")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="LeftPanel" type="VBoxContainer" parent="MainMargin/MainLayout/HubContent/LeftColumn"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+
+[node name="UpgradesPanel" type="PanelContainer" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="UpgradesMargin" type="MarginContainer" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/UpgradesPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 12
+
+[node name="UpgradesContent" type="VBoxContainer" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/UpgradesPanel/UpgradesMargin"]
+layout_mode = 2
+
+[node name="UpgradesTitle" type="Label" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/UpgradesPanel/UpgradesMargin/UpgradesContent"]
+layout_mode = 2
+text = "UPGRADES"
+
+[node name="UpgradesDescription" type="Label" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/UpgradesPanel/UpgradesMargin/UpgradesContent"]
+layout_mode = 2
+size_flags_vertical = 6
+text = "Improve your stats permanently."
+
+[node name="UpgradesButton" type="Button" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/UpgradesPanel/UpgradesMargin/UpgradesContent"]
+layout_mode = 2
+disabled = true
+text = "OPEN"
+
+[node name="SuppliesPanel" type="PanelContainer" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SuppliesMargin" type="MarginContainer" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/SuppliesPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 12
+
+[node name="SuppliesContent" type="VBoxContainer" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/SuppliesPanel/SuppliesMargin"]
+layout_mode = 2
+
+[node name="SuppliesTitle" type="Label" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/SuppliesPanel/SuppliesMargin/SuppliesContent"]
+layout_mode = 2
+text = "MISSION SUPPLIES"
+
+[node name="SuppliesDescription" type="Label" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/SuppliesPanel/SuppliesMargin/SuppliesContent"]
+layout_mode = 2
+size_flags_vertical = 6
+text = "Buy supplies for your next mission."
+
+[node name="SuppliesButton" type="Button" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/SuppliesPanel/SuppliesMargin/SuppliesContent"]
+layout_mode = 2
+disabled = true
+text = "OPEN"
+
+[node name="AbilityPanel" type="PanelContainer" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="AbilityMargin" type="MarginContainer" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/AbilityPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 12
+
+[node name="AbilityContent" type="VBoxContainer" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/AbilityPanel/AbilityMargin"]
+layout_mode = 2
+
+[node name="AbilityTitle" type="Label" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/AbilityPanel/AbilityMargin/AbilityContent"]
+layout_mode = 2
+text = "ABILITY LOADOUT"
+
+[node name="AbilityDescription" type="Label" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/AbilityPanel/AbilityMargin/AbilityContent"]
+layout_mode = 2
+size_flags_vertical = 6
+text = "Choose one ability for your next
+mission."
+
+[node name="AbilityButton" type="Button" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/AbilityPanel/AbilityMargin/AbilityContent"]
+layout_mode = 2
+disabled = true
+text = "OPEN"
+
+[node name="MissionArea" type="VBoxContainer" parent="MainMargin/MainLayout/HubContent"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MissionAreaSpacer" type="Control" parent="MainMargin/MainLayout/HubContent/MissionArea"]
+custom_minimum_size = Vector2(0, 185)
+layout_mode = 2
+
+[node name="MissionTable" type="VBoxContainer" parent="MainMargin/MainLayout/HubContent/MissionArea"]
+layout_mode = 2
+
+[node name="MissionGrid" type="GridContainer" parent="MainMargin/MainLayout/HubContent/MissionArea/MissionTable"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+theme_override_constants/h_separation = 18
+theme_override_constants/v_separation = 40
+columns = 3
+
+[node name="Mission1Card" parent="MainMargin/MainLayout/HubContent/MissionArea/MissionTable/MissionGrid" instance=ExtResource("4_nywag")]
+layout_mode = 2
+mission_description = "A quiet neighborhood is under attack. Hold the line and protect the area"
+
+[node name="Mission2Card" parent="MainMargin/MainLayout/HubContent/MissionArea/MissionTable/MissionGrid" instance=ExtResource("4_nywag")]
+layout_mode = 2
+mission_id = 2
+mission_name = "THE HOSPITAL"
+mission_description = "Defend the hospital and protect the remaining medical supplies."
+locked = true
+
+[node name="Mission3Card" parent="MainMargin/MainLayout/HubContent/MissionArea/MissionTable/MissionGrid" instance=ExtResource("4_nywag")]
+layout_mode = 2
+mission_id = 3
+mission_name = "SHOPPING CENTRE"
+locked = true
+
+[node name="Mission4Card" parent="MainMargin/MainLayout/HubContent/MissionArea/MissionTable/MissionGrid" instance=ExtResource("4_nywag")]
+layout_mode = 2
+mission_id = 4
+mission_name = "RESCUE SURVIVORS"
+locked = true
+
+[node name="Mission5Card" parent="MainMargin/MainLayout/HubContent/MissionArea/MissionTable/MissionGrid" instance=ExtResource("4_nywag")]
+layout_mode = 2
+mission_id = 5
+mission_name = "MILITARY BASE"
+locked = true
+
+[node name="Mission6Card" parent="MainMargin/MainLayout/HubContent/MissionArea/MissionTable/MissionGrid" instance=ExtResource("4_nywag")]
+layout_mode = 2
+mission_id = 6
+mission_name = "DOWNTOWN"
+locked = true
+
+[node name="MissionDetailsPanel" type="PanelContainer" parent="MainMargin/MainLayout/HubContent"]
+custom_minimum_size = Vector2(255, 0)
+layout_mode = 2
+
+[node name="MissionDetailsMargin" type="MarginContainer" parent="MainMargin/MainLayout/HubContent/MissionDetailsPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 18
+
+[node name="MissionDetails" type="VBoxContainer" parent="MainMargin/MainLayout/HubContent/MissionDetailsPanel/MissionDetailsMargin"]
+layout_mode = 2
+
+[node name="SelectedMissionImage" type="TextureRect" parent="MainMargin/MainLayout/HubContent/MissionDetailsPanel/MissionDetailsMargin/MissionDetails"]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("3_mkrqy")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="MissionTitleLabel" type="Label" parent="MainMargin/MainLayout/HubContent/MissionDetailsPanel/MissionDetailsMargin/MissionDetails"]
+layout_mode = 2
+text = "1. THE SUBURBS"
+
+[node name="MissionDescriptionLabel" type="Label" parent="MainMargin/MainLayout/HubContent/MissionDetailsPanel/MissionDetailsMargin/MissionDetails"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "A quiet neighborhood is under attack. Hold the line and  protect the area.
+"
+autowrap_mode = 3
+
+[node name="MedalHeadingLabel" type="Label" parent="MainMargin/MainLayout/HubContent/MissionDetailsPanel/MissionDetailsMargin/MissionDetails"]
+layout_mode = 2
+text = "BEST MEDAL"
+
+[node name="BestMedalLabel" type="Label" parent="MainMargin/MainLayout/HubContent/MissionDetailsPanel/MissionDetailsMargin/MissionDetails"]
+layout_mode = 2
+text = "NONE"
+
+[node name="MissionDetailsSpacer" type="Control" parent="MainMargin/MainLayout/HubContent/MissionDetailsPanel/MissionDetailsMargin/MissionDetails"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="LaunchMissionButton" type="Button" parent="MainMargin/MainLayout/HubContent/MissionDetailsPanel/MissionDetailsMargin/MissionDetails"]
+layout_mode = 2
+tooltip_text = "Mission gameplay will be connected in a later issue"
+disabled = true
+text = "LAUNCH MISSION"
+
+[connection signal="pressed" from="MainMargin/MainLayout/TopBar/MainMenuButton" to="." method="_on_main_menu_button_pressed"]
+[connection signal="pressed" from="MainMargin/MainLayout/HubContent/MissionArea/MissionTable/MissionGrid/Mission1Card" to="." method="_on_mission_1_card_pressed"]

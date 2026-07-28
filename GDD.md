@@ -6,8 +6,8 @@
 | **Members & roles** | @danganroma (design lead · tech lead · art lead · producer) |
 | **Engine / platform** | Godot 4.7 / Windows, Linux (primary), macOS (secondary) |
 | **Repo** | https://gitlab.ecs.vuw.ac.nz/course-work/cgra359/2026/assignments/danganroma/dead-keys |
-| **Doc version** | v1.0 |
-| **Last updated** | 22/07/2026 |
+| **Doc version** | v1.1 |
+| **Last updated** | 29/07/2026 |
 
 ## Changelog
 
@@ -23,6 +23,7 @@
 | v0.8 | 2026-07-14 | Final Draft For Assignment 1 Submission, further tweaks needed to GDD before Final Submission. | Romart Danganan |
 | v0.9 | 2026-07-15 | Large review and edits to logic and game mechanics: Call Supply moved Q→RMB, ammo tiers now scale bullet count only (not type), added mistake-system accessibility toggle, unified combo/kill-streak into one Combo counter, added Permanent Upgrade Tracks table (§2.6.1); locked scope to a single upgradeable weapon (multi-weapon flagged as deferred stretch idea); removed player-position-based supply drop and zombie-collision crate removal; removed on-screen player-character framing (no player model), simplified help-system tooltips, added word-label overlap/priority rule | Romart Danganan |
 | v1.0 | 2026-07-22 | Retouched Call Supply from RMB→Nums(1 to 3) and added enemy types to scope | Romart Danganan |
+| v1.1 | 2026-07-29 | Refined the Main Menu and Home Base design: added replaceable illustrated logo/background placeholders, gold display, upgrade/supply/ability panels, reusable illustrated mission cards, sequential mission locking, selected-mission details with best medal, and navigation back to the Main Menu. Removed XP from the hub design because XP is not part of the progression model. | Romart Danganan |
 ---
 
 # 1. Page One - The Core
@@ -232,15 +233,18 @@ Save model: checkpoint-based, one checkpoint per completed mission, persisting c
 
 ````mermaid
 stateDiagram-v2
-    [*] --> Title
-    Title --> HomeBase
-    Title --> Settings
-    HomeBase --> Shop
-    HomeBase --> AbilitySelect
-    HomeBase --> MissionSelect
-    Shop --> HomeBase
-    AbilitySelect --> MissionSelect
-    MissionSelect --> Gameplay
+    [*] --> MainMenu
+    MainMenu --> HomeBase: Start
+    MainMenu --> Settings
+    HomeBase --> MainMenu
+    HomeBase --> Settings
+    HomeBase --> Upgrades
+    HomeBase --> MissionSupplies
+    HomeBase --> AbilityLoadout
+    HomeBase --> Gameplay: Launch unlocked mission
+    Upgrades --> HomeBase
+    MissionSupplies --> HomeBase
+    AbilityLoadout --> HomeBase
     Gameplay --> Pause
     Pause --> Gameplay
     Pause --> Settings
@@ -249,7 +253,9 @@ stateDiagram-v2
     MissionEnd --> HomeBase
 ````
 
-Title: engine splash and Start/Settings/Quit. Home Base: hub for Shop, Ability Select, and Mission Select. Shop: spend coins on permanent upgrades (§2.6.1) and this mission's Supplies. Ability Select: choose the one equipped ability. Gameplay: the mission itself. Pause: resume, settings, or quit to Home Base. Mission End: rating screen (medal, stats), returns to Home Base.
+**Main Menu:** illustrated logo and background, plus Start, Settings, and Quit.  
+**Home Base:** the persistent between-mission interface. It displays the player's gold at the top; Upgrades, Mission Supplies, and Ability Loadout access on the left; six illustrated mission cards on the central mission table; and selected-mission details on the right. The details panel shows the mission image, title, description, best medal, and Launch Mission button. Missions unlock sequentially, so only Mission 1 is available at the start and completing Mission N unlocks Mission N+1. Settings and return-to-Main-Menu controls remain available from the Hub. There is no XP bar or XP progression system.  
+**Gameplay:** the selected mission. **Pause:** resume, settings, or return to the Home Base. **Mission End:** medal and statistics, then return to the Home Base.
 
 ---
 
@@ -296,7 +302,7 @@ Mission 1 (Defend the Suburbs) is the tutorial: Walkers only, short common words
 
 ## 6.1 Visual / HUD
 
-Fixed top-down camera, no camera movement (there is no player character to follow, see §2.3, §4.3). HUD elements, each justified: ammo counter, typing input box, Combo counter (§2.2.3, §2.7), wall health/lives, three numbered supply slots (1-3) with an active-crate timer when relevant. Menus: Home Base hub (Shop / Ability Select / Mission Select buttons), Pause menu (Resume / Settings / Quit to Home Base).
+Fixed top-down camera, no camera movement (there is no player character to follow, see §2.3, §4.3). HUD elements, each justified: ammo counter, typing input box, Combo counter (§2.2.3, §2.7), wall health/lives, three numbered supply slots (1-3) with an active-crate timer when relevant. Menus: Main Menu with a replaceable illustrated logo/background and Start, Settings, and Quit; Home Base with gold, Upgrades, Mission Supplies, Ability Loadout, six illustrated mission cards, and a selected-mission details panel; Pause menu with Resume, Settings, and return to Home Base. Mission cards show an image above the mission title, locked missions are visibly disabled, and the details panel repeats the selected mission image alongside its description and best medal. There is no XP display.
 
 ![Fig. 2: Combat screen mockup](images/fig2_combat_hud.png)
 
@@ -347,7 +353,7 @@ Stylised, high-contrast 2D top-down, favouring clear silhouettes over horror det
 
 # 10. Technical - owner: Romart Danganan
 
-Engine: Godot 4.7 (GDScript), pinned. Target: Windows and Linux desktop primary, macOS secondary. Minimum spec target is deliberately low, no 3D lighting or large asset streaming, so the game should run on integrated graphics from the last decade. Toolchain: Godot editor, GUT (Godot Unit Test) for automated tests, GitLab CI for import/test validation on every push (see repo `docs/TechSpec.md`). Data formats: word lists, mission configs, and supply definitions are external `.tres`/JSON resources, not hard-coded, so tuning doesn't require a rebuild. Network requirements: none, see non-goals. Vertical-slice risks to prove early: raw keystroke capture reliability via Godot's `InputEventKey` across keyboard layouts (the entire game depends on this working correctly, so it's the first thing built in Week 3), and HUD performance with 20+ concurrent floating word labels on screen at once.
+Engine: Godot 4.7 (GDScript), pinned. Target: Windows and Linux desktop primary, macOS secondary. Minimum spec target is deliberately low, no 3D lighting or large asset streaming, so the game should run on integrated graphics from the last decade. Toolchain: Godot editor, Git/GitLab for version control, and GUT (Godot Unit Test) for planned automated tests (see `Dead_Keys_TechSpec.md`). Automated CI/CD is not currently configured; project validation and testing are performed locally in Godot, with a pipeline considered later if time permits. Data formats: word lists, mission configs, and supply definitions are external `.tres`/JSON resources, not hard-coded, so tuning doesn't require a rebuild. Network requirements: none, see non-goals. Vertical-slice risks to prove early: raw keystroke capture reliability via Godot's `InputEventKey` across keyboard layouts (the entire game depends on this working correctly, so it's the first thing built in Week 3), and HUD performance with 20+ concurrent floating word labels on screen at once.
 
 ---
 
