@@ -1,0 +1,106 @@
+[gd_scene load_steps=3 format=3 uid="uid://b2kwtocswathd"]
+
+[ext_resource type="Script" uid="uid://bli7w8w887at1" path="res://scripts/ui/main_menu.gd" id="1_fe2o3"]
+[ext_resource type="Texture2D" uid="uid://bgmlfxoymbhlh" path="res://icon.svg" id="1_sl1te"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_fe2o3")
+
+[node name="BackgroundColour" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.240477, 0.402485, 0.636671, 1)
+
+[node name="BackgroundImage" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 6
+
+[node name="MainMargin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 60
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 60
+theme_override_constants/margin_bottom = 40
+
+[node name="MainLayout" type="HBoxContainer" parent="MainMargin"]
+layout_mode = 2
+
+[node name="LeftMenu" type="VBoxContainer" parent="MainMargin/MainLayout"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+
+[node name="LogoContainer" type="AspectRatioContainer" parent="MainMargin/MainLayout/LeftMenu"]
+custom_minimum_size = Vector2(400, 220)
+layout_mode = 2
+ratio = 1.8
+
+[node name="LogoImage" type="TextureRect" parent="MainMargin/MainLayout/LeftMenu/LogoContainer"]
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("1_sl1te")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="LogoToButtonSpacer" type="Control" parent="MainMargin/MainLayout/LeftMenu"]
+custom_minimum_size = Vector2(0, 25)
+layout_mode = 2
+
+[node name="ButtonPanel" type="PanelContainer" parent="MainMargin/MainLayout/LeftMenu"]
+layout_mode = 2
+
+[node name="ButtonMargin" type="MarginContainer" parent="MainMargin/MainLayout/LeftMenu/ButtonPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="ButtonList" type="VBoxContainer" parent="MainMargin/MainLayout/LeftMenu/ButtonPanel/ButtonMargin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="StartButton" type="Button" parent="MainMargin/MainLayout/LeftMenu/ButtonPanel/ButtonMargin/ButtonList"]
+custom_minimum_size = Vector2(340, 70)
+layout_mode = 2
+text = "START"
+
+[node name="SettingsButton" type="Button" parent="MainMargin/MainLayout/LeftMenu/ButtonPanel/ButtonMargin/ButtonList"]
+custom_minimum_size = Vector2(340, 70)
+layout_mode = 2
+tooltip_text = "Settings will be implemented in a later milestone"
+disabled = true
+text = "SETTINGS"
+
+[node name="QuitButton" type="Button" parent="MainMargin/MainLayout/LeftMenu/ButtonPanel/ButtonMargin/ButtonList"]
+custom_minimum_size = Vector2(340, 70)
+layout_mode = 2
+text = "QUIT"
+
+[node name="RightSpacer" type="Control" parent="MainMargin/MainLayout"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[connection signal="pressed" from="MainMargin/MainLayout/LeftMenu/ButtonPanel/ButtonMargin/ButtonList/StartButton" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="MainMargin/MainLayout/LeftMenu/ButtonPanel/ButtonMargin/ButtonList/QuitButton" to="." method="_on_quit_button_pressed"]

@@ -4,16 +4,17 @@
 |---|---|
 | **Team** | Dead Keys (solo for Milestone 1; open to recruits from the design presentation, see GDD header) |
 | **Engine / platform** | Godot 4.7 (GDScript) / Windows, Linux (primary), macOS (secondary) |
-| **Companion doc** | `docs/GDD.md`. This document does not restate gameplay numbers, it references them. Following according to Lecture 3 "Reading and Writing Gdds" |
+| **Companion doc** | `GDD.md`. This document does not restate gameplay numbers; it references them, following Lecture 3, "Reading and Writing GDDs." |
 | **Repo** | [add once the course namespace is created] |
-| **Doc version** | v0.1 |
-| **Last updated** | 2026-07-22 |
+| **Doc version** | v0.2 |
+| **Last updated** | 2026-07-28 |
 
 ## Changelog
 
 | Version | Date | Change | Who |
 |---|---|---|---|
 | v0.1 | 2026-07-15 | Initial Tech Spec: architecture, system breakdown, data formats, save schema, CI, performance budgets, risk register | Romart Danganan |
+| v0.2 | 2026-07-29 | Added the implemented Main Menu and Operations Hub scene architecture, reusable MissionCard component, image placeholders, menu navigation approach, current repository structure, and Issue #6 UI behaviour. | Romart Danganan |
 
 
 ---
@@ -48,15 +49,32 @@ Everything else is scene-local. There are no other cross-scene singletons, to ke
 ### 2.2 Scene tree overview
 
 ```
-Title.tscn
-HomeBase.tscn
- ├─ ShopPanel.tscn        (reads/writes GameState via UpgradeCatalog)
- ├─ AbilitySelectPanel.tscn
- └─ MissionSelectPanel.tscn
-Mission.tscn              (instanced per mission, configured by a MissionConfig resource)
+scenes/ui/main_menu.tscn
+ ├─ replaceable background TextureRect
+ ├─ replaceable logo TextureRect
+ └─ Start / Settings / Quit controls
+
+scenes/ui/home_base.tscn
+ ├─ replaceable Operations Hub background and logo TextureRects
+ ├─ gold display with replaceable coin-icon TextureRect
+ ├─ Upgrades / Mission Supplies / Ability Loadout placeholder panels
+ ├─ MissionGrid
+ │   └─ six instances of mission_card.tscn
+ └─ selected-mission details panel
+     ├─ selected mission image
+     ├─ title and description
+     ├─ best medal
+     └─ Launch Mission button
+
+scenes/ui/mission_card.tscn
+ ├─ mission image
+ ├─ mission title
+ └─ locked-state overlay
+
+Mission.tscn              (future: instanced per mission and configured by MissionConfig)
  ├─ HUD.tscn
  ├─ WordLabelManager.tscn
- ├─ ZombieManager.tscn    (spawns/owns Zombie.tscn instances)
+ ├─ ZombieManager.tscn
  ├─ AmmoSystem.tscn
  ├─ MistakeSystem.tscn
  ├─ ComboSystem.tscn
@@ -64,8 +82,8 @@ Mission.tscn              (instanced per mission, configured by a MissionConfig 
  ├─ SupplyController.tscn
  ├─ WallController.tscn
  └─ Weapon.tscn
-Pause.tscn                (overlay, instanced on top of Mission.tscn)
-MissionEnd.tscn
+Pause.tscn                (future overlay on Mission.tscn)
+MissionEnd.tscn           (future mission-results screen)
 ```
 
 Communication between sibling systems is via **signals**, not direct references, so any system can be unit-tested in isolation (see §7).
@@ -112,6 +130,20 @@ JSON to disk, written only at `MissionEnd` on completion (never mid-mission, mat
 ### 3.12 ProgressionManager
 Tracks which missions are unlocked (linear, per GDD §2.7) and each mission's best medal.
 
+### 3.13 Main Menu and Operations Hub UI
+
+`main_menu.tscn` is the project main scene. Its background and logo are `TextureRect` placeholders so final illustrated assets can replace the temporary textures without changing the layout. Start changes to `home_base.tscn`, Settings remains a placeholder until its dedicated issue, and Quit closes the scene tree.
+
+`home_base.tscn` implements the Operations Hub layout defined in GDD §3 and §6.1. It contains a replaceable Hub background/logo, gold display with a replaceable coin icon, placeholder access panels for Upgrades, Mission Supplies, and Ability Loadout, a six-card mission grid, and a selected-mission details panel. The details panel repeats the selected mission's image and displays its title, description, best medal, and launch control. Mission 1 begins unlocked; Missions 2–6 are disabled placeholders until progression and saving are implemented.
+
+Navigation between `main_menu.tscn` and `home_base.tscn` uses `SceneTree.change_scene_to_file()` with fixed `res://` paths. The scenes do not export `PackedScene` references to each other, because reciprocal serialized scene references create a circular resource dependency.
+
+### 3.14 MissionCard UI component
+
+`mission_card.tscn` is a reusable `Button` scene backed by `mission_card.gd` (`class_name MissionCard`). Exported properties currently provide the mission id, name, description, image, best medal, and locked state. Its image and title ignore mouse input so the parent button receives the click. A locked card displays an overlay and disables the root button. Selecting an unlocked card sends its exported display data to the Operations Hub details panel.
+
+The current exported properties are suitable for the UI prototype. When `MissionConfigDef` resources are implemented, the card should receive or reference mission data from those resources rather than becoming a second long-term source of mission content.
+
 ---
 
 ## 4. Signal map (summary)
@@ -125,6 +157,7 @@ Tracks which missions are unlocked (linear, per GDD §2.7) and each mission's be
 | `combo_changed(value)` / `ability_charged` | ComboSystem | HUD, AbilitySystem |
 | `wall_hit(damage)` | Zombie (Attack state) | WallController, ComboSystem |
 | `zombie_killed(zombie)` | Weapon (on lethal hit) | ComboSystem, ZombieManager |
+| `pressed()` | MissionCard instance | HomeBase mission-details controller |
 
 ---
 
@@ -216,19 +249,32 @@ Primary named risk (GDD §10): HUD performance with 20+ concurrent floating word
 ## 11. Repo & folder structure (proposed)
 
 ```
-/scenes/            (Title, HomeBase, Mission, Pause, MissionEnd, panels)
+GDD.md
+Dead_Keys_TechSpec.md
+README.md
+project.godot
+/images/                    (figures referenced by the GDD)
+/assets/
+  /audio/
+  /fonts/
+  /sprites/
+/scenes/
+  /ui/                      (main_menu.tscn, home_base.tscn, mission_card.tscn)
+  /entities/
+  /missions/
 /scripts/
-  /systems/          (AmmoSystem.gd, MistakeSystem.gd, ComboSystem.gd, ...)
-  /autoload/         (GameState.gd, UpgradeCatalog.gd, SaveSystem.gd, AudioBus.gd)
-  /entities/         (Zombie.gd, behaviour components)
+  /ui/                      (main_menu.gd, home_base.gd, mission_card.gd)
+  /systems/
+  /autoload/
+  /entities/
 /resources/
-  /word_lists/  /enemies/  /missions/  /upgrades/  /supplies/  /abilities/
-/assets/            (art, audio)
-/tests/             (GUT suites, mirroring /scripts/systems/)
-/playtesting/       (dated markdown notes, per GDD §11)
-/docs/
-  GDD.md
-  TechSpec.md
+  /word_lists/
+  /enemies/
+  /missions/
+  /supplies/
+  /abilities/
+/tests/
+/playtesting/
 ```
 
 ---
@@ -236,7 +282,9 @@ Primary named risk (GDD §10): HUD performance with 20+ concurrent floating word
 ## 12. Coding conventions
 
 - One `Resource` script per data concept (§5); no ad-hoc dictionaries for anything that will need author-side tuning.
-- Signals over polling for all cross-system communication (§4); direct node references only within a single system's own sub-tree.
+- Signals over polling for cross-system communication (§4); direct node references are acceptable within one scene's own UI subtree.
+- Reusable interface elements with repeated structure, such as mission cards, are separate scenes rather than six manually duplicated hierarchies.
+- Fixed menu destinations use `change_scene_to_file()` rather than reciprocal exported `PackedScene` fields, preventing circular serialized scene dependencies.
 - Autoloads (§2.1) are the only globally-reachable state; no other singletons added without a reason recorded here.
 - Balance numbers are never literals inside a `.gd` file if the GDD defines them; they come from `UpgradeCatalog` or a `Def` resource.
 - If the team grows past Milestone 1, each system in §3 gets an owner in the same way GDD sections do (GDD §12.3); the signal-based structure above was chosen partly so a new team member can own one system without needing to understand the others first.
