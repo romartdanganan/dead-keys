@@ -49,3 +49,7 @@ func _show_mission_details(card: MissionCard) -> void:
 
 	if card.mission_image != null:
 		selected_mission_image.texture = card.mission_image
+
+
+func _on_launch_mission_button_pressed() -> void:
+	get_tree().change_scene_to_file("res://scenes/missions/gameplay_prototype.tscn")
