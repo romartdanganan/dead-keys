@@ -1,0 +1,154 @@
+[gd_scene load_steps=2 format=3 uid="uid://bfhjsurifryia"]
+
+[ext_resource type="Texture2D" uid="uid://bgmlfxoymbhlh" path="res://icon.svg" id="1_hw44m"]
+
+[node name="GameplayPrototype" type="Node2D"]
+
+[node name="BackgroundColour" type="ColorRect" parent="."]
+custom_minimum_size = Vector2(1280, 720)
+offset_right = 1280.0
+offset_bottom = 720.0
+mouse_filter = 2
+
+[node name="Background" type="TextureRect" parent="."]
+offset_right = 1280.0
+offset_bottom = 720.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 6
+
+[node name="World" type="Node2D" parent="."]
+
+[node name="EnemyContainer" type="Node2D" parent="World"]
+
+[node name="ProjectileContainer" type="Node2D" parent="World"]
+
+[node name="EnemySpawnArea" type="Node2D" parent="World"]
+
+[node name="SpawnLeftBoundary" type="Marker2D" parent="World/EnemySpawnArea"]
+position = Vector2(200, -40)
+
+[node name="SpawnCentreGuide" type="Marker2D" parent="World/EnemySpawnArea"]
+position = Vector2(640, -40)
+
+[node name="SpawnRightBoundary" type="Marker2D" parent="World/EnemySpawnArea"]
+position = Vector2(1080, -40)
+
+[node name="WallAttackLine" type="Marker2D" parent="World"]
+position = Vector2(640, 590)
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="HUDRoot" type="Control" parent="HUD"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="TopBar" type="HBoxContainer" parent="HUD/HUDRoot"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 20.0
+offset_top = 15.0
+offset_right = -20.0
+offset_bottom = 105.0
+grow_horizontal = 2
+theme_override_constants/separation = 20
+
+[node name="MissionPanel" type="PanelContainer" parent="HUD/HUDRoot/TopBar"]
+custom_minimum_size = Vector2(320, 80)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MissionMargin" type="MarginContainer" parent="HUD/HUDRoot/TopBar/MissionPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 12
+
+[node name="MissionNameLabel" type="Label" parent="HUD/HUDRoot/TopBar/MissionPanel/MissionMargin"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "MISSION: THE SUBURBS"
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="WallPanel" type="PanelContainer" parent="HUD/HUDRoot/TopBar"]
+custom_minimum_size = Vector2(420, 80)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 1.4
+
+[node name="WallMargin" type="MarginContainer" parent="HUD/HUDRoot/TopBar/WallPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 10
+
+[node name="WallContent" type="VBoxContainer" parent="HUD/HUDRoot/TopBar/WallPanel/WallMargin"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="WallHealthLabel" type="Label" parent="HUD/HUDRoot/TopBar/WallPanel/WallMargin/WallContent"]
+layout_mode = 2
+text = "WALL HEALTH: 100 / 100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="WallHealthBar" type="ProgressBar" parent="HUD/HUDRoot/TopBar/WallPanel/WallMargin/WallContent"]
+custom_minimum_size = Vector2(0, 28)
+layout_mode = 2
+size_flags_vertical = 1
+show_percentage = false
+
+[node name="LivesPanel" type="PanelContainer" parent="HUD/HUDRoot/TopBar"]
+custom_minimum_size = Vector2(260, 80)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.9
+
+[node name="LivesMargin" type="MarginContainer" parent="HUD/HUDRoot/TopBar/LivesPanel"]
+layout_mode = 2
+
+[node name="LivesContent" type="VBoxContainer" parent="HUD/HUDRoot/TopBar/LivesPanel/LivesMargin"]
+layout_mode = 2
+
+[node name="LivesLabel" type="Label" parent="HUD/HUDRoot/TopBar/LivesPanel/LivesMargin/LivesContent"]
+layout_mode = 2
+text = "LIVES: 1"
+horizontal_alignment = 1
+
+[node name="LivesIcons" type="HBoxContainer" parent="HUD/HUDRoot/TopBar/LivesPanel/LivesMargin/LivesContent"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="LifeIcon1" type="TextureRect" parent="HUD/HUDRoot/TopBar/LivesPanel/LivesMargin/LivesContent/LivesIcons"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+texture = ExtResource("1_hw44m")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="LifeIcon2" type="TextureRect" parent="HUD/HUDRoot/TopBar/LivesPanel/LivesMargin/LivesContent/LivesIcons"]
+modulate = Color(1, 1, 1, 0.27451)
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+texture = ExtResource("1_hw44m")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="LifeIcon3" type="TextureRect" parent="HUD/HUDRoot/TopBar/LivesPanel/LivesMargin/LivesContent/LivesIcons"]
+modulate = Color(1, 1, 1, 0.27451)
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+texture = ExtResource("1_hw44m")
+expand_mode = 1
+stretch_mode = 5
