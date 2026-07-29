@@ -311,8 +311,8 @@ size_flags_vertical = 3
 [node name="LaunchMissionButton" type="Button" parent="MainMargin/MainLayout/HubContent/MissionDetailsPanel/MissionDetailsMargin/MissionDetails"]
 layout_mode = 2
 tooltip_text = "Mission gameplay will be connected in a later issue"
-disabled = true
 text = "LAUNCH MISSION"
 
 [connection signal="pressed" from="MainMargin/MainLayout/TopBar/MainMenuButton" to="." method="_on_main_menu_button_pressed"]
 [connection signal="pressed" from="MainMargin/MainLayout/HubContent/MissionArea/MissionTable/MissionGrid/Mission1Card" to="." method="_on_mission_1_card_pressed"]
+[connection signal="pressed" from="MainMargin/MainLayout/HubContent/MissionDetailsPanel/MissionDetailsMargin/MissionDetails/LaunchMissionButton" to="." method="_on_launch_mission_button_pressed"]

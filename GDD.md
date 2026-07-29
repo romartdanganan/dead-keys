@@ -7,18 +7,13 @@
 | **Engine / platform** | Godot 4.7 / Windows, Linux (primary), macOS (secondary) |
 | **Repo** | https://gitlab.ecs.vuw.ac.nz/course-work/cgra359/2026/assignments/danganroma/dead-keys |
 | **Doc version** | v1.1 |
-| **Last updated** | 29/07/2026 |
+| **Last updated** | 39/07/2026 |
 
 ## Changelog
 
 | Version | Date | Change | Who |
 |---|---|---|---|
-| v0.1 | 2026-07-12 | Initial concept and core gameplay drafted | Romart Danganan |
-| v0.2 | 2026-07-12 | Expanded scope definition, priorities, and player controls | Romart Danganan |
-| v0.3 | 2026-07-12 | Expanded combat, enemy types, typing and mistake systems | Romart Danganan |
-| v0.4 | 2026-07-12 | Added movement rules, interactive objects, and combat balance data | Romart Danganan |
-| v0.5 | 2026-07-12 | Defined economy, progression, and save model | Romart Danganan |
-| v0.6 | 2026-07-12 | Added screen flow, narrative, and level content plan | Romart Danganan |
+| v0.1–v0.6 | 2026-07-12 | Initial GDD development: drafted the core concept and gameplay loop; expanded scope, controls, combat, enemies, typing and mistake systems; added movement, interactive objects, balance data, economy, progression, saving, screen flow, narrative, and level planning. | Romart Danganan |
 | v0.7 | 2026-07-13 | Added interface, controls, accessibility, and AI design | Romart Danganan |
 | v0.8 | 2026-07-14 | Final Draft For Assignment 1 Submission, further tweaks needed to GDD before Final Submission. | Romart Danganan |
 | v0.9 | 2026-07-15 | Large review and edits to logic and game mechanics: Call Supply moved Q→RMB, ammo tiers now scale bullet count only (not type), added mistake-system accessibility toggle, unified combo/kill-streak into one Combo counter, added Permanent Upgrade Tracks table (§2.6.1); locked scope to a single upgradeable weapon (multi-weapon flagged as deferred stretch idea); removed player-position-based supply drop and zombie-collision crate removal; removed on-screen player-character framing (no player model), simplified help-system tooltips, added word-label overlap/priority rule | Romart Danganan |
