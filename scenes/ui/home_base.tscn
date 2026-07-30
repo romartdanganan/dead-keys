@@ -1,10 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://c722iqq3v14iy"]
+[gd_scene format=3 uid="uid://c722iqq3v14iy"]
 
 [ext_resource type="Script" uid="uid://dwgmuxj6ali8m" path="res://scripts/ui/home_base.gd" id="1_xlecv"]
 [ext_resource type="Texture2D" uid="uid://bgmlfxoymbhlh" path="res://icon.svg" id="3_mkrqy"]
 [ext_resource type="PackedScene" uid="uid://k1bityq7o6hv" path="res://scenes/ui/mission_card.tscn" id="4_nywag"]
 
-[node name="HomeBase" type="Control"]
+[node name="HomeBase" type="Control" unique_id=220689083]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -13,7 +13,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_xlecv")
 
-[node name="BackgroundColor" type="ColorRect" parent="."]
+[node name="BackgroundColor" type="ColorRect" parent="." unique_id=1648257249]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -22,7 +22,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.307571, 0.494309, 0.348993, 1)
 
-[node name="BackgroundImage" type="TextureRect" parent="."]
+[node name="BackgroundImage" type="TextureRect" parent="." unique_id=62925516]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -33,7 +33,7 @@ mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="MainMargin" type="MarginContainer" parent="."]
+[node name="MainMargin" type="MarginContainer" parent="." unique_id=1472748928]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -45,31 +45,31 @@ theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 
-[node name="MainLayout" type="VBoxContainer" parent="MainMargin"]
+[node name="MainLayout" type="VBoxContainer" parent="MainMargin" unique_id=1405722071]
 layout_mode = 2
 theme_override_constants/separation = 15
 
-[node name="TopBar" type="HBoxContainer" parent="MainMargin/MainLayout"]
+[node name="TopBar" type="HBoxContainer" parent="MainMargin/MainLayout" unique_id=85807447]
 custom_minimum_size = Vector2(0, 65)
 layout_mode = 2
 
-[node name="GoldPanel" type="PanelContainer" parent="MainMargin/MainLayout/TopBar"]
+[node name="GoldPanel" type="PanelContainer" parent="MainMargin/MainLayout/TopBar" unique_id=426738016]
 custom_minimum_size = Vector2(180, 60)
 layout_mode = 2
 
-[node name="GoldMargin" type="MarginContainer" parent="MainMargin/MainLayout/TopBar/GoldPanel"]
+[node name="GoldMargin" type="MarginContainer" parent="MainMargin/MainLayout/TopBar/GoldPanel" unique_id=1648796332]
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 14
 theme_override_constants/margin_bottom = 8
 
-[node name="GoldContent" type="HBoxContainer" parent="MainMargin/MainLayout/TopBar/GoldPanel/GoldMargin"]
+[node name="GoldContent" type="HBoxContainer" parent="MainMargin/MainLayout/TopBar/GoldPanel/GoldMargin" unique_id=127612461]
 layout_mode = 2
 theme_override_constants/separation = 8
 alignment = 1
 
-[node name="GoldIcon" type="TextureRect" parent="MainMargin/MainLayout/TopBar/GoldPanel/GoldMargin/GoldContent"]
+[node name="GoldIcon" type="TextureRect" parent="MainMargin/MainLayout/TopBar/GoldPanel/GoldMargin/GoldContent" unique_id=2084834498]
 custom_minimum_size = Vector2(36, 36)
 layout_mode = 2
 mouse_filter = 2
@@ -77,150 +77,150 @@ texture = ExtResource("3_mkrqy")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="GoldLabel" type="Label" parent="MainMargin/MainLayout/TopBar/GoldPanel/GoldMargin/GoldContent"]
+[node name="GoldLabel" type="Label" parent="MainMargin/MainLayout/TopBar/GoldPanel/GoldMargin/GoldContent" unique_id=485370072]
 layout_mode = 2
 text = "GOLD: 0"
 
-[node name="TopSpacer" type="Control" parent="MainMargin/MainLayout/TopBar"]
+[node name="TopSpacer" type="Control" parent="MainMargin/MainLayout/TopBar" unique_id=1808942069]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="SettingsButton" type="Button" parent="MainMargin/MainLayout/TopBar"]
+[node name="SettingsButton" type="Button" parent="MainMargin/MainLayout/TopBar" unique_id=1344751636]
 custom_minimum_size = Vector2(130, 60)
 layout_mode = 2
 tooltip_text = "Settings will be implemented in a later issue"
 disabled = true
 text = "SETTINGS"
 
-[node name="MainMenuButton" type="Button" parent="MainMargin/MainLayout/TopBar"]
+[node name="MainMenuButton" type="Button" parent="MainMargin/MainLayout/TopBar" unique_id=945917127]
 custom_minimum_size = Vector2(130, 60)
 layout_mode = 2
 text = "MAIN MENU"
 
-[node name="HubContent" type="HBoxContainer" parent="MainMargin/MainLayout"]
+[node name="HubContent" type="HBoxContainer" parent="MainMargin/MainLayout" unique_id=1467665291]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 80
 
-[node name="LeftColumn" type="VBoxContainer" parent="MainMargin/MainLayout/HubContent"]
+[node name="LeftColumn" type="VBoxContainer" parent="MainMargin/MainLayout/HubContent" unique_id=1525502930]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 
-[node name="HubLogoContainer" type="AspectRatioContainer" parent="MainMargin/MainLayout/HubContent/LeftColumn"]
+[node name="HubLogoContainer" type="AspectRatioContainer" parent="MainMargin/MainLayout/HubContent/LeftColumn" unique_id=1700270912]
 custom_minimum_size = Vector2(250, 115)
 layout_mode = 2
 ratio = 2.2
 
-[node name="HubLogoimage" type="TextureRect" parent="MainMargin/MainLayout/HubContent/LeftColumn/HubLogoContainer"]
+[node name="HubLogoimage" type="TextureRect" parent="MainMargin/MainLayout/HubContent/LeftColumn/HubLogoContainer" unique_id=383821346]
 layout_mode = 2
 mouse_filter = 2
 texture = ExtResource("3_mkrqy")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="LeftPanel" type="VBoxContainer" parent="MainMargin/MainLayout/HubContent/LeftColumn"]
+[node name="LeftPanel" type="VBoxContainer" parent="MainMargin/MainLayout/HubContent/LeftColumn" unique_id=608436505]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 10
 
-[node name="UpgradesPanel" type="PanelContainer" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel"]
+[node name="UpgradesPanel" type="PanelContainer" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel" unique_id=1142987326]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="UpgradesMargin" type="MarginContainer" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/UpgradesPanel"]
+[node name="UpgradesMargin" type="MarginContainer" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/UpgradesPanel" unique_id=1264284262]
 layout_mode = 2
 theme_override_constants/margin_left = 14
 theme_override_constants/margin_top = 12
 theme_override_constants/margin_right = 14
 theme_override_constants/margin_bottom = 12
 
-[node name="UpgradesContent" type="VBoxContainer" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/UpgradesPanel/UpgradesMargin"]
+[node name="UpgradesContent" type="VBoxContainer" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/UpgradesPanel/UpgradesMargin" unique_id=536621032]
 layout_mode = 2
 
-[node name="UpgradesTitle" type="Label" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/UpgradesPanel/UpgradesMargin/UpgradesContent"]
+[node name="UpgradesTitle" type="Label" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/UpgradesPanel/UpgradesMargin/UpgradesContent" unique_id=1922088674]
 layout_mode = 2
 text = "UPGRADES"
 
-[node name="UpgradesDescription" type="Label" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/UpgradesPanel/UpgradesMargin/UpgradesContent"]
+[node name="UpgradesDescription" type="Label" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/UpgradesPanel/UpgradesMargin/UpgradesContent" unique_id=17039473]
 layout_mode = 2
 size_flags_vertical = 6
 text = "Improve your stats permanently."
 
-[node name="UpgradesButton" type="Button" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/UpgradesPanel/UpgradesMargin/UpgradesContent"]
+[node name="UpgradesButton" type="Button" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/UpgradesPanel/UpgradesMargin/UpgradesContent" unique_id=1554892126]
 layout_mode = 2
 disabled = true
 text = "OPEN"
 
-[node name="SuppliesPanel" type="PanelContainer" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel"]
+[node name="SuppliesPanel" type="PanelContainer" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel" unique_id=1278995495]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="SuppliesMargin" type="MarginContainer" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/SuppliesPanel"]
+[node name="SuppliesMargin" type="MarginContainer" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/SuppliesPanel" unique_id=722385260]
 layout_mode = 2
 theme_override_constants/margin_left = 14
 theme_override_constants/margin_top = 12
 theme_override_constants/margin_right = 14
 theme_override_constants/margin_bottom = 12
 
-[node name="SuppliesContent" type="VBoxContainer" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/SuppliesPanel/SuppliesMargin"]
+[node name="SuppliesContent" type="VBoxContainer" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/SuppliesPanel/SuppliesMargin" unique_id=54800047]
 layout_mode = 2
 
-[node name="SuppliesTitle" type="Label" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/SuppliesPanel/SuppliesMargin/SuppliesContent"]
+[node name="SuppliesTitle" type="Label" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/SuppliesPanel/SuppliesMargin/SuppliesContent" unique_id=901333258]
 layout_mode = 2
 text = "MISSION SUPPLIES"
 
-[node name="SuppliesDescription" type="Label" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/SuppliesPanel/SuppliesMargin/SuppliesContent"]
+[node name="SuppliesDescription" type="Label" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/SuppliesPanel/SuppliesMargin/SuppliesContent" unique_id=402151628]
 layout_mode = 2
 size_flags_vertical = 6
 text = "Buy supplies for your next mission."
 
-[node name="SuppliesButton" type="Button" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/SuppliesPanel/SuppliesMargin/SuppliesContent"]
+[node name="SuppliesButton" type="Button" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/SuppliesPanel/SuppliesMargin/SuppliesContent" unique_id=1275023269]
 layout_mode = 2
 disabled = true
 text = "OPEN"
 
-[node name="AbilityPanel" type="PanelContainer" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel"]
+[node name="AbilityPanel" type="PanelContainer" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel" unique_id=1501565202]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="AbilityMargin" type="MarginContainer" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/AbilityPanel"]
+[node name="AbilityMargin" type="MarginContainer" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/AbilityPanel" unique_id=1061891348]
 layout_mode = 2
 theme_override_constants/margin_left = 14
 theme_override_constants/margin_top = 12
 theme_override_constants/margin_right = 14
 theme_override_constants/margin_bottom = 12
 
-[node name="AbilityContent" type="VBoxContainer" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/AbilityPanel/AbilityMargin"]
+[node name="AbilityContent" type="VBoxContainer" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/AbilityPanel/AbilityMargin" unique_id=1817479859]
 layout_mode = 2
 
-[node name="AbilityTitle" type="Label" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/AbilityPanel/AbilityMargin/AbilityContent"]
+[node name="AbilityTitle" type="Label" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/AbilityPanel/AbilityMargin/AbilityContent" unique_id=2045699377]
 layout_mode = 2
 text = "ABILITY LOADOUT"
 
-[node name="AbilityDescription" type="Label" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/AbilityPanel/AbilityMargin/AbilityContent"]
+[node name="AbilityDescription" type="Label" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/AbilityPanel/AbilityMargin/AbilityContent" unique_id=1863609894]
 layout_mode = 2
 size_flags_vertical = 6
 text = "Choose one ability for your next
 mission."
 
-[node name="AbilityButton" type="Button" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/AbilityPanel/AbilityMargin/AbilityContent"]
+[node name="AbilityButton" type="Button" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/AbilityPanel/AbilityMargin/AbilityContent" unique_id=1074654651]
 layout_mode = 2
 disabled = true
 text = "OPEN"
 
-[node name="MissionArea" type="VBoxContainer" parent="MainMargin/MainLayout/HubContent"]
+[node name="MissionArea" type="VBoxContainer" parent="MainMargin/MainLayout/HubContent" unique_id=1621863191]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="MissionAreaSpacer" type="Control" parent="MainMargin/MainLayout/HubContent/MissionArea"]
+[node name="MissionAreaSpacer" type="Control" parent="MainMargin/MainLayout/HubContent/MissionArea" unique_id=661499431]
 custom_minimum_size = Vector2(0, 185)
 layout_mode = 2
 
-[node name="MissionTable" type="VBoxContainer" parent="MainMargin/MainLayout/HubContent/MissionArea"]
+[node name="MissionTable" type="VBoxContainer" parent="MainMargin/MainLayout/HubContent/MissionArea" unique_id=565958937]
 layout_mode = 2
 
-[node name="MissionGrid" type="GridContainer" parent="MainMargin/MainLayout/HubContent/MissionArea/MissionTable"]
+[node name="MissionGrid" type="GridContainer" parent="MainMargin/MainLayout/HubContent/MissionArea/MissionTable" unique_id=241211041]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 3
@@ -228,56 +228,56 @@ theme_override_constants/h_separation = 18
 theme_override_constants/v_separation = 40
 columns = 3
 
-[node name="Mission1Card" parent="MainMargin/MainLayout/HubContent/MissionArea/MissionTable/MissionGrid" instance=ExtResource("4_nywag")]
+[node name="Mission1Card" parent="MainMargin/MainLayout/HubContent/MissionArea/MissionTable/MissionGrid" unique_id=62942874 instance=ExtResource("4_nywag")]
 layout_mode = 2
 mission_description = "A quiet neighborhood is under attack. Hold the line and protect the area"
 
-[node name="Mission2Card" parent="MainMargin/MainLayout/HubContent/MissionArea/MissionTable/MissionGrid" instance=ExtResource("4_nywag")]
+[node name="Mission2Card" parent="MainMargin/MainLayout/HubContent/MissionArea/MissionTable/MissionGrid" unique_id=853551908 instance=ExtResource("4_nywag")]
 layout_mode = 2
 mission_id = 2
 mission_name = "THE HOSPITAL"
 mission_description = "Defend the hospital and protect the remaining medical supplies."
 locked = true
 
-[node name="Mission3Card" parent="MainMargin/MainLayout/HubContent/MissionArea/MissionTable/MissionGrid" instance=ExtResource("4_nywag")]
+[node name="Mission3Card" parent="MainMargin/MainLayout/HubContent/MissionArea/MissionTable/MissionGrid" unique_id=1762642376 instance=ExtResource("4_nywag")]
 layout_mode = 2
 mission_id = 3
 mission_name = "SHOPPING CENTRE"
 locked = true
 
-[node name="Mission4Card" parent="MainMargin/MainLayout/HubContent/MissionArea/MissionTable/MissionGrid" instance=ExtResource("4_nywag")]
+[node name="Mission4Card" parent="MainMargin/MainLayout/HubContent/MissionArea/MissionTable/MissionGrid" unique_id=902000336 instance=ExtResource("4_nywag")]
 layout_mode = 2
 mission_id = 4
 mission_name = "RESCUE SURVIVORS"
 locked = true
 
-[node name="Mission5Card" parent="MainMargin/MainLayout/HubContent/MissionArea/MissionTable/MissionGrid" instance=ExtResource("4_nywag")]
+[node name="Mission5Card" parent="MainMargin/MainLayout/HubContent/MissionArea/MissionTable/MissionGrid" unique_id=1973332865 instance=ExtResource("4_nywag")]
 layout_mode = 2
 mission_id = 5
 mission_name = "MILITARY BASE"
 locked = true
 
-[node name="Mission6Card" parent="MainMargin/MainLayout/HubContent/MissionArea/MissionTable/MissionGrid" instance=ExtResource("4_nywag")]
+[node name="Mission6Card" parent="MainMargin/MainLayout/HubContent/MissionArea/MissionTable/MissionGrid" unique_id=1489436314 instance=ExtResource("4_nywag")]
 layout_mode = 2
 mission_id = 6
 mission_name = "DOWNTOWN"
 locked = true
 
-[node name="MissionDetailsPanel" type="PanelContainer" parent="MainMargin/MainLayout/HubContent"]
+[node name="MissionDetailsPanel" type="PanelContainer" parent="MainMargin/MainLayout/HubContent" unique_id=761379375]
 custom_minimum_size = Vector2(255, 0)
 layout_mode = 2
 
-[node name="MissionDetailsMargin" type="MarginContainer" parent="MainMargin/MainLayout/HubContent/MissionDetailsPanel"]
+[node name="MissionDetailsMargin" type="MarginContainer" parent="MainMargin/MainLayout/HubContent/MissionDetailsPanel" unique_id=444545759]
 layout_mode = 2
 theme_override_constants/margin_left = 18
 theme_override_constants/margin_top = 18
 theme_override_constants/margin_right = 18
 theme_override_constants/margin_bottom = 18
 
-[node name="MissionDetails" type="VBoxContainer" parent="MainMargin/MainLayout/HubContent/MissionDetailsPanel/MissionDetailsMargin"]
+[node name="MissionDetails" type="VBoxContainer" parent="MainMargin/MainLayout/HubContent/MissionDetailsPanel/MissionDetailsMargin" unique_id=384962772]
 layout_mode = 2
 
-[node name="SelectedMissionImage" type="TextureRect" parent="MainMargin/MainLayout/HubContent/MissionDetailsPanel/MissionDetailsMargin/MissionDetails"]
+[node name="SelectedMissionImage" type="TextureRect" parent="MainMargin/MainLayout/HubContent/MissionDetailsPanel/MissionDetailsMargin/MissionDetails" unique_id=371144249]
 custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 mouse_filter = 2
@@ -285,30 +285,30 @@ texture = ExtResource("3_mkrqy")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="MissionTitleLabel" type="Label" parent="MainMargin/MainLayout/HubContent/MissionDetailsPanel/MissionDetailsMargin/MissionDetails"]
+[node name="MissionTitleLabel" type="Label" parent="MainMargin/MainLayout/HubContent/MissionDetailsPanel/MissionDetailsMargin/MissionDetails" unique_id=699975284]
 layout_mode = 2
 text = "1. THE SUBURBS"
 
-[node name="MissionDescriptionLabel" type="Label" parent="MainMargin/MainLayout/HubContent/MissionDetailsPanel/MissionDetailsMargin/MissionDetails"]
+[node name="MissionDescriptionLabel" type="Label" parent="MainMargin/MainLayout/HubContent/MissionDetailsPanel/MissionDetailsMargin/MissionDetails" unique_id=651823227]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 text = "A quiet neighborhood is under attack. Hold the line and  protect the area.
 "
 autowrap_mode = 3
 
-[node name="MedalHeadingLabel" type="Label" parent="MainMargin/MainLayout/HubContent/MissionDetailsPanel/MissionDetailsMargin/MissionDetails"]
+[node name="MedalHeadingLabel" type="Label" parent="MainMargin/MainLayout/HubContent/MissionDetailsPanel/MissionDetailsMargin/MissionDetails" unique_id=1780648945]
 layout_mode = 2
 text = "BEST MEDAL"
 
-[node name="BestMedalLabel" type="Label" parent="MainMargin/MainLayout/HubContent/MissionDetailsPanel/MissionDetailsMargin/MissionDetails"]
+[node name="BestMedalLabel" type="Label" parent="MainMargin/MainLayout/HubContent/MissionDetailsPanel/MissionDetailsMargin/MissionDetails" unique_id=1280952726]
 layout_mode = 2
 text = "NONE"
 
-[node name="MissionDetailsSpacer" type="Control" parent="MainMargin/MainLayout/HubContent/MissionDetailsPanel/MissionDetailsMargin/MissionDetails"]
+[node name="MissionDetailsSpacer" type="Control" parent="MainMargin/MainLayout/HubContent/MissionDetailsPanel/MissionDetailsMargin/MissionDetails" unique_id=1248698234]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="LaunchMissionButton" type="Button" parent="MainMargin/MainLayout/HubContent/MissionDetailsPanel/MissionDetailsMargin/MissionDetails"]
+[node name="LaunchMissionButton" type="Button" parent="MainMargin/MainLayout/HubContent/MissionDetailsPanel/MissionDetailsMargin/MissionDetails" unique_id=1064126933]
 layout_mode = 2
 tooltip_text = "Mission gameplay will be connected in a later issue"
 text = "LAUNCH MISSION"
