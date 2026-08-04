@@ -5,6 +5,7 @@ extends Node2D
 @onready var ammo_system: AmmoSystem = $AmmoSystem
 @onready var ammo_label: Label = %AmmoLabel
 @onready var ammo_bar: ProgressBar = %AmmoBar
+@onready var typing_controller: Node = $TypingController
 @onready var weapon_controller: WeaponController = $World/WeaponController
 @onready var projectile_container: Node2D = $World/ProjectileContainer
 
@@ -37,6 +38,10 @@ func _ready() -> void:
 	)
 	weapon_controller.attempted_fire_without_ammunition.connect(
 		_on_attempted_fire_without_ammunition
+	)
+	
+	typing_controller.word_completed.connect(
+		_on_typing_word_completed
 	)
 
 
@@ -97,3 +102,16 @@ func _unhandled_input(event: InputEvent) -> void:
 func _on_attempted_fire_without_ammunition() -> void:
 	# todo: replace print with empty-click sfx (e.g., AudioStreamPlayer)
 	print("Cannot fire: ammunition is empty")
+	
+	
+func _on_typing_word_completed(word: String, ammunition_reward: int) -> void:
+	var amount_added := ammo_system.add_ammunition(
+		ammunition_reward
+	)
+
+	print(
+		"Completed word: ",
+		word,
+		" | Ammunition added: ",
+		amount_added
+	)
