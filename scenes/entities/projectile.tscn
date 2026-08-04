@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://c1vn4ejy744uy"]
+
+[ext_resource type="Script" uid="uid://cer2d4b0offdc" path="res://scripts/entities/projectile.gd" id="1_2lp3u"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rac5k"]
+size = Vector2(16, 6)
+
+[node name="Projectile" type="Area2D" unique_id=1465411936]
+collision_layer = 2
+collision_mask = 4
+script = ExtResource("1_2lp3u")
+
+[node name="ProjectileVisual" type="Polygon2D" parent="." unique_id=435261880]
+polygon = PackedVector2Array(-8, -3, 8, -3, 8, 3, -8, 3)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=659284844]
+shape = SubResource("RectangleShape2D_rac5k")
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="." unique_id=80696408]
+
+[connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="." method="_on_visible_on_screen_notifier_2d_screen_exited"]
