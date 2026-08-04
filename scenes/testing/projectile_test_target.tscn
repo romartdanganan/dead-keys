@@ -1,0 +1,35 @@
+[gd_scene format=3 uid="uid://c3ddmkhkeshvy"]
+
+[ext_resource type="Script" uid="uid://byjuyet2etnp6" path="res://scripts/testing/projectile_test_target.gd" id="1_nn2te"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lwks8"]
+size = Vector2(80, 80)
+
+[node name="ProjectileTestTarget" type="Area2D" unique_id=519939722]
+collision_layer = 4
+collision_mask = 0
+script = ExtResource("1_nn2te")
+
+[node name="TargetVisual" type="Polygon2D" parent="." unique_id=1006948196]
+color = Color(0.04298181, 0.21360305, 0, 1)
+polygon = PackedVector2Array(-40, -40, 40, -40, 40, 40, -40, 40)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1791873777]
+shape = SubResource("RectangleShape2D_lwks8")
+
+[node name="HealthLabel" type="Label" parent="." unique_id=933014444]
+offset_left = -40.0
+offset_top = -12.0
+offset_right = 40.0
+offset_bottom = 12.0
+text = "HP: 3"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="WordLabel" type="RichTextLabel" parent="." unique_id=955005271]
+offset_left = -100.0
+offset_top = -85.0
+offset_right = 100.0
+offset_bottom = -45.0
+bbcode_enabled = true
+horizontal_alignment = 1

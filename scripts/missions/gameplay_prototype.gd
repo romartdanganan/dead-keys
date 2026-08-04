@@ -5,18 +5,12 @@ extends Node2D
 @onready var ammo_system: AmmoSystem = $AmmoSystem
 @onready var ammo_label: Label = %AmmoLabel
 @onready var ammo_bar: ProgressBar = %AmmoBar
+@onready var typing_controller: Node = $TypingController
+@onready var weapon_controller: WeaponController = $World/WeaponController
+@onready var projectile_container: Node2D = $World/ProjectileContainer
+
 
 func _ready() -> void:
-	# connect ammo signal and set initial display state
-	ammo_system.ammunition_changed.connect(
-		_on_ammunition_changed
-	)
-	
-	_on_ammunition_changed(
-		ammo_system.current_ammo,
-		ammo_system.maximum_ammo
-	)
-	
 	# set centered custom cursor image if provided
 	if crosshair_texture != null:
 		Input.set_custom_mouse_cursor(
@@ -27,6 +21,28 @@ func _ready() -> void:
 				crosshair_texture.get_height() / 2.0
 			)
 		)
+		
+	# connect ammo signal and set initial display state
+	ammo_system.ammunition_changed.connect(
+		_on_ammunition_changed
+	)
+	_on_ammunition_changed(
+		ammo_system.current_ammo,
+		ammo_system.maximum_ammo
+	)
+	
+	# inject dependencies and connect weapon feedback
+	weapon_controller.configure(
+		ammo_system,
+		projectile_container
+	)
+	weapon_controller.attempted_fire_without_ammunition.connect(
+		_on_attempted_fire_without_ammunition
+	)
+	
+	typing_controller.word_completed.connect(
+		_on_typing_word_completed
+	)
 
 
 func _exit_tree() -> void:
@@ -55,29 +71,22 @@ func _on_ammunition_changed(
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	# debug keys to test ammo adding, consumption, capacity, and reset
-	if event.is_action_pressed("debug_add_ammo"):
-		var amount_added := ammo_system.add_ammunition(1)
-		print(
-			"Ammo added: ",
-			amount_added,
-			" | Current: ",
-			ammo_system.current_ammo,
-			"/",
-			ammo_system.maximum_ammo
+	# check for left mouse click and attempt to fire weapon toward cursor
+	if (
+		event is InputEventMouseButton
+		and event.button_index == MOUSE_BUTTON_LEFT
+		and event.pressed
+	):
+		weapon_controller.try_fire(
+			get_global_mouse_position()
 		)
+
+	# debug inputs to manually manipulate ammo system
+	elif event.is_action_pressed("debug_add_ammo"):
+		ammo_system.add_ammunition(1)
 
 	elif event.is_action_pressed("debug_use_ammo"):
-		var consumed := ammo_system.consume_ammunition(1)
-
-		print(
-			"Ammo consumed: ",
-			consumed,
-			" | Current: ",
-			ammo_system.current_ammo,
-			"/",
-			ammo_system.maximum_ammo
-		)
+		ammo_system.consume_ammunition(1)
 
 	elif event.is_action_pressed(
 		"debug_increase_ammo_capacity"
@@ -86,11 +95,23 @@ func _unhandled_input(event: InputEvent) -> void:
 			ammo_system.maximum_ammo + 4
 		)
 
-		print(
-			"Capacity increased to: ",
-			ammo_system.maximum_ammo
-		)
-
 	elif event.is_action_pressed("debug_reset_ammo"):
 		ammo_system.reset_ammunition()
 		print("Ammunition reset")
+
+func _on_attempted_fire_without_ammunition() -> void:
+	# todo: replace print with empty-click sfx (e.g., AudioStreamPlayer)
+	print("Cannot fire: ammunition is empty")
+	
+	
+func _on_typing_word_completed(word: String, ammunition_reward: int) -> void:
+	var amount_added := ammo_system.add_ammunition(
+		ammunition_reward
+	)
+
+	print(
+		"Completed word: ",
+		word,
+		" | Ammunition added: ",
+		amount_added
+	)

@@ -48,6 +48,11 @@ debug_reset_ammo={
 ]
 }
 
+[layer_names]
+
+2d_render/layer_2="Projectiles"
+2d_render/layer_3="Enemies"
+
 [rendering]
 
 renderer/rendering_method="gl_compatibility"
