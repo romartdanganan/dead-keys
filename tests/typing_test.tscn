@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://bt6w1vbshdtyv"]
+
+[ext_resource type="Script" uid="uid://cyanfkt2biqp3" path="res://scripts/typing/typing_controller.gd" id="1_2aelv"]
+
+[node name="TypingTest" type="Node2D" unique_id=574391555 node_paths=PackedStringArray("word_label")]
+script = ExtResource("1_2aelv")
+word_label = NodePath("RichTextLabel")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=209588843]
+offset_left = 24.0
+offset_top = 63.0
+offset_right = 92.0
+offset_bottom = 103.0
+color = Color(0.41085947, 0.3581022, 0.22368413, 1)
+
+[node name="RichTextLabel" type="RichTextLabel" parent="." unique_id=1899818956]
+offset_left = 25.0
+offset_top = 24.0
+offset_right = 87.0
+offset_bottom = 64.0
+bbcode_enabled = true
+text = "ENEMY"
