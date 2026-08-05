@@ -79,6 +79,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	):
 		weapon_controller.try_fire(
 			get_global_mouse_position()
+			
 		)
 
 	# debug inputs to manually manipulate ammo system

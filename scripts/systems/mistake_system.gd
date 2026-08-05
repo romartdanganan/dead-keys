@@ -1,9 +1,9 @@
 class_name MistakeSystem
 extends Node
 
-@onready var ammo_system: AmmoSystem = $AmmoSystem
-@onready var typing_controller: Node = $TypingController
-@onready var weapon_controller: WeaponController = $World/WeaponController
+@onready var ammo_system: AmmoSystem = $"../AmmoSystem"
+@onready var typing_controller: Node = $"../TypingController"
+@onready var weapon_controller: WeaponController = $"../World/WeaponController"
 
 var mistake_count = 0
 
@@ -24,4 +24,6 @@ func _correct_stroke():
 
 func count_check():
 	if mistake_count >= 3:
+		mistake_count = 0
 		print("JAMMED")
+		weapon_controller.set_jammed = true
