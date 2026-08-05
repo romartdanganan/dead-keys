@@ -1,9 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://b2kwtocswathd"]
+[gd_scene format=3 uid="uid://b2kwtocswathd"]
 
 [ext_resource type="Script" uid="uid://bli7w8w887at1" path="res://scripts/ui/main_menu.gd" id="1_fe2o3"]
-[ext_resource type="Texture2D" uid="uid://bgmlfxoymbhlh" path="res://icon.svg" id="1_sl1te"]
+[ext_resource type="Texture2D" uid="uid://d1nloet4fy00a" path="res://icon.svg" id="1_sl1te"]
 
-[node name="MainMenu" type="Control"]
+[node name="MainMenu" type="Control" unique_id=609459095]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -12,7 +12,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_fe2o3")
 
-[node name="BackgroundColour" type="ColorRect" parent="."]
+[node name="BackgroundColour" type="ColorRect" parent="." unique_id=1109084591]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -21,7 +21,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.240477, 0.402485, 0.636671, 1)
 
-[node name="BackgroundImage" type="TextureRect" parent="."]
+[node name="BackgroundImage" type="TextureRect" parent="." unique_id=1267112102]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -32,7 +32,7 @@ mouse_filter = 2
 expand_mode = 1
 stretch_mode = 6
 
-[node name="MainMargin" type="MarginContainer" parent="."]
+[node name="MainMargin" type="MarginContainer" parent="." unique_id=421000454]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -44,61 +44,61 @@ theme_override_constants/margin_top = 40
 theme_override_constants/margin_right = 60
 theme_override_constants/margin_bottom = 40
 
-[node name="MainLayout" type="HBoxContainer" parent="MainMargin"]
+[node name="MainLayout" type="HBoxContainer" parent="MainMargin" unique_id=455071442]
 layout_mode = 2
 
-[node name="LeftMenu" type="VBoxContainer" parent="MainMargin/MainLayout"]
+[node name="LeftMenu" type="VBoxContainer" parent="MainMargin/MainLayout" unique_id=383547944]
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 
-[node name="LogoContainer" type="AspectRatioContainer" parent="MainMargin/MainLayout/LeftMenu"]
+[node name="LogoContainer" type="AspectRatioContainer" parent="MainMargin/MainLayout/LeftMenu" unique_id=1572100648]
 custom_minimum_size = Vector2(400, 220)
 layout_mode = 2
 ratio = 1.8
 
-[node name="LogoImage" type="TextureRect" parent="MainMargin/MainLayout/LeftMenu/LogoContainer"]
+[node name="LogoImage" type="TextureRect" parent="MainMargin/MainLayout/LeftMenu/LogoContainer" unique_id=1675535844]
 layout_mode = 2
 mouse_filter = 2
 texture = ExtResource("1_sl1te")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="LogoToButtonSpacer" type="Control" parent="MainMargin/MainLayout/LeftMenu"]
+[node name="LogoToButtonSpacer" type="Control" parent="MainMargin/MainLayout/LeftMenu" unique_id=461392860]
 custom_minimum_size = Vector2(0, 25)
 layout_mode = 2
 
-[node name="ButtonPanel" type="PanelContainer" parent="MainMargin/MainLayout/LeftMenu"]
+[node name="ButtonPanel" type="PanelContainer" parent="MainMargin/MainLayout/LeftMenu" unique_id=376729914]
 layout_mode = 2
 
-[node name="ButtonMargin" type="MarginContainer" parent="MainMargin/MainLayout/LeftMenu/ButtonPanel"]
+[node name="ButtonMargin" type="MarginContainer" parent="MainMargin/MainLayout/LeftMenu/ButtonPanel" unique_id=1800779422]
 layout_mode = 2
 theme_override_constants/margin_left = 16
 theme_override_constants/margin_top = 16
 theme_override_constants/margin_right = 16
 theme_override_constants/margin_bottom = 16
 
-[node name="ButtonList" type="VBoxContainer" parent="MainMargin/MainLayout/LeftMenu/ButtonPanel/ButtonMargin"]
+[node name="ButtonList" type="VBoxContainer" parent="MainMargin/MainLayout/LeftMenu/ButtonPanel/ButtonMargin" unique_id=869932536]
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="StartButton" type="Button" parent="MainMargin/MainLayout/LeftMenu/ButtonPanel/ButtonMargin/ButtonList"]
+[node name="StartButton" type="Button" parent="MainMargin/MainLayout/LeftMenu/ButtonPanel/ButtonMargin/ButtonList" unique_id=996742776]
 custom_minimum_size = Vector2(340, 70)
 layout_mode = 2
 text = "START"
 
-[node name="SettingsButton" type="Button" parent="MainMargin/MainLayout/LeftMenu/ButtonPanel/ButtonMargin/ButtonList"]
+[node name="SettingsButton" type="Button" parent="MainMargin/MainLayout/LeftMenu/ButtonPanel/ButtonMargin/ButtonList" unique_id=1464386404]
 custom_minimum_size = Vector2(340, 70)
 layout_mode = 2
 tooltip_text = "Settings will be implemented in a later milestone"
 disabled = true
 text = "SETTINGS"
 
-[node name="QuitButton" type="Button" parent="MainMargin/MainLayout/LeftMenu/ButtonPanel/ButtonMargin/ButtonList"]
+[node name="QuitButton" type="Button" parent="MainMargin/MainLayout/LeftMenu/ButtonPanel/ButtonMargin/ButtonList" unique_id=1751942493]
 custom_minimum_size = Vector2(340, 70)
 layout_mode = 2
 text = "QUIT"
 
-[node name="RightSpacer" type="Control" parent="MainMargin/MainLayout"]
+[node name="RightSpacer" type="Control" parent="MainMargin/MainLayout" unique_id=156603675]
 layout_mode = 2
 size_flags_horizontal = 3
 

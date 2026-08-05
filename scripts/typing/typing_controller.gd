@@ -2,6 +2,8 @@ extends Node
 
 @export var word_label: RichTextLabel
 
+signal typing_mistake
+signal correct_stroke
 var current_word: String = "code"
 var typed_index: int = 0
 var typing_enabled: bool = true
@@ -56,12 +58,14 @@ func check_letter(typed: String) -> void:
 		update_label()
 		
 		print ("correct - progress: ", typed_index, "/",current_word.length())
+		correct_stroke.emit()
 		
 		#check our typed_index to current word pos
 		if typed_index >= current_word.length():
 			complete_word()
 	else: 
 		print("mistake - expected ", expected," got ", typed)
+		typing_mistake.emit()
 
 #function: when a word is finished, refresh to a new one and gain ammo
 func complete_word() -> void:
