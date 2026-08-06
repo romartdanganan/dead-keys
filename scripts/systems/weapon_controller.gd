@@ -48,6 +48,9 @@ func try_fire(target_position: Vector2) -> bool:
 			"WeaponController has no projectile container."
 		)
 		return false
+	
+	if set_jammed == true:
+		return false
 
 	if cooldown_remaining > 0.0:
 		return false
@@ -62,9 +65,6 @@ func try_fire(target_position: Vector2) -> bool:
 		push_error(
 			"Projectile scene root must use Projectile."
 		)
-		return false
-
-	if set_jammed == true:
 		return false
 
 	projectile_container.add_child(projectile)
