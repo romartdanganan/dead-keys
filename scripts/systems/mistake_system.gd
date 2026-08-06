@@ -6,7 +6,7 @@ extends Node
 @onready var weapon_controller: WeaponController = $"../World/WeaponController"
 @onready var mistakes_label: Label = $"../HUD/HUDRoot/TypingPanel/MistakePanel/MistakeMargin/MistakesLabel"
 
-const JAM_COOLDOWN = 3.0
+const JAM_COOLDOWN = 2.0
 var mistake_count = 0
 var jam_time = JAM_COOLDOWN
 
