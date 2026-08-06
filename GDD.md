@@ -39,14 +39,14 @@ For typing-game players who want a real skill ceiling, and arena-shooter players
 
 ```mermaid
 flowchart LR
-    A[Word appears<br/>above zombie] --> B[Type word<br/>1-3 s]
-    B --> C[Ammo loaded]
-    C --> D[Aim + fire<br/>less than 1 s]
-    D --> E{Hit?}
-    E -->|Yes| F[Zombie down]
-    E -->|No| G[Ammo wasted]
-    F --> A
-    G --> A
+	A[Word appears<br/>above zombie] --> B[Type word<br/>1-3 s]
+	B --> C[Ammo loaded]
+	C --> D[Aim + fire<br/>less than 1 s]
+	D --> E{Hit?}
+	E -->|Yes| F[Zombie down]
+	E -->|No| G[Ammo wasted]
+	F --> A
+	G --> A
 ```
 
 - **Moment loop (seconds):** word appears, type it (1 to 3 s depending on length), aim, fire (under 1 s). A full cycle is roughly 2 to 4 seconds, repeated continuously against multiple simultaneous zombies.
@@ -228,24 +228,24 @@ Save model: checkpoint-based, one checkpoint per completed mission, persisting c
 
 ````mermaid
 stateDiagram-v2
-    [*] --> MainMenu
-    MainMenu --> HomeBase: Start
-    MainMenu --> Settings
-    HomeBase --> MainMenu
-    HomeBase --> Settings
-    HomeBase --> Upgrades
-    HomeBase --> MissionSupplies
-    HomeBase --> AbilityLoadout
-    HomeBase --> Gameplay: Launch unlocked mission
-    Upgrades --> HomeBase
-    MissionSupplies --> HomeBase
-    AbilityLoadout --> HomeBase
-    Gameplay --> Pause
-    Pause --> Gameplay
-    Pause --> Settings
-    Pause --> HomeBase
-    Gameplay --> MissionEnd
-    MissionEnd --> HomeBase
+	[*] --> MainMenu
+	MainMenu --> HomeBase: Start
+	MainMenu --> Settings
+	HomeBase --> MainMenu
+	HomeBase --> Settings
+	HomeBase --> Upgrades
+	HomeBase --> MissionSupplies
+	HomeBase --> AbilityLoadout
+	HomeBase --> Gameplay: Launch unlocked mission
+	Upgrades --> HomeBase
+	MissionSupplies --> HomeBase
+	AbilityLoadout --> HomeBase
+	Gameplay --> Pause
+	Pause --> Gameplay
+	Pause --> Settings
+	Pause --> HomeBase
+	Gameplay --> MissionEnd
+	MissionEnd --> HomeBase
 ````
 
 **Main Menu:** illustrated logo and background, plus Start, Settings, and Quit.  
