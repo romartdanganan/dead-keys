@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://7a2b3yq8bnlw"]
+
+[ext_resource type="Script" uid="uid://kcggsbb4nudf" path="res://tests/zombies/zombie_shoot_test/zombie_shoot_test_2026_08_05.gd" id="1_ngqt2"]
+[ext_resource type="Texture2D" uid="uid://dtxygfe036xnp" path="res://icon.svg" id="2_hu4wc"]
+
+[node name="ZombieShootTest" type="Node2D" unique_id=975987294]
+script = ExtResource("1_ngqt2")
+
+[node name="SpawnPoint" type="Marker2D" parent="." unique_id=864704112]
+position = Vector2(100, 300)
+
+[node name="WallTarget" type="Marker2D" parent="." unique_id=145623410]
+position = Vector2(800, 300)
+
+[node name="Sprite2D" type="Sprite2D" parent="WallTarget" unique_id=362376911]
+texture = ExtResource("2_hu4wc")

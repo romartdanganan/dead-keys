@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://d132h4brqh5t7"]
+
+[ext_resource type="Script" uid="uid://d4m5ggvk6u22k" path="res://tests/manual/zombies/zombie_wave_test_2026-08-04.gd" id="1_55nxp"]
+
+[node name="ZombieWaveTest" type="Node2D" unique_id=703066465]
+script = ExtResource("1_55nxp")
+
+[node name="SpawnPoint1" type="Marker2D" parent="." unique_id=1888260931]
+position = Vector2(100, 150)
+
+[node name="SpawnPoint2" type="Marker2D" parent="." unique_id=447741405]
+position = Vector2(1079, 167)
+
+[node name="WallTarget" type="Marker2D" parent="." unique_id=237441505]
+position = Vector2(604, 638)
+
+[node name="StatusTimer" type="Timer" parent="." unique_id=1522613839]
+wait_time = 2.0
+autostart = true

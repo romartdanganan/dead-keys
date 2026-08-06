@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://jq2kvtopfuj"]
+
+[ext_resource type="Script" uid="uid://bcsok2e0cyji2" path="res://scripts/entities/zombie.gd" id="1_frpv3"]
+[ext_resource type="Texture2D" uid="uid://dtxygfe036xnp" path="res://icon.svg" id="2_asks5"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(128, 128)
+
+[node name="Zombie" type="CharacterBody2D" unique_id=1376647345]
+collision_layer = 5
+script = ExtResource("1_frpv3")
+
+[node name="ZombieSprite2D" type="Sprite2D" parent="." unique_id=1622588626]
+texture = ExtResource("2_asks5")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1329297047]
+shape = SubResource("RectangleShape2D_1")
+
+[node name="AttackTimer" type="Timer" parent="." unique_id=1876217018]
+
+[node name="WordLabel" type="RichTextLabel" parent="." unique_id=1320528697]
+offset_left = -64.0
+offset_top = -92.0
+offset_right = 64.0
+offset_bottom = -69.0
+bbcode_enabled = true
+horizontal_alignment = 1
+
+[connection signal="timeout" from="AttackTimer" to="." method="_on_attack_timer_timeout"]
