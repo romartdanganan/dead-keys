@@ -11,7 +11,6 @@ var mistake_count = 0
 var jam_time = JAM_COOLDOWN
 
 func _ready() -> void:
-	print("script ready")
 	typing_controller.typing_mistake.connect(_typing_mistake)
 	typing_controller.correct_stroke.connect(_correct_stroke)
 
