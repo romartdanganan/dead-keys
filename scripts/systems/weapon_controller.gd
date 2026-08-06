@@ -14,6 +14,7 @@ signal attempted_fire_without_ammunition
 var ammo_system: AmmoSystem
 var projectile_container: Node2D
 var cooldown_remaining: float = 0.0
+var set_jammed := false
 
 # inject dependencies from the main game scene
 func configure(
@@ -46,6 +47,9 @@ func try_fire(target_position: Vector2) -> bool:
 		push_warning(
 			"WeaponController has no projectile container."
 		)
+		return false
+	
+	if set_jammed == true:
 		return false
 
 	if cooldown_remaining > 0.0:
