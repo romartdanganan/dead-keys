@@ -220,8 +220,10 @@ func _is_word_active(word: String) -> bool:
 func _remove_invalid_targets() -> void:
 	for index in range(active_targets.size() - 1, -1, -1):
 		var target_data: Dictionary = active_targets[index]
-		var target: Node = target_data["target"]
-		var label: RichTextLabel = target_data["label"]
+
+		# keep these untyped so freed references can be checked safely
+		var target = target_data.get("target")
+		var label = target_data.get("label")
 
 		if not is_instance_valid(target) or not is_instance_valid(label):
 			active_targets.remove_at(index)
