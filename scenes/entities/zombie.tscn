@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://jq2kvtopfuj"]
 
 [ext_resource type="Script" uid="uid://bcsok2e0cyji2" path="res://scripts/entities/zombie.gd" id="1_frpv3"]
-[ext_resource type="Texture2D" uid="uid://dtxygfe036xnp" path="res://icon.svg" id="2_asks5"]
+[ext_resource type="Texture2D" uid="uid://bgmlfxoymbhlh" path="res://icon.svg" id="2_asks5"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(128, 128)
@@ -19,6 +19,7 @@ shape = SubResource("RectangleShape2D_1")
 [node name="AttackTimer" type="Timer" parent="." unique_id=1876217018]
 
 [node name="WordLabel" type="RichTextLabel" parent="." unique_id=1320528697]
+z_index = 100
 offset_left = -64.0
 offset_top = -92.0
 offset_right = 64.0
