@@ -24,9 +24,17 @@ func start_mission() -> void:
 func _run_next_wave() -> void:
 	if not _running:
 		return
-	if mission_config == null or _wave_index >= mission_config.waves.size():
-		all_waves_cleared.emit()
+	
+	if mission_config == null:
+		push_warning("ZombieManager: no mission config assigned")
 		_running = false
+		return
+	
+	if _wave_index >= mission_config.waves.size():
+		await _wait_for_all_zombies_to_clear()
+		if _running:
+			all_waves_cleared.emit()
+			_running = false
 		return
 	
 	var wave: WaveEntry = mission_config.waves[_wave_index]
@@ -39,13 +47,18 @@ func _run_next_wave() -> void:
 		if not _running:
 			return
 		_spawn_zombie(wave.enemy_type)
-		if i < wave.count - 1:
+		if i < wave.count - 1 and wave.spawn_interval > 0.0:
 			await get_tree().create_timer(wave.spawn_interval).timeout
+	await _wait_for_all_zombies_to_clear()
 	_run_next_wave()
+
+func _wait_for_all_zombies_to_clear() -> void:
+	while _running and not active_zombies.is_empty():
+		await get_tree().process_frame
 
 func _spawn_zombie(type: EnemyTypeDef) -> void:
 	if spawn_points.is_empty():
-		push_warning("ZombieManager: no spawn_points as signed")
+		push_warning("ZombieManager: no spawn points assigned")
 		return
 	var zombie: Zombie = zombie_scene.instantiate()
 	add_child(zombie)
