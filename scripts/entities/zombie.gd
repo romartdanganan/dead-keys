@@ -5,6 +5,7 @@ class_name Zombie
 
 signal wall_hit(damage: float)
 signal died(zombie: Zombie)
+signal damaged(zombie: Zombie)
 
 enum State { SPAWN, APPROACH, ATTACK, DEAD}
 
@@ -65,6 +66,7 @@ func take_damage(amount: float) -> bool:
 	if current_state == State.DEAD:
 		return false
 	health -= amount
+	damaged.emit(self)
 	if health <= 0.0:
 		_enter_state(State.DEAD)
 		return true
