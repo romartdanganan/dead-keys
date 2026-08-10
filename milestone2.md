@@ -7,7 +7,7 @@
 
 | Name | Role |
 |---|---|
-| Romart Danganan | Lead Programmer / Project Manager (architecture, git & issue-tracker setup, cross-team integration, documentation) |
+| Romart Danganan | Lead Programmer / Project Manager |
 | William Johnston | Gameplay & Mechanics Programmer |
 | Josiah Natanielu | FX Programmer |
 | Nicole Lai | Tools, Audio & Systems Programmer |
@@ -16,7 +16,7 @@
 
 - Game repository (code, GDD, Tech Spec, all assets via Git LFS): https://gitlab.ecs.vuw.ac.nz/course-work/cgra359/2026/assignments/danganroma/dead-keys
 
-No separate asset or tooling repositories exist; everything lives in the one repo above.
+No separate asset or tooling repositories exist, everything lives in the one repo above.
 
 ## Engine
 
@@ -41,6 +41,25 @@ flowchart LR
 ```
 
 Word appears above a zombie → type it (1–3 s) → a bullet is added to the magazine → aim with the mouse and fire (consumes one bullet) → hit kills the zombie, miss wastes the bullet → repeat against the next zombie. A mistaken keystroke costs a bullet immediately, and three consecutive mistakes jam the weapon for a short window. This is the loop the player repeats inside Mission 1, reached via a real Main Menu → Home Base → level-select flow rather than a bare gameplay scene, see Scope below for exactly what that surrounding flow does and doesn't do yet.
+
+## MVP gameplay video
+
+A short gameplay demonstration of the Milestone 2 MVP is available here:
+
+**YouTube:** [VIDEO_URL_HERE](https://youtu.be/PhkkVE3Z474)
+
+The video demonstrates:
+
+- launching the game from the Main Menu and Home Base;
+- typing Walker words to generate ammunition;
+- aiming and firing at Walkers;
+- mistake penalties and the two-second weapon jam;
+- mission failure when the wall is destroyed;
+- mission completion when all Walkers are defeated.
+
+Temporary debug ammunition controls are used during part of the video to shorten
+the second demonstration run.
+
 
 ## Scope
 
@@ -69,8 +88,8 @@ Two-week sprints from Milestone 2 onward, chosen for a four-person team where da
 
 | Sprint | Dates | Goal |
 |---|---|---|
-| 1 | 1–7 Aug | Backbone: project and repo structure, the AmmoSystem, Main Menu/Home Base placeholder, gameplay scene and HUD shell, Git LFS setup. Mostly Romart, since this had to exist before anyone else's work had something to build against. |
-| 2 | 7–14 Aug | Complete the prototype: weapon/projectile system, TypingController↔AmmoSystem integration, multi-Walker TypingController rework, Walker wave integration, mistake/jam fix, the Milestone 2 internal playtest. Target was a functionally complete prototype by ~11 Aug, achieved, leaving the remaining days for playtesting write-up, documentation, and the submission video rather than new features. |
+| 1 | 1–7 Aug | Backbone: project and repo structure, the AmmoSystem, Main Menu/Home Base placeholder, gameplay scene and HUD shell, Git LFS setup. since this had to exist before anyone else's work had something to build against. |
+| 2 | 7–14 Aug | Complete the prototype: weapon/projectile system, TypingController↔AmmoSystem integration, multi-Walker TypingController rework, Walker wave integration, mistake/jam fix, the Milestone 2 internal playtest. Target was a functionally complete prototype by 10 Aug, achieved, leaving the remaining days for playtesting write-up, documentation, and the submission video rather than new features. |
 | 3 | 14–28 Aug | Ability system + Combo counter, real Home Base shop UI, save/progression manager |
 | 4 | 28 Aug–11 Sep | Mission Supplies system, remaining 3 of the first 4 enemy types, Missions 1–2 playable. **Playtest #2 at the end of this sprint.** |
 | 5 | 11–25 Sep | Mission 3 + first boss, remaining upgrade tracks wired in. Vertical-slice checkpoint. |
@@ -88,7 +107,11 @@ Milestone 4 (30 Oct) is an individual reflection only, not a further game milest
 - **Romart Danganan** — core architecture (the AmmoSystem is done and documented as the integration contract other systems build against), the Ability System and Permanent Upgrades once built, cross-branch integration, issue/label/milestone setup, git workflow documentation.
 - **William Johnston** — Gameplay & Mechanics: built the Walker enemy and wave-spawning (#11), and integrated those waves into the shared gameplay prototype scene (#19) on top of the multi-Walker TypingController fix below, now working end to end from Mission 1 launch through to win/lose.
 - **Nicole Lai** — Tools, Audio & Systems: the TypingController, save/progression tooling, audio integration.
-- **Josiah Natanielu** — FX: hit/death feedback, ability and supply-drop visual effects, once those systems exist to attach FX to. Not yet assigned a Milestone 2 issue; this is being corrected this week, in the meantime Josiah is picking up small FX polish on the existing zombie-death feedback so there's a real, reviewable Milestone 2 contribution rather than a gap.
+- **Josiah Natanielu** — Mistake System and weapon-jam implementation. Built
+  `mistake_system.gd`, connected incorrect typing to ammunition loss, tracked
+  consecutive mistakes, triggered the two-second jam after three consecutive
+  mistakes, disabled firing while jammed, and added HUD feedback for the
+  mistake counter and `JAMMED` state (#13). 
 
 We'll know someone is stuck if their assigned issue hasn't moved on the board for more than 3–4 days without a Discord update, at which point Romart follows up directly rather than waiting for a stand-up that doesn't exist yet. The board alone can be misleading if someone's mid-task and just hasn't updated the card, so this is cross-checked against whether their branch has had any new commits pushed in that window; no card movement and no commits together is the actual signal, not either alone.
 
