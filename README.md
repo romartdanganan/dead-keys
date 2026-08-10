@@ -86,6 +86,28 @@ Main Menu
 
 The F4–F7 controls are temporary prototype/debug controls.
 
+
+# MVP Gameplay Video
+
+A short gameplay demonstration of the Milestone 2 MVP is available here:
+
+**YouTube:** [VIDEO_URL_HERE](https://youtu.be/PhkkVE3Z474)
+
+The video demonstrates the current core loop:
+
+```text
+type a Walker word
+→ gain ammunition
+→ aim and fire
+→ damage or defeat Walkers
+→ continue through the wave
+```
+
+Some visual and audio feedback is still placeholder or incomplete at Milestone 2.
+Where feedback is not yet obvious in-game, the video uses simple captions or zooms
+to make the current behaviour clear without presenting unfinished feedback as a
+finished system.
+
 # Important Prototype Behaviour
 
 ## Multi-Walker typing
