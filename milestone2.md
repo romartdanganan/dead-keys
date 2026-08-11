@@ -57,9 +57,6 @@ The video demonstrates:
 - mission failure when the wall is destroyed;
 - mission completion when all Walkers are defeated.
 
-Temporary debug ammunition controls are used during part of the video to shorten
-the second demonstration run.
-
 
 ## Scope
 
@@ -104,14 +101,13 @@ Milestone 4 (30 Oct) is an individual reflection only, not a further game milest
 
 ### Ownership
 
-- **Romart Danganan** — core architecture (the AmmoSystem is done and documented as the integration contract other systems build against), the Ability System and Permanent Upgrades once built, cross-branch integration, issue/label/milestone setup, git workflow documentation.
-- **William Johnston** — Gameplay & Mechanics: built the Walker enemy and wave-spawning (#11), and integrated those waves into the shared gameplay prototype scene (#19) on top of the multi-Walker TypingController fix below, now working end to end from Mission 1 launch through to win/lose.
-- **Nicole Lai** — Tools, Audio & Systems: the TypingController, save/progression tooling, audio integration.
-- **Josiah Natanielu** — Mistake System and weapon-jam implementation. Built
-  `mistake_system.gd`, connected incorrect typing to ammunition loss, tracked
-  consecutive mistakes, triggered the two-second jam after three consecutive
-  mistakes, disabled firing while jammed, and added HUD feedback for the
-  mistake counter and `JAMMED` state (#13). 
+- **Romart Danganan** — Lead programming, core gameplay architecture and integration. Owns the main scene flow and prototype structure, including Main Menu, Home Base and gameplay scene integration; the `AmmoSystem`; weapon/projectile integration; shared multi-Walker typing integration; cross-branch integration; testing coordination; and the team's GitLab issue, label, milestone and branching workflow. Also owns the Ability System and Permanent Upgrade systems once those are implemented.
+
+- **William Johnston** — Gameplay & Mechanics. Built the Walker enemy and wave-spawning systems (#11) and integrated Walker waves into the shared gameplay prototype (#19), including the mission flow from launch through win/lose conditions.
+
+- **Nicole Lai** — Tools, Audio & Systems. Created the original `TypingController` foundation and owns planned save/progression tooling and audio integration. The typing system is now shared/integrated across multiple Walkers, with later multi-target architecture and integration work carried out by Romart.
+
+- **Josiah Natanielu** — Mistake System and weapon-jam implementation. Built `mistake_system.gd`, connected incorrect typing to ammunition loss, tracked consecutive mistakes, triggered the two-second jam after three consecutive mistakes, disabled firing while jammed, and added HUD feedback for the mistake counter and `JAMMED` state (#13).
 
 We'll know someone is stuck if their assigned issue hasn't moved on the board for more than 3–4 days without a Discord update, at which point Romart follows up directly rather than waiting for a stand-up that doesn't exist yet. The board alone can be misleading if someone's mid-task and just hasn't updated the card, so this is cross-checked against whether their branch has had any new commits pushed in that window; no card movement and no commits together is the actual signal, not either alone.
 
