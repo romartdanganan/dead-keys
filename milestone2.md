@@ -57,9 +57,6 @@ The video demonstrates:
 - mission failure when the wall is destroyed;
 - mission completion when all Walkers are defeated.
 
-Temporary debug ammunition controls are used during part of the video to shorten
-the second demonstration run.
-
 
 ## Scope
 
@@ -104,14 +101,13 @@ Milestone 4 (30 Oct) is an individual reflection only, not a further game milest
 
 ### Ownership
 
-- **Romart Danganan** — core architecture (the AmmoSystem is done and documented as the integration contract other systems build against), the Ability System and Permanent Upgrades once built, cross-branch integration, issue/label/milestone setup, git workflow documentation.
-- **William Johnston** — Gameplay & Mechanics: built the Walker enemy and wave-spawning (#11), and integrated those waves into the shared gameplay prototype scene (#19) on top of the multi-Walker TypingController fix below, now working end to end from Mission 1 launch through to win/lose.
-- **Nicole Lai** — Tools, Audio & Systems: the TypingController, save/progression tooling, audio integration.
-- **Josiah Natanielu** — Mistake System and weapon-jam implementation. Built
-  `mistake_system.gd`, connected incorrect typing to ammunition loss, tracked
-  consecutive mistakes, triggered the two-second jam after three consecutive
-  mistakes, disabled firing while jammed, and added HUD feedback for the
-  mistake counter and `JAMMED` state (#13). 
+- **Romart Danganan** — Lead programming, core gameplay architecture and integration. Owns the main scene flow and prototype structure, including Main Menu, Home Base and gameplay scene integration (#5, #6, #7); the AmmoSystem (#9); weapon/projectile integration (#10); shared multi-Walker typing integration (#18, #22); cross-branch integration and testing coordination; and the team's GitLab issue, label, milestone and branching workflow. Also owns the Ability System and Permanent Upgrade systems once those are implemented.
+
+- **William Johnston** — Gameplay & Mechanics. Built the Walker enemy and wave-spawning systems (#11) and integrated Walker waves into the shared gameplay prototype (#19), including the mission flow from launch through win/lose conditions.
+
+- **Nicole Lai** — Tools, Audio & Systems. Created the original `TypingController` foundation and owns planned save/progression tooling and audio integration. The typing system is now shared/integrated across multiple Walkers, with later multi-target architecture and integration work carried out by Romart.
+
+- **Josiah Natanielu** — Mistake System and weapon-jam implementation. Built `mistake_system.gd`, connected incorrect typing to ammunition loss, tracked consecutive mistakes, triggered the two-second jam after three consecutive mistakes, disabled firing while jammed, and added HUD feedback for the mistake counter and `JAMMED` state (#13).
 
 We'll know someone is stuck if their assigned issue hasn't moved on the board for more than 3–4 days without a Discord update, at which point Romart follows up directly rather than waiting for a stand-up that doesn't exist yet. The board alone can be misleading if someone's mid-task and just hasn't updated the card, so this is cross-checked against whether their branch has had any new commits pushed in that window; no card movement and no commits together is the actual signal, not either alone.
 
@@ -125,7 +121,7 @@ A feature is done when: it's merged through the branch → `dev` → `main` flow
 
 ### Risks
 
-1. **Onboarding / bus factor.** Most of the foundational architecture (project structure, the AmmoSystem) was built solo by Romart before the rest of the team joined, so there's a real risk teammates hit friction integrating with decisions they didn't make. Mitigated by documenting the AmmoSystem's public functions as an explicit interface contract before anyone else's work depended on it, by the mandatory MR-review rule surfacing integration confusion early rather than at the end, and by Romart writing long, itemised MR descriptions for every merge (what changed, what was tested, what's left as follow-up) rather than one-line summaries, so the reasoning behind a change is readable later without having to ask. The rest of the team is encouraged to do the same but isn't required to match that level of detail.
+1. **Onboarding / bus factor.** Most of the foundational architecture (project structure, the AmmoSystem) was built solo by Romart before the rest of the team joined, so there's a real risk teammates hit friction integrating with decisions they didn't make. Mitigated by documenting the AmmoSystem's public functions as an explicit interface contract before anyone else's work depended on it, by the mandatory MR-review rule surfacing integration confusion early rather than at the end, and by Romart writing long, itemised MR descriptions for every merge (what changed, what was tested, what's left as follow-up) rather than one-line summaries, so the reasoning behind a change is readable later by the team without having to ask. The rest of the team is encouraged to do the same but isn't required to match that level of detail.
 2. **Scope versus the 10-week gap.** The GDD's full vision, 8 enemy types, 8 abilities, 6 missions, 2 bosses, a full upgrade economy, is a lot for a 4-person team even across 10 weeks. Mitigated by the MoSCoW priority order already in the GDD (Must/Should before Could), the feature freeze on 14 Oct above, and a pre-agreed cut order if we fall behind: the second boss and half the ability roster go first, the core typing/mistake/combo loop never gets cut.
 3. **Parallel integration.** Right now, the TypingController (#8), aiming/projectiles (#10), the Walker enemy (#11), damage/death/word-replacement (#12), and the mistake system (#13) are being built roughly in parallel by three different people, before any of them are wired together. Mitigated by issue #14 existing specifically as an integration checkpoint before the Milestone 2 deadline, and by the AmmoSystem's interface being written and documented before the dependent systems started. This risk already materialised once in a small way and the process caught it cleanly: the original TypingController tracked one Walker at a time, so it broke as soon as William's wave-spawning put several Walkers on screen at once. Because it surfaced on a branch (#22) rather than on `main`, Romart reworked the controller to a single shared instance with prefix matching across all active words, got it reviewed and merged, and William continued his integration (#19) on top of the fix without losing work. That's the process working as designed, not just a plan on paper.
 
