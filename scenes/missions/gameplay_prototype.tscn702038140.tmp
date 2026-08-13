@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://bs8sp27gkkybi" path="res://scripts/systems/weapon_controller.gd" id="3_jfe48"]
 [ext_resource type="Script" uid="uid://dooywlfphubj7" path="res://scripts/systems/ammo_system.gd" id="4_2o0v8"]
 [ext_resource type="PackedScene" uid="uid://c1vn4ejy744uy" path="res://scenes/entities/projectile.tscn" id="4_sa8vt"]
+[ext_resource type="PackedScene" uid="uid://c3ddmkhkeshvy" path="res://scenes/testing/projectile_test_target.tscn" id="5_efms4"]
 [ext_resource type="Script" uid="uid://cyanfkt2biqp3" path="res://scripts/typing/typing_controller.gd" id="8_pa0ib"]
 [ext_resource type="Script" uid="uid://dx6y26g4dhm7t" path="res://scripts/systems/mistake_system.gd" id="9_67u5c"]
 
@@ -54,6 +55,9 @@ position = Vector2(1080, -40)
 
 [node name="WallAttackLine" type="Marker2D" parent="World" unique_id=689915184]
 position = Vector2(640, 590)
+
+[node name="ProjectileTestTarget" parent="World" unique_id=519939722 instance=ExtResource("5_efms4")]
+position = Vector2(640, 280)
 
 [node name="HUD" type="CanvasLayer" parent="." unique_id=950296053]
 
@@ -193,7 +197,24 @@ offset_bottom = -25.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_constants/separation = 8
-alignment = 2
+
+[node name="TypingInputPanel" type="PanelContainer" parent="HUD/HUDRoot/TypingPanel" unique_id=231566293]
+custom_minimum_size = Vector2(520, 65)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TypingInputMargin" type="MarginContainer" parent="HUD/HUDRoot/TypingPanel/TypingInputPanel" unique_id=1155375769]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 10
+
+[node name="TypedTextLabel" type="Label" parent="HUD/HUDRoot/TypingPanel/TypingInputPanel/TypingInputMargin" unique_id=2040888837]
+layout_mode = 2
+text = "START TYPING..."
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="MistakePanel" type="PanelContainer" parent="HUD/HUDRoot/TypingPanel" unique_id=574466646]
 custom_minimum_size = Vector2(300, 42)
@@ -448,12 +469,15 @@ script = ExtResource("4_2o0v8")
 
 [node name="TypingController" type="Node" parent="." unique_id=1294852722 node_paths=PackedStringArray("word_label")]
 script = ExtResource("8_pa0ib")
-word_label = NodePath("")
+word_label = NodePath("../World/ProjectileTestTarget/WordLabel")
 
 [node name="MistakeSystem" type="Node" parent="." unique_id=1072825287]
 script = ExtResource("9_67u5c")
 
 [node name="StatusTimer" type="Timer" parent="." unique_id=965495798]
+wait_time = 2.0
 autostart = true
 
 [connection signal="pressed" from="HUD/HUDRoot/ReturnHomeBaseButton" to="." method="_on_return_home_base_button_pressed"]
+
+[editable path="World/ProjectileTestTarget"]
