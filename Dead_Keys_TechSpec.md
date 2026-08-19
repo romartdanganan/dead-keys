@@ -61,10 +61,10 @@ scenes/ui/home_base.tscn
  ├─ MissionGrid
  │   └─ six instances of mission_card.tscn
  └─ selected-mission details panel
-     ├─ selected mission image
-     ├─ title and description
-     ├─ best medal
-     └─ Launch Mission button
+	 ├─ selected mission image
+	 ├─ title and description
+	 ├─ best medal
+	 └─ Launch Mission button
 
 scenes/ui/mission_card.tscn
  ├─ mission image

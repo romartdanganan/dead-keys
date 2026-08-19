@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://c8nylxtu1lk7w"]
+
+[ext_resource type="Script" uid="uid://dctn0fbald430" path="res://tests/zombies/zombe_walk_test/zombie_walk_test_2026-08-04.gd" id="1_614p0"]
+[ext_resource type="Texture2D" uid="uid://dtxygfe036xnp" path="res://icon.svg" id="2_afrgr"]
+
+[node name="ZombieWalkTest" type="Node2D" unique_id=975987294]
+script = ExtResource("1_614p0")
+
+[node name="SpawnPoint" type="Marker2D" parent="." unique_id=864704112]
+position = Vector2(100, 300)
+
+[node name="WallTarget" type="Marker2D" parent="." unique_id=145623410]
+position = Vector2(800, 300)
+
+[node name="Sprite2D" type="Sprite2D" parent="WallTarget" unique_id=362376911]
+texture = ExtResource("2_afrgr")

@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="EnemyTypeDef" format=3 uid="uid://dkym7neffs4t7"]
+
+[ext_resource type="Script" uid="uid://sylq37045jm3" path="res://scripts/resources/enemy_type_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+enemy_id = "walker"
+display_name = "Walker"
+health = 3.0
+speed = 30.0
