@@ -16,6 +16,10 @@ var projectile_container: Node2D
 var cooldown_remaining: float = 0.0
 var set_jammed := false
 
+# current Bullet Damage upgrade value (#25), applied to each projectile on fire.
+# set externally via gameplay_prototype.gd after configure().
+var bullet_damage: int = 10
+
 # inject dependencies from the main game scene
 func configure(
 	new_ammo_system: AmmoSystem,
@@ -69,6 +73,7 @@ func try_fire(target_position: Vector2) -> bool:
 
 	projectile_container.add_child(projectile)
 
+	projectile.damage = bullet_damage
 	projectile.initialise(
 		muzzle_point.global_position,
 		target_position

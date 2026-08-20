@@ -9,6 +9,12 @@ extends Node2D
 @onready var ammo_bar: ProgressBar = %AmmoBar
 @onready var wall_health_label: Label = $HUD/HUDRoot/WallPanelAnchor/WallPanel/WallMargin/WallContent/WallHealthLabel
 @onready var wall_health_bar: ProgressBar = $HUD/HUDRoot/WallPanelAnchor/WallPanel/WallMargin/WallContent/WallHealthBar
+@onready var lives_label: Label = $HUD/HUDRoot/LivesPanel/LivesMargin/LivesContent/LivesLabel
+@onready var life_icons: Array[TextureRect] = [
+	$HUD/HUDRoot/LivesPanel/LivesMargin/LivesContent/LivesIcons/LifeIcon1,
+	$HUD/HUDRoot/LivesPanel/LivesMargin/LivesContent/LivesIcons/LifeIcon2,
+	$HUD/HUDRoot/LivesPanel/LivesMargin/LivesContent/LivesIcons/LifeIcon3,
+]
 @onready var typing_controller: Node = $TypingController
 @onready var weapon_controller: WeaponController = $World/WeaponController
 @onready var projectile_container: Node2D = $World/ProjectileContainer
@@ -17,17 +23,36 @@ extends Node2D
 @onready var status_timer: Timer = $StatusTimer
 
 var zombie_manager: ZombieManager
-const WALL_MAX_HEALTH: float = 100.0
+
+# base wall HP — overridden by the Fortified Wall upgrade (#25) in _ready()
+var WALL_MAX_HEALTH: float = 100.0
 
 var wall_health: float = WALL_MAX_HEALTH
 
+# Extra Life upgrade (#25): mission starts with this many lives; wall resets
+# to 50% health and the mission continues each time a life is spent, per
+# GDD §2.5's "extra lives" design note. Mission only ends when lives hit 0.
+var lives_remaining: int = 1
+
 func _ready() -> void:
+	_apply_upgrades()
 	_setup_cursor()
 	_setup_ammo_hud()
 	_setup_wall_hud()
+	_setup_lives_hud()
 	_setup_weapon()
 	_setup_typing()
 	_start_mission()
+
+
+# reads Fortified Wall and Extra Life upgrade values (#25) before any HUD
+# or gameplay values that depend on them are set up. Fire Rate, Bullet
+# Damage, and Magazine Capacity are applied in their own _setup_* functions
+# below since they need the relevant node to already be ready.
+func _apply_upgrades() -> void:
+	WALL_MAX_HEALTH = UpgradeState.get_upgrade_value("fortified_wall")
+	wall_health = WALL_MAX_HEALTH
+	lives_remaining = UpgradeState.get_upgrade_value("extra_life")
 
 func _exit_tree() -> void:
 	# reset custom cursor back to system default on scene exit
@@ -64,15 +89,28 @@ func _setup_cursor() -> void:
 	)
 
 func _setup_ammo_hud() -> void:
+	# Magazine Capacity upgrade (#25)
+	ammo_system.set_maximum_ammunition(UpgradeState.get_upgrade_value("magazine_capacity"))
+
 	ammo_system.ammunition_changed.connect(_on_ammunition_changed)
 	_on_ammunition_changed(ammo_system.current_ammo, ammo_system.maximum_ammo)
 
 func _setup_wall_hud() -> void:
 	_update_wall_hud()
 
+func _setup_lives_hud() -> void:
+	_update_lives_hud()
+
 func _setup_weapon() -> void:
 	weapon_controller.configure(ammo_system, projectile_container)
 	weapon_controller.attempted_fire_without_ammunition.connect(_on_attempted_fire_without_ammunition)
+
+	# Fire Rate upgrade (#25): shots/s -> cooldown seconds
+	var shots_per_second: float = UpgradeState.get_upgrade_value("fire_rate")
+	weapon_controller.fire_cooldown = 1.0 / shots_per_second
+
+	# Bullet Damage upgrade (#25), applied to each projectile on fire
+	weapon_controller.bullet_damage = UpgradeState.get_upgrade_value("bullet_damage")
 
 func _setup_typing() -> void:
 	typing_controller.word_completed.connect(_on_typing_word_completed)
@@ -156,7 +194,18 @@ func _on_wall_hit(damage: float) -> void:
 	_update_wall_hud()
 	print("Wall hit for ", damage, " damage. Wall health: ", wall_health)
 	if wall_health <= 0.0:
-		print("Wall destroyed. Returning to home base.")
+		_spend_life()
+
+func _spend_life() -> void:
+	lives_remaining -= 1
+	_update_lives_hud()
+
+	if lives_remaining > 0:
+		print("Wall destroyed. Life lost, ", lives_remaining, " remaining. Wall reset to 50%.")
+		wall_health = WALL_MAX_HEALTH * 0.5
+		_update_wall_hud()
+	else:
+		print("Wall destroyed. No lives remaining. Returning to home base.")
 		return_to_home_base()
 
 func _on_all_waves_cleared() -> void:
@@ -178,3 +227,9 @@ func _update_wall_hud() -> void:
 	wall_health_bar.min_value = 0
 	wall_health_bar.max_value = WALL_MAX_HEALTH
 	wall_health_bar.value = wall_health
+
+func _update_lives_hud() -> void:
+	lives_label.text = "LIVES: %d" % lives_remaining
+	for i in life_icons.size():
+		# lit for lives still remaining, dimmed for lives already spent
+		life_icons[i].modulate.a = 1.0 if i < lives_remaining else 0.27
