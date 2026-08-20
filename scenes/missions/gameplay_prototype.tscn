@@ -55,6 +55,11 @@ position = Vector2(1080, -40)
 [node name="WallAttackLine" type="Marker2D" parent="World" unique_id=689915184]
 position = Vector2(640, 590)
 
+[node name="SupplyLandingPoint" type="Marker2D" parent="World"]
+position = Vector2(950, 480)
+
+[node name="SupplyContainer" type="Node2D" parent="World"]
+
 [node name="HUD" type="CanvasLayer" parent="." unique_id=950296053]
 
 [node name="HUDRoot" type="Control" parent="HUD" unique_id=339995466]

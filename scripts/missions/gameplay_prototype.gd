@@ -17,14 +17,22 @@ extends Node2D
 ]
 @onready var typing_controller: Node = $TypingController
 @onready var weapon_controller: WeaponController = $World/WeaponController
+@onready var mistake_system: MistakeSystem = $MistakeSystem
 @onready var projectile_container: Node2D = $World/ProjectileContainer
 @onready var spawn_points: Array[Marker2D] = [$World/EnemySpawnArea/SpawnLeftBoundary, $World/EnemySpawnArea/SpawnCentreGuide, $World/EnemySpawnArea/SpawnRightBoundary]
 @onready var wall_target: Marker2D = $World/WallAttackLine
 @onready var status_timer: Timer = $StatusTimer
+@onready var supply_landing_point: Marker2D = $World/SupplyLandingPoint
+@onready var supply_container: Node2D = $World/SupplyContainer
+@onready var supply_slot_icons: Array[TextureRect] = [
+	$HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent/SupplySection/SupplySlots/SupplySlot1/SlotPanel/SlotMargin/SupplyIcon1,
+	$HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent/SupplySection/SupplySlots/SupplySlot2/SlotPanel/SlotMargin/SupplyIcon1,
+	$HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent/SupplySection/SupplySlots/SupplySlot3/SlotPanel/SlotMargin/SupplyIcon1,
+]
 
 var zombie_manager: ZombieManager
 
-# base wall HP — overridden by the Fortified Wall upgrade (#25) in _ready()
+# base wall HP, overridden by the Fortified Wall upgrade (#25) in _ready()
 var WALL_MAX_HEALTH: float = 100.0
 
 var wall_health: float = WALL_MAX_HEALTH
@@ -34,6 +42,17 @@ var wall_health: float = WALL_MAX_HEALTH
 # GDD §2.5's "extra lives" design note. Mission only ends when lives hit 0.
 var lives_remaining: int = 1
 
+# Mission Supplies (#29). preloaded rather than an exported PackedScene since
+# there's only ever one crate scene, same pattern as EnemyTypeDef's default
+const SUPPLY_CRATE_SCENE := preload("res://scenes/entities/supply_crate.tscn")
+const SupplyCatalog := preload("res://scripts/resources/supply_catalog.gd")
+
+const SUPPLY_FLIGHT_SECONDS: float = 3.0
+
+var active_crate: SupplyCrate = null
+var supply_call_pending: bool = false
+var supply_slots_used: Array[bool] = [false, false, false]
+
 func _ready() -> void:
 	_apply_upgrades()
 	_setup_cursor()
@@ -42,6 +61,7 @@ func _ready() -> void:
 	_setup_lives_hud()
 	_setup_weapon()
 	_setup_typing()
+	_setup_supplies()
 	_start_mission()
 
 
@@ -77,6 +97,12 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_pressed("debug_reset_ammo"):
 		ammo_system.reset_ammunition()
 		print("Ammunition reset")
+	elif event.is_action_pressed("call_supply_1"):
+		_call_supply(0)
+	elif event.is_action_pressed("call_supply_2"):
+		_call_supply(1)
+	elif event.is_action_pressed("call_supply_3"):
+		_call_supply(2)
 
 
 func _setup_cursor() -> void:
@@ -114,6 +140,77 @@ func _setup_weapon() -> void:
 
 func _setup_typing() -> void:
 	typing_controller.word_completed.connect(_on_typing_word_completed)
+	typing_controller.supply_word_completed.connect(_on_supply_word_completed)
+
+func _setup_supplies() -> void:
+	for i in supply_slot_icons.size():
+		supply_slot_icons[i].modulate.a = 1.0 if not SupplyState.get_slot(i).is_empty() else 0.15
+
+func _call_supply(slot_index: int) -> void:
+	# only one crate can be active at a time, and each slot fires once per mission
+	if active_crate != null or supply_call_pending:
+		return
+	if supply_slots_used[slot_index]:
+		return
+
+	var supply_id := SupplyState.get_slot(slot_index)
+	if supply_id.is_empty():
+		return
+
+	supply_slots_used[slot_index] = true
+	supply_slot_icons[slot_index].modulate.a = 0.35
+	supply_call_pending = true
+
+	print("Supply called: ", supply_id, " (slot ", slot_index + 1, "), landing in ", SUPPLY_FLIGHT_SECONDS, "s")
+
+	var flight_timer := get_tree().create_timer(SUPPLY_FLIGHT_SECONDS)
+	flight_timer.timeout.connect(_spawn_supply_crate.bind(supply_id))
+
+func _spawn_supply_crate(supply_id: String) -> void:
+	supply_call_pending = false
+
+	var crate := SUPPLY_CRATE_SCENE.instantiate() as SupplyCrate
+	crate.supply_type = supply_id
+	crate.global_position = supply_landing_point.global_position
+	supply_container.add_child(crate)
+
+	crate.claimed.connect(_on_crate_claimed)
+	crate.expired.connect(_on_crate_expired)
+
+	var word_label: RichTextLabel = crate.get_node("WordLabel")
+	typing_controller.register_target(crate, word_label, "supply")
+
+	active_crate = crate
+	print("Supply crate landed: ", supply_id)
+
+func _on_supply_word_completed(crate: Node, _word: String) -> void:
+	if crate is SupplyCrate:
+		crate.claim()
+
+func _on_crate_claimed(crate: SupplyCrate) -> void:
+	active_crate = null
+	_apply_supply_effect(crate.supply_type)
+	print("Supply claimed: ", crate.supply_type)
+
+func _on_crate_expired(crate: SupplyCrate) -> void:
+	active_crate = null
+	typing_controller.unregister_target(crate)
+	print("Supply crate expired unclaimed: ", crate.supply_type)
+
+# effect numbers here are a first-pass judgment call, not specified exactly
+# in the GDD, see SupplyCatalog for the same note
+func _apply_supply_effect(supply_id: String) -> void:
+	match supply_id:
+		"ammo_crate":
+			ammo_system.add_ammunition(ammo_system.maximum_ammo)
+		"medical_crate":
+			wall_health = minf(wall_health + WALL_MAX_HEALTH * 0.5, WALL_MAX_HEALTH)
+			_update_wall_hud()
+		"combat_crate":
+			weapon_controller.bullet_damage = int(weapon_controller.bullet_damage * 1.5)
+		"emergency_crate":
+			mistake_system.set_jam(false)
+			ammo_system.add_ammunition(ammo_system.maximum_ammo)
 
 func _start_mission() -> void:
 	var mission := _build_mission_config()
@@ -214,12 +311,14 @@ func _on_all_waves_cleared() -> void:
 
 
 func _on_return_home_base_button_pressed() -> void:
-	# NOTE: kept this exact function name — it's very likely connected to a
+	# NOTE: kept this exact function name, it's very likely connected to a
 	# Button's `pressed` signal via the editor's Signals panel, not visible
 	# in this file. Renaming it would break that connection silently.
 	return_to_home_base()
 
 func return_to_home_base() -> void:
+	# Supplies are repurchased every mission per GDD §2.6, not persistent
+	SupplyState.clear_loadout()
 	get_tree().change_scene_to_file("res://scenes/ui/home_base.tscn")
 
 func _update_wall_hud() -> void:
