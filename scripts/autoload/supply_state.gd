@@ -26,6 +26,12 @@ func purchase_into_slot(slot_index: int, supply_id: String) -> bool:
 	if slot_index < 0 or slot_index >= SLOT_COUNT:
 		return false
 
+	# refuse to silently overwrite an occupied slot, clear_slot() must be
+	# called first, this is what stops a purchase from both losing gold and
+	# losing whatever was already equipped
+	if not equipped_slots[slot_index].is_empty():
+		return false
+
 	var supply := SupplyCatalog.get_supply(supply_id)
 	if supply.is_empty():
 		return false
@@ -36,6 +42,32 @@ func purchase_into_slot(slot_index: int, supply_id: String) -> bool:
 	equipped_slots[slot_index] = supply_id
 	loadout_changed.emit()
 	return true
+
+
+func clear_slot(slot_index: int) -> void:
+	if slot_index < 0 or slot_index >= SLOT_COUNT:
+		return
+	equipped_slots[slot_index] = ""
+	loadout_changed.emit()
+
+
+# refunds the slot's purchase cost and empties it, this is how a slot is
+# changed once occupied, plain clear_slot() above is a silent no-refund
+# clear used only when a mission ends (see gameplay_prototype.gd)
+func sell_slot(slot_index: int) -> void:
+	if slot_index < 0 or slot_index >= SLOT_COUNT:
+		return
+
+	var supply_id := equipped_slots[slot_index]
+	if supply_id.is_empty():
+		return
+
+	var supply := SupplyCatalog.get_supply(supply_id)
+	if not supply.is_empty():
+		UpgradeState.add_gold(supply.cost)
+
+	equipped_slots[slot_index] = ""
+	loadout_changed.emit()
 
 
 func first_empty_slot() -> int:

@@ -33,6 +33,7 @@ func _ready() -> void:
 		selected_slot = 0
 
 	_refresh_slots()
+	_refresh_cards()
 
 
 func _on_gold_changed(new_gold: int) -> void:
@@ -40,8 +41,15 @@ func _on_gold_changed(new_gold: int) -> void:
 
 
 func _on_slot_pressed(slot_index: int) -> void:
+	# clicking an occupied slot sells it back for a refund, this is the only
+	# way to change what's equipped, prevents a BUY from silently overwriting
+	# it and losing both the gold and the previous supply
+	if not SupplyState.get_slot(slot_index).is_empty():
+		SupplyState.sell_slot(slot_index)
+
 	selected_slot = slot_index
 	_refresh_slots()
+	_refresh_cards()
 
 
 func _on_buy_pressed(supply_id: String) -> void:
@@ -66,8 +74,9 @@ func _refresh_slots() -> void:
 
 
 func _refresh_cards() -> void:
+	var occupied := selected_slot != -1 and not SupplyState.get_slot(selected_slot).is_empty()
 	for row in card_rows:
-		row.refresh()
+		row.refresh(occupied)
 
 
 func _on_back_button_pressed() -> void:

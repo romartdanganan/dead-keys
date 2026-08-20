@@ -55,10 +55,10 @@ position = Vector2(1080, -40)
 [node name="WallAttackLine" type="Marker2D" parent="World" unique_id=689915184]
 position = Vector2(640, 590)
 
-[node name="SupplyLandingPoint" type="Marker2D" parent="World"]
-position = Vector2(950, 480)
+[node name="SupplyLandingPoint" type="Marker2D" parent="World" unique_id=1218651921]
+position = Vector2(1150, 380)
 
-[node name="SupplyContainer" type="Node2D" parent="World"]
+[node name="SupplyContainer" type="Node2D" parent="World" unique_id=137963107]
 
 [node name="HUD" type="CanvasLayer" parent="." unique_id=950296053]
 
@@ -448,12 +448,19 @@ offset_bottom = 8.0
 grow_horizontal = 0
 text = "RETURN TO HUB"
 
+[node name="SupplyCallLabel" type="Label" parent="HUD/HUDRoot" unique_id=1761266415]
+layout_mode = 1
+offset_left = 1000.0
+offset_top = 320.0
+offset_right = 1270.0
+offset_bottom = 355.0
+horizontal_alignment = 1
+
 [node name="AmmoSystem" type="Node" parent="." unique_id=1279466094]
 script = ExtResource("4_2o0v8")
 
-[node name="TypingController" type="Node" parent="." unique_id=1294852722 node_paths=PackedStringArray("word_label")]
+[node name="TypingController" type="Node" parent="." unique_id=1294852722]
 script = ExtResource("8_pa0ib")
-word_label = NodePath("")
 
 [node name="MistakeSystem" type="Node" parent="." unique_id=1072825287]
 script = ExtResource("9_67u5c")

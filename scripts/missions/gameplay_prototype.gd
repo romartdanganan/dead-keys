@@ -17,7 +17,6 @@ extends Node2D
 ]
 @onready var typing_controller: Node = $TypingController
 @onready var weapon_controller: WeaponController = $World/WeaponController
-@onready var mistake_system: MistakeSystem = $MistakeSystem
 @onready var projectile_container: Node2D = $World/ProjectileContainer
 @onready var spawn_points: Array[Marker2D] = [$World/EnemySpawnArea/SpawnLeftBoundary, $World/EnemySpawnArea/SpawnCentreGuide, $World/EnemySpawnArea/SpawnRightBoundary]
 @onready var wall_target: Marker2D = $World/WallAttackLine
@@ -29,6 +28,7 @@ extends Node2D
 	$HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent/SupplySection/SupplySlots/SupplySlot2/SlotPanel/SlotMargin/SupplyIcon1,
 	$HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent/SupplySection/SupplySlots/SupplySlot3/SlotPanel/SlotMargin/SupplyIcon1,
 ]
+@onready var supply_call_label: Label = $HUD/HUDRoot/SupplyCallLabel
 
 var zombie_manager: ZombieManager
 
@@ -47,11 +47,21 @@ var lives_remaining: int = 1
 const SUPPLY_CRATE_SCENE := preload("res://scenes/entities/supply_crate.tscn")
 const SupplyCatalog := preload("res://scripts/resources/supply_catalog.gd")
 
-const SUPPLY_FLIGHT_SECONDS: float = 3.0
+const SUPPLY_FLIGHT_SECONDS: int = 3
+
+# Emergency Crate (#29): originally a jam-clear, changed after review since
+# typing the crate's own word takes about as long as a jam lasts anyway.
+# Now a temporary wall damage reduction plus a partial ammo refill instead.
+const EMERGENCY_WALL_REDUCTION_FACTOR: float = 0.5
+const EMERGENCY_WALL_REDUCTION_DURATION: float = 15.0
+const EMERGENCY_AMMO_REFILL_FRACTION: float = 0.5
 
 var active_crate: SupplyCrate = null
 var supply_call_pending: bool = false
 var supply_slots_used: Array[bool] = [false, false, false]
+var supply_call_seconds_left: int = 0
+var supply_call_supply_id: String = ""
+var wall_damage_reduction_active: bool = false
 
 func _ready() -> void:
 	_apply_upgrades()
@@ -160,11 +170,33 @@ func _call_supply(slot_index: int) -> void:
 	supply_slots_used[slot_index] = true
 	supply_slot_icons[slot_index].modulate.a = 0.35
 	supply_call_pending = true
+	supply_call_supply_id = supply_id
+	supply_call_seconds_left = SUPPLY_FLIGHT_SECONDS
 
-	print("Supply called: ", supply_id, " (slot ", slot_index + 1, "), landing in ", SUPPLY_FLIGHT_SECONDS, "s")
+	_update_supply_call_label()
+	print("Supply called: ", supply_id, " (slot ", slot_index + 1, ")")
 
-	var flight_timer := get_tree().create_timer(SUPPLY_FLIGHT_SECONDS)
-	flight_timer.timeout.connect(_spawn_supply_crate.bind(supply_id))
+	var countdown_timer := Timer.new()
+	countdown_timer.wait_time = 1.0
+	add_child(countdown_timer)
+	countdown_timer.timeout.connect(_on_supply_countdown_tick.bind(countdown_timer))
+	countdown_timer.start()
+
+func _on_supply_countdown_tick(countdown_timer: Timer) -> void:
+	supply_call_seconds_left -= 1
+
+	if supply_call_seconds_left <= 0:
+		countdown_timer.stop()
+		countdown_timer.queue_free()
+		supply_call_label.text = ""
+		_spawn_supply_crate(supply_call_supply_id)
+		return
+
+	_update_supply_call_label()
+
+func _update_supply_call_label() -> void:
+	var supply := SupplyCatalog.get_supply(supply_call_supply_id)
+	supply_call_label.text = "%s landing in %d..." % [supply.get("display_name", "SUPPLY"), supply_call_seconds_left]
 
 func _spawn_supply_crate(supply_id: String) -> void:
 	supply_call_pending = false
@@ -209,8 +241,14 @@ func _apply_supply_effect(supply_id: String) -> void:
 		"combat_crate":
 			weapon_controller.bullet_damage = int(weapon_controller.bullet_damage * 1.5)
 		"emergency_crate":
-			mistake_system.set_jam(false)
-			ammo_system.add_ammunition(ammo_system.maximum_ammo)
+			ammo_system.add_ammunition(int(ammo_system.maximum_ammo * EMERGENCY_AMMO_REFILL_FRACTION))
+			_activate_wall_damage_reduction()
+
+func _activate_wall_damage_reduction() -> void:
+	wall_damage_reduction_active = true
+	get_tree().create_timer(EMERGENCY_WALL_REDUCTION_DURATION).timeout.connect(
+		func() -> void: wall_damage_reduction_active = false
+	)
 
 func _start_mission() -> void:
 	var mission := _build_mission_config()
@@ -287,9 +325,10 @@ func _on_zombie_damaged(damaged_zombie: Zombie) -> void:
 	print("Zombie health now: ", damaged_zombie.health)
 
 func _on_wall_hit(damage: float) -> void:
-	wall_health = max(wall_health - damage, 0.0)
+	var effective_damage := damage * EMERGENCY_WALL_REDUCTION_FACTOR if wall_damage_reduction_active else damage
+	wall_health = max(wall_health - effective_damage, 0.0)
 	_update_wall_hud()
-	print("Wall hit for ", damage, " damage. Wall health: ", wall_health)
+	print("Wall hit for ", effective_damage, " damage. Wall health: ", wall_health)
 	if wall_health <= 0.0:
 		_spend_life()
 

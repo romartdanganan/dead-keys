@@ -28,7 +28,7 @@ const SUPPLIES: Array[Dictionary] = [
 	{
 		"id": "emergency_crate",
 		"display_name": "Emergency Crate",
-		"description": "Clears a weapon jam instantly and refills ammunition.",
+		"description": "Halves wall damage taken for 15 seconds and refills half your ammunition.",
 		"cost": 120,
 	},
 ]

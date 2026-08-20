@@ -17,8 +17,9 @@ func _ready() -> void:
 	refresh()
 
 
-# repaints the buy button, disabled when gold is insufficient
-func refresh() -> void:
+# repaints the buy button, disabled when gold is insufficient or the
+# currently selected loadout slot is already occupied
+func refresh(selected_slot_occupied: bool = false) -> void:
 	var supply := SupplyCatalog.get_supply(supply_id)
 	if supply.is_empty():
 		push_warning("SupplyCardRow has unknown supply_id: " + supply_id)
@@ -27,7 +28,13 @@ func refresh() -> void:
 	name_label.text = supply.display_name
 	tooltip_text = supply.description
 	cost_label.text = "%d GOLD" % supply.cost
-	buy_button.disabled = not UpgradeState.can_afford(supply.cost)
+
+	if selected_slot_occupied:
+		buy_button.text = "SLOT FULL"
+		buy_button.disabled = true
+	else:
+		buy_button.text = "BUY"
+		buy_button.disabled = not UpgradeState.can_afford(supply.cost)
 
 
 func _on_buy_pressed() -> void:
