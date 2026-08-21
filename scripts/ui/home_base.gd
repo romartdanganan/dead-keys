@@ -61,3 +61,7 @@ func _on_upgrades_button_pressed() -> void:
 
 func _on_supplies_button_pressed() -> void:
 	get_tree().change_scene_to_file("res://scenes/ui/mission_supplies.tscn")
+
+
+func _on_ability_button_pressed() -> void:
+	get_tree().change_scene_to_file("res://scenes/ui/ability_select.tscn")

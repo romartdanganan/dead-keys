@@ -1,5 +1,9 @@
 extends Node2D
 
+# preload rather than rely on the class_name global (needs an editor rescan
+# to register on a fresh checkout / new machine)
+const AbilityCatalog := preload("res://scripts/resources/ability_catalog.gd")
+
 
 @export var crosshair_texture: Texture2D
 @export var enemy_type: EnemyTypeDef = preload("res://resources/enemies/walker.tres")
@@ -17,6 +21,7 @@ extends Node2D
 ]
 @onready var typing_controller: Node = $TypingController
 @onready var weapon_controller: WeaponController = $World/WeaponController
+@onready var ability_name_label: Label = $HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent/AbilitySection/AbilityNameLabel
 @onready var projectile_container: Node2D = $World/ProjectileContainer
 @onready var spawn_points: Array[Marker2D] = [$World/EnemySpawnArea/SpawnLeftBoundary, $World/EnemySpawnArea/SpawnCentreGuide, $World/EnemySpawnArea/SpawnRightBoundary]
 @onready var wall_target: Marker2D = $World/WallAttackLine
@@ -71,6 +76,7 @@ func _ready() -> void:
 	_setup_lives_hud()
 	_setup_weapon()
 	_setup_typing()
+	_setup_ability_hud()
 	_setup_supplies()
 	_start_mission()
 
@@ -113,6 +119,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		_call_supply(1)
 	elif event.is_action_pressed("call_supply_3"):
 		_call_supply(2)
+	# TODO: remove once #23 (Combo system) actually charges the ability
+	elif event.is_action_pressed("debug_charge_ability"):
+		AbilityState.set_charged(true)
 
 
 func _setup_cursor() -> void:
@@ -249,6 +258,21 @@ func _activate_wall_damage_reduction() -> void:
 	get_tree().create_timer(EMERGENCY_WALL_REDUCTION_DURATION).timeout.connect(
 		func() -> void: wall_damage_reduction_active = false
 	)
+
+func _setup_ability_hud() -> void:
+	AbilityState.reset_for_mission()
+	AbilityState.charged_changed.connect(_on_ability_charged_changed)
+	_update_ability_hud()
+
+func _update_ability_hud() -> void:
+	var ability := AbilityCatalog.get_ability(AbilityState.equipped_ability_id)
+	var name_text: String = ability.get("display_name", "NONE")
+	if AbilityState.is_charged:
+		name_text += " (READY)"
+	ability_name_label.text = name_text
+
+func _on_ability_charged_changed(_is_charged: bool) -> void:
+	_update_ability_hud()
 
 func _start_mission() -> void:
 	var mission := _build_mission_config()
