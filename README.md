@@ -170,13 +170,57 @@ Manual test records are stored under:
 tests/manual/
 ```
 
-## Automated and system tests
+## Automated unit tests (GUT)
 
-Additional tests are stored under:
+Unit tests use [GUT](https://github.com/bitwes/Gut) (Godot Unit Test) and live
+under:
 
 ```text
-tests/
+tests/unit/
 ```
+
+Tests all current systems that have unit test coverage, this grows over time
+as new systems are added, check the folder itself for what's currently
+covered rather than relying on this list.
+
+### One-time setup
+
+1. Open the project in Godot.
+2. Go to the top of the editor and look for a tab called **AssetLib** or
+   **Asset Store** (the exact name varies by Godot version).
+3. Search for `GUT`. The listing's title may vary, look for the one whose
+   description mentions unit testing for GDScript.
+4. Install it.
+5. Go to **Project → Project Settings → Plugins** and ensure GUT (may be
+   listed as "Gut" or similar) is checked/enabled.
+
+### Running the tests
+
+**In-editor:**
+
+1. A **GUT** panel appears at the bottom of the editor after installing
+   the addon (alongside Output/Debugger/Audio). If it doesn't show up,
+   **Project → Reload Current Project**.
+2. The panel's in-editor settings are stored outside the project folder
+   and start empty, they do NOT automatically read `.gutconfig.json`. On
+   first use, click **Load** next to **Config** (top-right of the panel)
+   and select `.gutconfig.json` from the project root. This populates the
+   panel's test directory and settings from that file. `.gutconfig.json`
+   starts with a dot, if your file picker hides dotfiles, enable "show
+   hidden files".
+3. Click **Run All**.
+
+This Load step is only needed once per machine, GUT remembers it after
+that.
+
+**From the command line:**
+
+```bash
+godot --headless -s addons/gut/gut_cmdln.gd
+```
+
+This reads `.gutconfig.json` directly, no Load step needed for the CLI
+runner.
 
 ## Playtest records
 

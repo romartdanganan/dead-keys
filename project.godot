@@ -22,14 +22,19 @@ config/icon="res://icon.svg"
 [autoload]
 
 UpgradeState="*res://scripts/autoload/upgrade_state.gd"
-AbilityState="*res://scripts/autoload/ability_state.gd"
 SupplyState="*res://scripts/autoload/supply_state.gd"
+AbilityState="*res://scripts/autoload/ability_state.gd"
 
 [display]
 
 window/size/viewport_width=1280
 window/size/viewport_height=720
 window/stretch/mode="canvas_items"
+
+[editor_plugins]
+
+#pre-enabledsoinstallingtheGUTaddon(seeREADME)activatesit#automaticallywithoutanextramanualstepinProjectSettingsenabled=PackedStringArray("res://addons/gut/plugin.cfg")
+enabled=PackedStringArray("res://addons/gut/plugin.cfg")
 
 [input]
 
