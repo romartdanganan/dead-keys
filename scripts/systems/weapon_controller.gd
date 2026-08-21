@@ -20,6 +20,9 @@ var set_jammed := false
 # set externally via gameplay_prototype.gd after configure().
 var bullet_damage: int = 10
 
+# Spread Shot (#24) cone half-angle between the two outer bullets and centre
+const SPREAD_SHOT_ANGLE: float = deg_to_rad(25.0)
+
 # inject dependencies from the main game scene
 func configure(
 	new_ammo_system: AmmoSystem,
@@ -63,13 +66,30 @@ func try_fire(target_position: Vector2) -> bool:
 		attempted_fire_without_ammunition.emit()
 		return false
 
+	# Spread Shot (#24): consumes the ability charge, not extra ammo
+	if AbilityState.equipped_ability_id == "spread_shot" and AbilityState.is_charged:
+		_fire_spread_shot(target_position)
+		AbilityState.consume_charge()
+	else:
+		_spawn_projectile(target_position)
+
+	cooldown_remaining = fire_cooldown
+	return true
+
+
+func _fire_spread_shot(target_position: Vector2) -> void:
+	var direction := (target_position - muzzle_point.global_position).normalized()
+	for angle: float in [-SPREAD_SHOT_ANGLE, 0.0, SPREAD_SHOT_ANGLE]:
+		var spread_target := muzzle_point.global_position + direction.rotated(angle) * 1000.0
+		_spawn_projectile(spread_target)
+
+
+func _spawn_projectile(target_position: Vector2) -> Projectile:
 	var projectile := projectile_scene.instantiate() as Projectile
 
 	if projectile == null:
-		push_error(
-			"Projectile scene root must use Projectile."
-		)
-		return false
+		push_error("Projectile scene root must use Projectile.")
+		return null
 
 	projectile_container.add_child(projectile)
 
@@ -79,7 +99,5 @@ func try_fire(target_position: Vector2) -> bool:
 		target_position
 	)
 
-	cooldown_remaining = fire_cooldown
 	fired.emit(projectile)
-
-	return true
+	return projectile

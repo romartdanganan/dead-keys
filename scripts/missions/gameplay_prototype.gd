@@ -1,5 +1,9 @@
 extends Node2D
 
+# preload rather than rely on the class_name global (needs an editor rescan
+# to register on a fresh checkout / new machine)
+const AbilityCatalog := preload("res://scripts/resources/ability_catalog.gd")
+
 
 @export var crosshair_texture: Texture2D
 @export var enemy_type: EnemyTypeDef = preload("res://resources/enemies/walker.tres")
@@ -17,6 +21,7 @@ extends Node2D
 ]
 @onready var typing_controller: Node = $TypingController
 @onready var weapon_controller: WeaponController = $World/WeaponController
+@onready var ability_name_label: Label = $HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent/AbilitySection/AbilityNameLabel
 @onready var projectile_container: Node2D = $World/ProjectileContainer
 @onready var spawn_points: Array[Marker2D] = [$World/EnemySpawnArea/SpawnLeftBoundary, $World/EnemySpawnArea/SpawnCentreGuide, $World/EnemySpawnArea/SpawnRightBoundary]
 @onready var wall_target: Marker2D = $World/WallAttackLine
@@ -24,7 +29,7 @@ extends Node2D
 
 var zombie_manager: ZombieManager
 
-# base wall HP — overridden by the Fortified Wall upgrade (#25) in _ready()
+# base wall HP, overridden by the Fortified Wall upgrade (#25) in _ready()
 var WALL_MAX_HEALTH: float = 100.0
 
 var wall_health: float = WALL_MAX_HEALTH
@@ -42,6 +47,7 @@ func _ready() -> void:
 	_setup_lives_hud()
 	_setup_weapon()
 	_setup_typing()
+	_setup_ability_hud()
 	_start_mission()
 
 
@@ -77,6 +83,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_pressed("debug_reset_ammo"):
 		ammo_system.reset_ammunition()
 		print("Ammunition reset")
+	# TODO: remove once #23 (Combo system) actually charges the ability
+	elif event.is_action_pressed("debug_charge_ability"):
+		AbilityState.set_charged(true)
 
 
 func _setup_cursor() -> void:
@@ -114,6 +123,21 @@ func _setup_weapon() -> void:
 
 func _setup_typing() -> void:
 	typing_controller.word_completed.connect(_on_typing_word_completed)
+
+func _setup_ability_hud() -> void:
+	AbilityState.reset_for_mission()
+	AbilityState.charged_changed.connect(_on_ability_charged_changed)
+	_update_ability_hud()
+
+func _update_ability_hud() -> void:
+	var ability := AbilityCatalog.get_ability(AbilityState.equipped_ability_id)
+	var name_text: String = ability.get("display_name", "NONE")
+	if AbilityState.is_charged:
+		name_text += " (READY)"
+	ability_name_label.text = name_text
+
+func _on_ability_charged_changed(_is_charged: bool) -> void:
+	_update_ability_hud()
 
 func _start_mission() -> void:
 	var mission := _build_mission_config()
@@ -214,7 +238,7 @@ func _on_all_waves_cleared() -> void:
 
 
 func _on_return_home_base_button_pressed() -> void:
-	# NOTE: kept this exact function name — it's very likely connected to a
+	# NOTE: kept this exact function name, it's very likely connected to a
 	# Button's `pressed` signal via the editor's Signals panel, not visible
 	# in this file. Renaming it would break that connection silently.
 	return_to_home_base()
