@@ -4,6 +4,7 @@ extends Node
 signal typing_mistake
 signal correct_stroke
 signal word_completed(word: String, ammunition_reward: int)
+signal supply_word_completed(crate: Node, word: String)
 
 # keeps the old single-target prototype scene working temporarily
 @export var word_label: RichTextLabel
@@ -63,7 +64,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	check_letter(typed_character)
 
 
-func register_target(target: Node, label: RichTextLabel) -> void:
+func register_target(target: Node, label: RichTextLabel, kind: String = "zombie") -> void:
 	if not is_instance_valid(target) or not is_instance_valid(label):
 		return
 
@@ -82,6 +83,7 @@ func register_target(target: Node, label: RichTextLabel) -> void:
 		"target": target,
 		"label": label,
 		"word": new_word,
+		"kind": kind,
 	})
 
 	_update_all_labels()
@@ -137,14 +139,21 @@ func check_letter(typed_character: String) -> void:
 
 func _complete_target(target_data: Dictionary) -> void:
 	var completed_word: String = target_data["word"]
+	var kind: String = target_data.get("kind", "zombie")
 
 	print("WORD COMPLETE: ", completed_word)
 
+	typed_prefix = ""
+
+	# supply crates are claimed once, not reassigned a new word like zombies
+	if kind == "supply":
+		var crate_target: Node = target_data["target"]
+		unregister_target(crate_target)
+		supply_word_completed.emit(crate_target, completed_word)
+		return
+
 	# TODO: scale ammo reward by word length per GDD
 	word_completed.emit(completed_word, 1)
-
-	# reset typed prefix before assigning the replacement word
-	typed_prefix = ""
 
 	# assign the living zombie a new word, avoiding its previous one
 	var replacement_word := _choose_unique_word_for_target(
