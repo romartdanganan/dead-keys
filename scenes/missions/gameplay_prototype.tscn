@@ -34,12 +34,12 @@ stretch_mode = 6
 [node name="ProjectileContainer" type="Node2D" parent="World" unique_id=177511026]
 
 [node name="WeaponController" type="Node2D" parent="World" unique_id=1859530129]
-position = Vector2(640, 620)
+position = Vector2(640, 700)
 script = ExtResource("3_jfe48")
 projectile_scene = ExtResource("4_sa8vt")
 
 [node name="MuzzlePoint" type="Marker2D" parent="World/WeaponController" unique_id=120541213]
-position = Vector2(0, -30)
+position = Vector2(0, -22)
 
 [node name="EnemySpawnArea" type="Node2D" parent="World" unique_id=1913798357]
 
