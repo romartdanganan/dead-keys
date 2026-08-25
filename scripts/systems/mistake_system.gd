@@ -55,6 +55,9 @@ func _reset_jam() -> void:
 	jam_time = jam_cooldown
 
 func _combo_increment() -> void:
+	if combo >= COMBO_MAX:
+		AbilityState.set_charged(true)
+		combo = 0
 	combo += 1
 	update_combo_HUD()
 
@@ -66,6 +69,7 @@ func _typing_mistake() -> void:
 	mistakes_since_ammo_loss += 1
 	if mistakes_since_ammo_loss >= mistakes_before_ammo_loss:
 		ammo_system.consume_ammunition(1)
+		combo = 0
 		mistakes_since_ammo_loss = 0
 
 	# mistakes made during a jam do not build toward another jam
@@ -109,8 +113,5 @@ func set_jam(jam_state: bool) -> void:
 
 
 func update_combo_HUD() -> void:
-	if combo >= COMBO_MAX:
-		combo = 0
+	
 	ability_status_label.text = "COMBO: "+ str(combo) +" / "+ str(COMBO_MAX)
-	
-	
