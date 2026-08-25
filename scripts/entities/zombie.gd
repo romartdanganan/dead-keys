@@ -16,6 +16,8 @@ var health: float = 0.0
 var wall_target: Node2D = null
 var current_word: String = "" #TODO: Under the assumption an external system will adjust this
 
+var _time_alive: float = 0.0
+
 @onready var attack_timer: Timer = $AttackTimer
 const WALL_CONTACT_DISTANCE: float = 8.0
 
@@ -30,15 +32,23 @@ func setup(type: EnemyTypeDef, wall: Node2D) -> void:
 	wall_target = wall
 	_enter_state(State.APPROACH) #TODO: Add animations?
 
-func _physics_process(_delta:float) -> void:
+func _physics_process(delta: float) -> void:
 	if current_state == State.APPROACH:
-		_process_approach()
+		_process_approach(delta)
+	_time_alive += delta
 
-func _process_approach() -> void:
+func _process_approach(delta: float) -> void:
 	if wall_target == null or enemy_type == null:
 		return
-	var direction: Vector2 = (wall_target.global_position - global_position).normalized()
-	velocity = direction * enemy_type.speed
+	var base_direction: Vector2 = (wall_target.global_position - global_position).normalized()
+	var move_direction: Vector2 = base_direction
+	
+	if enemy_type.special_behaviour_tag == EnemyTypeDef.BEHAVIOUR_ZIGZAG and enemy_type.zigzag_amplitude > 0.0:
+		var perpendicular: Vector2 =  base_direction.orthogonal()
+		var oscillation: float = sin(_time_alive * enemy_type.zigzag_frequency * TAU)
+		move_direction = (base_direction + perpendicular * oscillation * enemy_type.zigzag_amplitude).normalized()
+	
+	velocity = move_direction * enemy_type.speed
 	move_and_slide()
 	if global_position.distance_to(wall_target.global_position) <= WALL_CONTACT_DISTANCE:
 		_enter_state(State.ATTACK)

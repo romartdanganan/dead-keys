@@ -446,9 +446,8 @@ text = "RETURN TO HUB"
 [node name="AmmoSystem" type="Node" parent="." unique_id=1279466094]
 script = ExtResource("4_2o0v8")
 
-[node name="TypingController" type="Node" parent="." unique_id=1294852722 node_paths=PackedStringArray("word_label")]
+[node name="TypingController" type="Node" parent="." unique_id=1294852722]
 script = ExtResource("8_pa0ib")
-word_label = NodePath("")
 
 [node name="MistakeSystem" type="Node" parent="." unique_id=1072825287]
 script = ExtResource("9_67u5c")
