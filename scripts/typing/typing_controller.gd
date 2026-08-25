@@ -5,6 +5,7 @@ signal typing_mistake
 signal correct_stroke
 signal word_completed(word: String, ammunition_reward: int)
 signal supply_word_completed(crate: Node, word: String)
+signal target_unregistered()
 
 # keeps the old single-target prototype scene working temporarily
 @export var word_label: RichTextLabel
@@ -96,6 +97,7 @@ func unregister_target(target: Node) -> void:
 			active_targets.remove_at(index)
 
 	typed_prefix = ""
+	target_unregistered.emit()
 	_update_all_labels()
 
 

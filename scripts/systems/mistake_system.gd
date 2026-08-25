@@ -5,6 +5,7 @@ extends Node
 @onready var typing_controller: Node = $"../TypingController"
 @onready var weapon_controller: WeaponController = $"../World/WeaponController"
 @onready var mistakes_label: Label = $"../HUD/HUDRoot/TypingPanel/MistakePanel/MistakeMargin/MistakesLabel"
+@onready var ability_status_label: Label = $"../HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent/AbilitySection/AbilityStatusLabel"
 
 # duration of a weapon jam in seconds — base value, overridden by the
 # Jam Duration upgrade (#25) in _ready()
@@ -13,16 +14,20 @@ var jam_cooldown: float = 2.0
 var mistake_count: int = 0
 var jam_time: float = 2.0
 
+var combo: int = 0
+var COMBO_MAX := 5
+
 # Mistake Leniency upgrade (#25): consecutive mistakes tolerated before one
 # is actually charged against ammo. Base value 1 matches the original
 # design (every mistake costs a bullet).
 var mistakes_before_ammo_loss: int = 1
 var mistakes_since_ammo_loss: int = 0
 
-
 func _ready() -> void:
 	typing_controller.typing_mistake.connect(_typing_mistake)
 	typing_controller.correct_stroke.connect(_correct_stroke)
+	typing_controller.target_unregistered.connect(_combo_increment)
+	
 	_apply_upgrades()
 	jam_time = jam_cooldown
 
@@ -48,6 +53,10 @@ func _reset_jam() -> void:
 	set_jam(false)
 	count_check()
 	jam_time = jam_cooldown
+
+func _combo_increment() -> void:
+	combo += 1
+	update_combo_HUD()
 
 
 func _typing_mistake() -> void:
@@ -97,3 +106,11 @@ func set_jam(jam_state: bool) -> void:
 		mistakes_label.text = "JAMMED"
 	else:
 		print("UNJAMMED")
+
+
+func update_combo_HUD() -> void:
+	if combo >= COMBO_MAX:
+		combo = 0
+	ability_status_label.text = "COMBO: "+ str(combo) +" / "+ str(COMBO_MAX)
+	
+	
