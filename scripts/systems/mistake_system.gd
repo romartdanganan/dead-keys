@@ -72,7 +72,7 @@ func _typing_mistake() -> void:
 	mistakes_since_ammo_loss += 1
 	if mistakes_since_ammo_loss >= mistakes_before_ammo_loss:
 		ammo_system.consume_ammunition(1)
-		combo = 0
+		combo_reset()
 		mistakes_since_ammo_loss = 0
 
 	# mistakes made during a jam do not build toward another jam
