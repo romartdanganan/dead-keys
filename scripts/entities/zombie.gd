@@ -4,6 +4,7 @@ extends CharacterBody2D
 class_name Zombie
 
 signal wall_hit(damage: float)
+signal wall_contact()
 signal died(zombie: Zombie)
 signal damaged(zombie: Zombie)
 
@@ -51,6 +52,7 @@ func _process_approach(delta: float) -> void:
 	velocity = move_direction * enemy_type.speed
 	move_and_slide()
 	if global_position.distance_to(wall_target.global_position) <= WALL_CONTACT_DISTANCE:
+		wall_contact.emit()
 		_enter_state(State.ATTACK)
 
 func _enter_state(new_state: State) -> void:

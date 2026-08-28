@@ -54,10 +54,11 @@ func _reset_jam() -> void:
 	count_check()
 	jam_time = jam_cooldown
 
+
 func _combo_increment() -> void:
 	if combo >= COMBO_MAX:
 		AbilityState.set_charged(true)
-		combo = 0
+		combo_reset()
 	combo += 1
 	update_combo_HUD()
 
@@ -112,6 +113,10 @@ func set_jam(jam_state: bool) -> void:
 		print("UNJAMMED")
 
 
+func combo_reset() -> void:
+	combo = 0
+	update_combo_HUD()
+
+
 func update_combo_HUD() -> void:
-	
 	ability_status_label.text = "COMBO: "+ str(combo) +" / "+ str(COMBO_MAX)
