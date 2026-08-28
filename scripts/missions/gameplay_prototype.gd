@@ -297,7 +297,7 @@ func _start_mission() -> void:
 func _build_mission_config() -> MissionConfigDef:
 	var wave_1 := WaveEntry.new()
 	wave_1.enemy_type = enemy_type
-	wave_1.count = 5
+	wave_1.count = 10
 	wave_1.spawn_interval = 5
 	wave_1.start_delay = 0.5
 

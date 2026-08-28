@@ -56,10 +56,12 @@ func _reset_jam() -> void:
 
 
 func _combo_increment() -> void:
+	combo += 1
+	
 	if combo >= COMBO_MAX:
 		AbilityState.set_charged(true)
 		combo_reset()
-	combo += 1
+	
 	update_combo_HUD()
 
 
