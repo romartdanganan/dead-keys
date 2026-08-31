@@ -21,6 +21,7 @@ const AbilityCatalog := preload("res://scripts/resources/ability_catalog.gd")
 ]
 @onready var typing_controller: Node = $TypingController
 @onready var weapon_controller: WeaponController = $World/WeaponController
+@onready var mistake_system: MistakeSystem = $MistakeSystem
 @onready var ability_name_label: Label = $HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent/AbilitySection/AbilityNameLabel
 @onready var projectile_container: Node2D = $World/ProjectileContainer
 @onready var spawn_points: Array[Marker2D] = [$World/EnemySpawnArea/SpawnLeftBoundary, $World/EnemySpawnArea/SpawnCentreGuide, $World/EnemySpawnArea/SpawnRightBoundary]
@@ -296,7 +297,7 @@ func _start_mission() -> void:
 func _build_mission_config() -> MissionConfigDef:
 	var wave_1 := WaveEntry.new()
 	wave_1.enemy_type = enemy_type
-	wave_1.count = 5
+	wave_1.count = 10
 	wave_1.spawn_interval = 5
 	wave_1.start_delay = 0.5
 
@@ -344,6 +345,7 @@ func _on_zombie_spawned(spawned_zombie: Zombie) -> void:
 	)
 	spawned_zombie.damaged.connect(_on_zombie_damaged)
 	spawned_zombie.wall_hit.connect(_on_wall_hit)
+	spawned_zombie.wall_contact.connect(mistake_system.combo_reset)
 
 func _on_zombie_damaged(damaged_zombie: Zombie) -> void:
 	print("Zombie health now: ", damaged_zombie.health)
