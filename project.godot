@@ -21,6 +21,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
+ProgressionManager="*uid://c7aaageyxtx58"
 UpgradeState="*res://scripts/autoload/upgrade_state.gd"
 AbilityState="*res://scripts/autoload/ability_state.gd"
 

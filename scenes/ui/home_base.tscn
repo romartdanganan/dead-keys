@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://c722iqq3v14iy"]
 
 [ext_resource type="Script" uid="uid://dwgmuxj6ali8m" path="res://scripts/ui/home_base.gd" id="1_xlecv"]
-[ext_resource type="Texture2D" uid="uid://bgmlfxoymbhlh" path="res://icon.svg" id="3_mkrqy"]
+[ext_resource type="Texture2D" uid="uid://dtxygfe036xnp" path="res://icon.svg" id="3_mkrqy"]
 [ext_resource type="PackedScene" uid="uid://k1bityq7o6hv" path="res://scenes/ui/mission_card.tscn" id="4_nywag"]
 
 [node name="HomeBase" type="Control" unique_id=220689083]
