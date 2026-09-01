@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dt5bwmerk385n" path="res://scripts/ui/ability_select.gd" id="1_select"]
 [ext_resource type="PackedScene" path="res://scenes/ui/ability_row.tscn" id="2_row"]
+[ext_resource type="Texture2D" uid="uid://d1nloet4fy00a" path="res://icon.svg" id="3_icon"]
 
 [node name="AbilitySelect" type="Control" unique_id=788607357]
 layout_mode = 3
@@ -42,6 +43,34 @@ custom_minimum_size = Vector2(0, 65)
 layout_mode = 2
 alignment = 2
 
+[node name="GoldPanel" type="PanelContainer" parent="MainMargin/MainLayout/TopBar" unique_id=1101010101]
+custom_minimum_size = Vector2(180, 60)
+layout_mode = 2
+
+[node name="GoldMargin" type="MarginContainer" parent="MainMargin/MainLayout/TopBar/GoldPanel" unique_id=1101010102]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 8
+
+[node name="GoldContent" type="HBoxContainer" parent="MainMargin/MainLayout/TopBar/GoldPanel/GoldMargin" unique_id=1101010103]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="GoldIcon" type="TextureRect" parent="MainMargin/MainLayout/TopBar/GoldPanel/GoldMargin/GoldContent" unique_id=1101010104]
+custom_minimum_size = Vector2(36, 36)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("3_icon")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="GoldLabel" type="Label" parent="MainMargin/MainLayout/TopBar/GoldPanel/GoldMargin/GoldContent" unique_id=1101010105]
+layout_mode = 2
+text = "GOLD: 0"
+
 [node name="BackButton" type="Button" parent="MainMargin/MainLayout/TopBar" unique_id=446777170]
 custom_minimum_size = Vector2(130, 60)
 layout_mode = 2
@@ -66,7 +95,7 @@ columns = 4
 ability_id = "spread_shot"
 
 [node name="AbilityRow2" parent="MainMargin/MainLayout/GridArea/RowsContainer" unique_id=2033099954 instance=ExtResource("2_row")]
-ability_id = "ability_2"
+ability_id = "ricochet"
 
 [node name="AbilityRow3" parent="MainMargin/MainLayout/GridArea/RowsContainer" unique_id=2112244565 instance=ExtResource("2_row")]
 ability_id = "ability_3"
