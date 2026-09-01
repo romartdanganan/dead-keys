@@ -286,6 +286,10 @@ func _start_mission() -> void:
 	zombie_manager.all_waves_cleared.connect(_on_all_waves_cleared)
 	zombie_manager.zombie_spawned.connect(_on_zombie_spawned)
 
+	# Ricochet (#36) needs the active zombie list, which doesn't exist until
+	# the mission actually starts, so this is set here rather than in configure()
+	weapon_controller.set_zombie_manager(zombie_manager)
+
 	status_timer.timeout.connect(_on_status_timer_timeout)
 
 	zombie_manager.start_mission()
