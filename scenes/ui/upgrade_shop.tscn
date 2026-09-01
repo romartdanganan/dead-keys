@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://pjehma15lsmr" path="res://scripts/ui/upgrade_shop.gd" id="1_shop"]
 [ext_resource type="Texture2D" uid="uid://dtxygfe036xnp" path="res://icon.svg" id="2_icon"]
-[ext_resource type="PackedScene" path="res://scenes/ui/upgrade_row.tscn" id="3_row"]
+[ext_resource type="PackedScene" uid="uid://cwmwbkuglk6i" path="res://scenes/ui/upgrade_row.tscn" id="3_row"]
 
 [node name="UpgradeShop" type="Control" unique_id=545860099]
 layout_mode = 3
@@ -96,12 +96,15 @@ layout_mode = 2
 text = "WEAPON"
 
 [node name="FireRateRow" parent="MainMargin/MainLayout/RowsScroll/RowsContainer" unique_id=1451613026 instance=ExtResource("3_row")]
+layout_mode = 2
 track_id = "fire_rate"
 
 [node name="BulletDamageRow" parent="MainMargin/MainLayout/RowsScroll/RowsContainer" unique_id=1195815323 instance=ExtResource("3_row")]
+layout_mode = 2
 track_id = "bullet_damage"
 
 [node name="MagazineCapacityRow" parent="MainMargin/MainLayout/RowsScroll/RowsContainer" unique_id=570603422 instance=ExtResource("3_row")]
+layout_mode = 2
 track_id = "magazine_capacity"
 
 [node name="BaseSectionLabel" type="Label" parent="MainMargin/MainLayout/RowsScroll/RowsContainer" unique_id=1065654148]
@@ -109,15 +112,19 @@ layout_mode = 2
 text = "BASE"
 
 [node name="FortifiedWallRow" parent="MainMargin/MainLayout/RowsScroll/RowsContainer" unique_id=1355270312 instance=ExtResource("3_row")]
+layout_mode = 2
 track_id = "fortified_wall"
 
 [node name="ExtraLifeRow" parent="MainMargin/MainLayout/RowsScroll/RowsContainer" unique_id=1361072467 instance=ExtResource("3_row")]
+layout_mode = 2
 track_id = "extra_life"
 
 [node name="JamDurationRow" parent="MainMargin/MainLayout/RowsScroll/RowsContainer" unique_id=438510090 instance=ExtResource("3_row")]
+layout_mode = 2
 track_id = "jam_duration"
 
 [node name="MistakeLeniencyRow" parent="MainMargin/MainLayout/RowsScroll/RowsContainer" unique_id=1481291186 instance=ExtResource("3_row")]
+layout_mode = 2
 track_id = "mistake_leniency"
 
 [connection signal="pressed" from="MainMargin/MainLayout/TopBar/BackButton" to="." method="_on_back_button_pressed"]

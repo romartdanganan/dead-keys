@@ -75,8 +75,8 @@ const SAVE_PATH = "user://progression.cfg"
 func save_progression() -> void: 
 	var config := ConfigFile.new()
 	config.set_value("progression", "gold", gold)
-	config.set_value("progression", "upgrade", upgrade_levels)
-	config.set_value("progression", "Highest_unlocked", highest_unlocked)
+	config.set_value("progression", "upgrade_levels", upgrade_levels)
+	config.set_value("progression", "highest_unlocked", highest_unlocked)
 	config.save(SAVE_PATH)
 	
 func load_progression() -> void:
