@@ -52,7 +52,7 @@ func _show_mission_details(card: MissionCard) -> void:
 
 
 func _on_launch_mission_button_pressed() -> void:
-	get_tree().change_scene_to_file("res://scenes/missions/gameplay_prototype.tscn")
+	get_tree().change_scene_to_file("res://scenes/missions/mission_1.tscn")
 
 
 func _on_upgrades_button_pressed() -> void:
