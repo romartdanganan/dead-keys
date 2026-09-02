@@ -13,6 +13,7 @@ signal attempted_fire_without_ammunition
 
 var ammo_system: AmmoSystem
 var projectile_container: Node2D
+var zombie_manager: ZombieManager
 var cooldown_remaining: float = 0.0
 var set_jammed := false
 
@@ -23,6 +24,9 @@ var bullet_damage: int = 10
 # Spread Shot (#24) cone half-angle between the two outer bullets and centre
 const SPREAD_SHOT_ANGLE: float = deg_to_rad(25.0)
 
+# Ricochet (#36): bounces after the initial hit, 3 zombies hit total
+const RICOCHET_BOUNCE_COUNT: int = 2
+
 # inject dependencies from the main game scene
 func configure(
 	new_ammo_system: AmmoSystem,
@@ -30,6 +34,12 @@ func configure(
 ) -> void:
 	ammo_system = new_ammo_system
 	projectile_container = new_projectile_container
+
+
+# zombie_manager is created after configure() runs (it doesn't exist until
+# the mission actually starts), so it's injected separately once it exists
+func set_zombie_manager(new_zombie_manager: ZombieManager) -> void:
+	zombie_manager = new_zombie_manager
 
 # tick down cooldown timer and aim weapon toward mouse cursor
 func _process(delta: float) -> void:
@@ -66,9 +76,12 @@ func try_fire(target_position: Vector2) -> bool:
 		attempted_fire_without_ammunition.emit()
 		return false
 
-	# Spread Shot (#24): consumes the ability charge, not extra ammo
+	# Spread Shot (#24) and Ricochet (#36): consume the ability charge, not extra ammo
 	if AbilityState.equipped_ability_id == "spread_shot" and AbilityState.is_charged:
 		_fire_spread_shot(target_position)
+		AbilityState.consume_charge()
+	elif AbilityState.equipped_ability_id == "ricochet" and AbilityState.is_charged:
+		_fire_ricochet_shot(target_position)
 		AbilityState.consume_charge()
 	else:
 		_spawn_projectile(target_position)
@@ -82,6 +95,14 @@ func _fire_spread_shot(target_position: Vector2) -> void:
 	for angle: float in [-SPREAD_SHOT_ANGLE, 0.0, SPREAD_SHOT_ANGLE]:
 		var spread_target := muzzle_point.global_position + direction.rotated(angle) * 1000.0
 		_spawn_projectile(spread_target)
+
+
+func _fire_ricochet_shot(target_position: Vector2) -> void:
+	var projectile := _spawn_projectile(target_position)
+	if projectile == null:
+		return
+	projectile.zombie_manager = zombie_manager
+	projectile.bounces_remaining = RICOCHET_BOUNCE_COUNT
 
 
 func _spawn_projectile(target_position: Vector2) -> Projectile:
