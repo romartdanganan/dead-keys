@@ -5,6 +5,7 @@ class_name ZombieManager
 
 signal all_waves_cleared
 signal zombie_spawned(zombie: Zombie)
+signal wave_started(wave_number: int)
 
 @export var mission_config: MissionConfigDef
 @export var wall_target: Node2D
@@ -44,10 +45,12 @@ func _run_next_wave() -> void:
 	
 	var wave: WaveEntry = mission_config.waves[_wave_index]
 	_wave_index += 1
-	
+
 	if wave.start_delay > 0.0:
 		await get_tree().create_timer(wave.start_delay).timeout
-	
+
+	wave_started.emit(_wave_index)
+
 	for i in wave.count:
 		if not _running:
 			return
