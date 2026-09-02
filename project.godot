@@ -33,7 +33,6 @@ window/stretch/mode="canvas_items"
 
 [editor_plugins]
 
-#pre-enabledsoinstallingtheGUTaddon(seeREADME)activatesit#automaticallywithoutanextramanualstepinProjectSettingsenabled=PackedStringArray("res://addons/gut/plugin.cfg")
 enabled=PackedStringArray("res://addons/gut/plugin.cfg")
 
 [input]
