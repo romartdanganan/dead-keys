@@ -3,6 +3,9 @@ extends GutTest
 # MistakeSystem resolves its dependencies via relative "../..." paths, so
 # this harness rebuilds the exact sibling structure it expects instead of
 # mocking it. No refactor of MistakeSystem itself for testability.
+#
+# note: any new onready sibling-path dependency added to MistakeSystem must
+# be mirrored here in before_each() or it will fail to resolve at test time
 
 var mistake_system: MistakeSystem
 var ammo_system: AmmoSystem
@@ -54,6 +57,24 @@ func before_each() -> void:
 	var mistakes_label := Label.new()
 	mistakes_label.name = "MistakesLabel"
 	mistake_margin.add_child(mistakes_label)
+
+	# CombatUtilityPanel branch, needed for MistakeSystem's ability_status_label
+	# onready dependency added alongside the Combo/ability HUD work
+	var combat_utility_panel := Node.new()
+	combat_utility_panel.name = "CombatUtilityPanel"
+	hud_root.add_child(combat_utility_panel)
+	var combat_utility_margin := Node.new()
+	combat_utility_margin.name = "CombatUtilityMargin"
+	combat_utility_panel.add_child(combat_utility_margin)
+	var combat_utility_content := Node.new()
+	combat_utility_content.name = "CombatUtilityContent"
+	combat_utility_margin.add_child(combat_utility_content)
+	var ability_section := Node.new()
+	ability_section.name = "AbilitySection"
+	combat_utility_content.add_child(ability_section)
+	var ability_status_label := Label.new()
+	ability_status_label.name = "AbilityStatusLabel"
+	ability_section.add_child(ability_status_label)
 
 	mistake_system = MistakeSystem.new()
 	mistake_system.name = "MistakeSystem"
