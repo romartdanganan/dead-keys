@@ -11,11 +11,11 @@ func test_spread_shot_is_implemented() -> void:
 	assert_true(ability.implemented)
 
 
-# the remaining 7 slots exist as placeholders but must stay locked
+# the remaining 6 slots exist as placeholders but must stay locked
 # (not selectable) until they're actually built in a future sprint
 func test_locked_abilities_are_not_implemented() -> void:
 	var locked_ids := [
-		"ability_2", "ability_3", "ability_4",
+		"ability_3", "ability_4",
 		"ability_5", "ability_6", "ability_7", "ability_8"
 	]
 	for ability_id in locked_ids:
