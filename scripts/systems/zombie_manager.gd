@@ -5,7 +5,7 @@ class_name ZombieManager
 
 signal all_waves_cleared
 signal zombie_spawned(zombie: Zombie)
-signal wave_started(wave_number: int)
+signal wave_started(wave_number: int, is_final_wave: bool)
 
 @export var mission_config: MissionConfigDef
 @export var wall_target: Node2D
@@ -17,6 +17,8 @@ var active_zombies: Array[Zombie] = []
 var _wave_index: int = 0
 var _running: bool = false
 var _pool: ZombiePool
+var _last_announced_wave_number: int = -1
+var _max_display_wave_number: int = 0
 
 func _ready() -> void:
 	_pool = ZombiePool.new(zombie_scene, self)
@@ -24,8 +26,25 @@ func _ready() -> void:
 
 func start_mission() -> void:
 	_wave_index = 0
+	_last_announced_wave_number = -1
+	_max_display_wave_number = _compute_max_display_wave_number()
 	_running = true
 	_run_next_wave()
+
+# figures out the highest "WAVE N" the player will see across the whole
+# mission, so the last one announced can read "FINAL WAVE" instead. works
+# for any mission_config, not just Mission 1's, since grouped WaveEntry rows
+# (see WaveEntry.display_wave_number) are accounted for the same way they
+# are at spawn time
+func _compute_max_display_wave_number() -> int:
+	if mission_config == null:
+		return 0
+	var highest := 0
+	for index in mission_config.waves.size():
+		var entry: WaveEntry = mission_config.waves[index]
+		var effective_number: int = entry.display_wave_number if entry.display_wave_number > 0 else index + 1
+		highest = max(highest, effective_number)
+	return highest
 
 func _run_next_wave() -> void:
 	if not _running:
@@ -49,7 +68,12 @@ func _run_next_wave() -> void:
 	if wave.start_delay > 0.0:
 		await get_tree().create_timer(wave.start_delay).timeout
 
-	wave_started.emit(_wave_index)
+	# groups multiple WaveEntry rows under one announcement when display_wave_number
+	# is set, otherwise every entry announces its own position (see WaveEntry)
+	var display_number: int = wave.display_wave_number if wave.display_wave_number > 0 else _wave_index
+	if display_number != _last_announced_wave_number:
+		_last_announced_wave_number = display_number
+		wave_started.emit(display_number, display_number == _max_display_wave_number)
 
 	for i in wave.count:
 		if not _running:
@@ -70,7 +94,11 @@ func _spawn_zombie(type: EnemyTypeDef) -> void:
 		return
 	var zombie: Zombie = _pool.acquire()
 	var spawn_point: Marker2D = spawn_points[randi() % spawn_points.size()]
-	zombie.global_position = spawn_point.global_position
+	# small random offset so zombies reusing the same spawn point don't walk
+	# the exact same line and visually stack on top of each other, since
+	# there's no separation/flocking behaviour between zombies yet (GDD §8.1)
+	var spawn_jitter := Vector2(randf_range(-35.0, 35.0), randf_range(-15.0, 15.0))
+	zombie.global_position = spawn_point.global_position + spawn_jitter
 	zombie.is_pooled = true
 	if not zombie.died.is_connected(_on_zombie_died):
 		zombie.died.connect(_on_zombie_died)

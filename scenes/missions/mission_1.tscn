@@ -1,15 +1,16 @@
 [gd_scene format=3 uid="uid://bfhjsurifryia"]
 
 [ext_resource type="Texture2D" uid="uid://d1nloet4fy00a" path="res://icon.svg" id="1_hw44m"]
-[ext_resource type="Script" uid="uid://biiv0yqxp1y0w" path="res://scripts/missions/gameplay_prototype.gd" id="1_ivoev"]
+[ext_resource type="Script" path="res://scripts/missions/mission_1.gd" id="1_ivoev"]
 [ext_resource type="Texture2D" uid="uid://cjc67ydud85uc" path="res://assets/ui/crosshair.png" id="2_2o0v8"]
 [ext_resource type="Script" uid="uid://bs8sp27gkkybi" path="res://scripts/systems/weapon_controller.gd" id="3_jfe48"]
 [ext_resource type="Script" uid="uid://dooywlfphubj7" path="res://scripts/systems/ammo_system.gd" id="4_2o0v8"]
 [ext_resource type="PackedScene" uid="uid://c1vn4ejy744uy" path="res://scenes/entities/projectile.tscn" id="4_sa8vt"]
 [ext_resource type="Script" uid="uid://cyanfkt2biqp3" path="res://scripts/typing/typing_controller.gd" id="8_pa0ib"]
 [ext_resource type="Script" uid="uid://dx6y26g4dhm7t" path="res://scripts/systems/mistake_system.gd" id="9_67u5c"]
+[ext_resource type="PackedScene" path="res://scenes/ui/wave_announcement.tscn" id="10_wave"]
 
-[node name="GameplayPrototype" type="Node2D" unique_id=277045778]
+[node name="Mission1" type="Node2D" unique_id=277045778]
 script = ExtResource("1_ivoev")
 crosshair_texture = ExtResource("2_2o0v8")
 
@@ -467,5 +468,7 @@ script = ExtResource("9_67u5c")
 
 [node name="StatusTimer" type="Timer" parent="." unique_id=965495798]
 autostart = true
+
+[node name="WaveAnnouncement" parent="." instance=ExtResource("10_wave")]
 
 [connection signal="pressed" from="HUD/HUDRoot/ReturnHomeBaseButton" to="." method="_on_return_home_base_button_pressed"]
