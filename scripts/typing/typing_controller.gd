@@ -12,7 +12,13 @@ signal target_unregistered()
 
 const LETTERS := "abcdefghijklmnopqrstuvwxyz"
 
-# TODO: replace static test_words array with data-driven word lists loaded from external resource (.tres/JSON) per mission difficulty
+# placeholder word list source. this is a temporary stand-in for #43's
+# real per-mission word list system, kept here only so Mission 1 is
+# playable in the meantime. safe to repoint or replace this loading logic
+# entirely once the real system lands
+@export var word_list_path: String = "res://resources/word_lists/mission_1_words_PLACEHOLDER.json"
+
+# fallback used if word_list_path is empty or fails to load
 var test_words: Array[String] = [
 	"code",
 	"walker",
@@ -36,9 +42,40 @@ var typed_prefix: String = ""
 
 
 func _ready() -> void:
+	_load_word_list()
+
 	# temporary compatibility for the existing single-target prototype
 	if is_instance_valid(word_label):
 		register_target(word_label, word_label)
+
+
+# loads test_words from word_list_path if set and valid, otherwise keeps
+# the hardcoded fallback above. see the comment on word_list_path
+func _load_word_list() -> void:
+	if word_list_path.is_empty():
+		return
+
+	if not FileAccess.file_exists(word_list_path):
+		push_warning("TypingController: word_list_path not found, using fallback words: " + word_list_path)
+		return
+
+	var file := FileAccess.open(word_list_path, FileAccess.READ)
+	var parsed = JSON.parse_string(file.get_as_text())
+
+	if typeof(parsed) != TYPE_DICTIONARY or not parsed.has("words"):
+		push_warning("TypingController: word_list_path malformed, using fallback words: " + word_list_path)
+		return
+
+	var loaded_words: Array[String] = []
+	for entry in parsed["words"]:
+		if typeof(entry) == TYPE_STRING:
+			loaded_words.append(entry)
+
+	if loaded_words.is_empty():
+		push_warning("TypingController: word_list_path had no usable words, using fallback words: " + word_list_path)
+		return
+
+	test_words = loaded_words
 
 
 # deal with the last input, catch the keypress and print out the unicode
