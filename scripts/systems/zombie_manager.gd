@@ -15,6 +15,11 @@ var active_zombies: Array[Zombie] = []
 
 var _wave_index: int = 0
 var _running: bool = false
+var _pool: ZombiePool
+
+func _ready() -> void:
+	_pool = ZombiePool.new(zombie_scene, self)
+
 
 func start_mission() -> void:
 	_wave_index = 0
@@ -60,17 +65,19 @@ func _spawn_zombie(type: EnemyTypeDef) -> void:
 	if spawn_points.is_empty():
 		push_warning("ZombieManager: no spawn points assigned")
 		return
-	var zombie: Zombie = zombie_scene.instantiate()
-	add_child(zombie)
+	var zombie: Zombie = _pool.acquire()
 	var spawn_point: Marker2D = spawn_points[randi() % spawn_points.size()]
 	zombie.global_position = spawn_point.global_position
+	zombie.is_pooled = true
+	if not zombie.died.is_connected(_on_zombie_died):
+		zombie.died.connect(_on_zombie_died)
 	zombie.setup(type, wall_target)
-	zombie.died.connect(_on_zombie_died)
 	active_zombies.append(zombie)
 	zombie_spawned.emit(zombie)
 
 func _on_zombie_died(zombie: Zombie) -> void:
 	active_zombies.erase(zombie)
+	_pool.release(zombie)
  
 func stop_mission() -> void:
 	_running = false

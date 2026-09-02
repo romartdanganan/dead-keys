@@ -16,10 +16,12 @@ var current_state: State = State.SPAWN
 var health: float = 0.0
 var wall_target: Node2D = null
 var current_word: String = "" #TODO: Under the assumption an external system will adjust this
-
+var is_pooled: bool = false
 var _time_alive: float = 0.0
 
 @onready var attack_timer: Timer = $AttackTimer
+@onready var collision_shape: CollisionShape2D = $CollisionShape2D
+
 const WALL_CONTACT_DISTANCE: float = 8.0
 
 func _ready() -> void:
@@ -31,12 +33,20 @@ func setup(type: EnemyTypeDef, wall: Node2D) -> void:
 	enemy_type = type
 	health = type.health
 	wall_target = wall
-	_enter_state(State.APPROACH) #TODO: Add animations?
+	current_word = ""
+	_time_alive = 0.0
+	velocity = Vector2.ZERO
+	visible = true
+	set_physics_process(true)
+	if collision_shape:
+		collision_shape.disabled = false
+	_enter_state(State.APPROACH)
 
 func _physics_process(delta: float) -> void:
 	if current_state == State.APPROACH:
 		_process_approach(delta)
 	_time_alive += delta
+
 
 func _process_approach(delta: float) -> void:
 	if wall_target == null or enemy_type == null:
@@ -63,10 +73,19 @@ func _enter_state(new_state: State) -> void:
 			attack_timer.start()
 		State.DEAD:
 			attack_timer.stop()
+			velocity = Vector2.ZERO
+			if is_pooled:
+				_deactivate()
+			else:
+				queue_free()
 			died.emit(self) # TODO: Despawning for now alter for next milestone
-			queue_free()
-		_:
-			pass
+
+func _deactivate() -> void:
+	visible = false
+	set_physics_process(false)
+	if collision_shape:
+		collision_shape.disabled = true
+	global_position = Vector2(-10000, -10000)
 
 
 func _on_attack_timer_timeout() -> void:
