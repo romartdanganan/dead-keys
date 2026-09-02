@@ -343,13 +343,20 @@ func _on_zombie_spawned(spawned_zombie: Zombie) -> void:
 	var word_label: RichTextLabel = spawned_zombie.get_node("WordLabel")
 	typing_controller.register_target(spawned_zombie, word_label)
 
-	spawned_zombie.died.connect(
-		func(dead_zombie: Zombie) -> void:
-			typing_controller.unregister_target(dead_zombie)
-	)
-	spawned_zombie.damaged.connect(_on_zombie_damaged)
-	spawned_zombie.wall_hit.connect(_on_wall_hit)
-	spawned_zombie.wall_contact.connect(mistake_system.combo_reset)
+	# guarded connections since pooled zombies are reused nodes, an unguarded
+	# connect (especially an anonymous lambda) would stack a duplicate
+	# connection on every respawn of the same instance
+	if not spawned_zombie.died.is_connected(_on_zombie_died):
+		spawned_zombie.died.connect(_on_zombie_died)
+	if not spawned_zombie.damaged.is_connected(_on_zombie_damaged):
+		spawned_zombie.damaged.connect(_on_zombie_damaged)
+	if not spawned_zombie.wall_hit.is_connected(_on_wall_hit):
+		spawned_zombie.wall_hit.connect(_on_wall_hit)
+	if not spawned_zombie.wall_contact.is_connected(mistake_system.combo_reset):
+		spawned_zombie.wall_contact.connect(mistake_system.combo_reset)
+
+func _on_zombie_died(dead_zombie: Zombie) -> void:
+	typing_controller.unregister_target(dead_zombie)
 
 func _on_zombie_damaged(damaged_zombie: Zombie) -> void:
 	print("Zombie health now: ", damaged_zombie.health)

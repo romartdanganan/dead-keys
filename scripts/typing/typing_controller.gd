@@ -92,9 +92,16 @@ func register_target(target: Node, label: RichTextLabel, kind: String = "zombie"
 
 func unregister_target(target: Node) -> void:
 	# iterate backwards to safely remove targets without skipping indices
+	var removed := false
 	for index in range(active_targets.size() - 1, -1, -1):
 		if active_targets[index]["target"] == target:
 			active_targets.remove_at(index)
+			removed = true
+
+	# a target already removed should not fire a second unregister, this
+	# guards against duplicate signal connections on a reused pooled node
+	if not removed:
+		return
 
 	typed_prefix = ""
 	target_unregistered.emit()
