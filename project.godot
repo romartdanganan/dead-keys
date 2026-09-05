@@ -24,6 +24,7 @@ config/icon="res://icon.svg"
 UpgradeState="*res://scripts/autoload/upgrade_state.gd"
 SupplyState="*res://scripts/autoload/supply_state.gd"
 AbilityState="*res://scripts/autoload/ability_state.gd"
+AudioBus="*uid://cdsuo51pusabe"
 
 [display]
 
