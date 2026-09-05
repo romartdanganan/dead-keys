@@ -21,6 +21,13 @@ func _ready() -> void:
 			upgrade_rows.append(child)
 			child.buy_pressed.connect(_on_row_buy_pressed)
 
+func _input(event):
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+			if get_viewport().gui_get_hovered_control() is Button:
+				Audio.play("click")
+			else:
+				Audio.play("thud",-15)
 
 func _on_gold_changed(new_gold: int) -> void:
 	gold_label.text = "GOLD: %d" % new_gold
