@@ -56,9 +56,9 @@ func _ready() -> void:
 # Damage, and Magazine Capacity are applied in their own _setup_* functions
 # below since they need the relevant node to already be ready.
 func _apply_upgrades() -> void:
-	WALL_MAX_HEALTH = UpgradeState.get_upgrade_value("fortified_wall")
+	WALL_MAX_HEALTH = ProgressionManager.get_upgrade_value("fortified_wall")
 	wall_health = WALL_MAX_HEALTH
-	lives_remaining = UpgradeState.get_upgrade_value("extra_life")
+	lives_remaining = ProgressionManager.get_upgrade_value("extra_life")
 
 func _exit_tree() -> void:
 	# reset custom cursor back to system default on scene exit
@@ -99,7 +99,7 @@ func _setup_cursor() -> void:
 
 func _setup_ammo_hud() -> void:
 	# Magazine Capacity upgrade (#25)
-	ammo_system.set_maximum_ammunition(UpgradeState.get_upgrade_value("magazine_capacity"))
+	ammo_system.set_maximum_ammunition(ProgressionManager.get_upgrade_value("magazine_capacity"))
 
 	ammo_system.ammunition_changed.connect(_on_ammunition_changed)
 	_on_ammunition_changed(ammo_system.current_ammo, ammo_system.maximum_ammo)
@@ -115,11 +115,11 @@ func _setup_weapon() -> void:
 	weapon_controller.attempted_fire_without_ammunition.connect(_on_attempted_fire_without_ammunition)
 
 	# Fire Rate upgrade (#25): shots/s -> cooldown seconds
-	var shots_per_second: float = UpgradeState.get_upgrade_value("fire_rate")
+	var shots_per_second: float = ProgressionManager.get_upgrade_value("fire_rate")
 	weapon_controller.fire_cooldown = 1.0 / shots_per_second
 
 	# Bullet Damage upgrade (#25), applied to each projectile on fire
-	weapon_controller.bullet_damage = UpgradeState.get_upgrade_value("bullet_damage")
+	weapon_controller.bullet_damage = ProgressionManager.get_upgrade_value("bullet_damage")
 
 func _setup_typing() -> void:
 	typing_controller.word_completed.connect(_on_typing_word_completed)
@@ -234,6 +234,8 @@ func _spend_life() -> void:
 
 func _on_all_waves_cleared() -> void:
 	print("Mission complete. Returning to home base.")
+	ProgressionManager.add_gold(zombie_manager.mission_config.base_coin_reward)
+	ProgressionManager.save_progression()
 	return_to_home_base()
 
 

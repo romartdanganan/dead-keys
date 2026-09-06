@@ -34,27 +34,6 @@ func _ready() -> void:
 	ProgressionManager.gold_changed.connect(_on_gold_changed)
 	_on_gold_changed(ProgressionManager.get_gold())
 	
-	
-#Gold Debug text
-func _on_gold_changed(new_gold: int) -> void:
-	$MainMargin/MainLayout/TopBar/GoldPanel/GoldMargin/GoldContent/GoldLabel.text = "Gold: %d" % new_gold
-
-#Gold Debug Keys
-func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventKey and event.pressed and event.keycode == KEY_G:
-		ProgressionManager.add_gold(100)
-
-	if event is InputEventKey and event.pressed and event.keycode == KEY_H:
-		var success := ProgressionManager.spend_gold(10000)
-		print("Spend success: ", success)
-		
-	if event is InputEventKey and event.pressed and event.keycode == KEY_U:
-		var success1 := ProgressionManager.purchase_upgrade("fire_rate")
-		print("Purchase success: ", success1, " | Level: ", ProgressionManager.get_upgrade_level("fire_rate"))
-		
-	if event is InputEventKey and event.pressed and event.keycode == KEY_S:
-		ProgressionManager.save_progression()
-		print("Saved.")
 		
 func _on_main_menu_button_pressed() -> void:
 	get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
@@ -87,3 +66,25 @@ func _on_upgrades_button_pressed() -> void:
 
 func _on_ability_button_pressed() -> void:
 	get_tree().change_scene_to_file("res://scenes/ui/ability_select.tscn")
+	
+	#Gold Debug text
+func _on_gold_changed(new_gold: int) -> void:
+	$MainMargin/MainLayout/TopBar/GoldPanel/GoldMargin/GoldContent/GoldLabel.text = "Gold: %d" % new_gold
+
+#Progression Manger Debug Keys
+func _unhandled_input(event: InputEvent) -> void:
+	#Add gold
+	if event is InputEventKey and event.pressed and event.keycode == KEY_G:
+		ProgressionManager.add_gold(50)
+	#Check if spending gold
+	if event is InputEventKey and event.pressed and event.keycode == KEY_H:
+		var success := ProgressionManager.spend_gold(10000)
+		print("Spend success: ", success)
+	#Manual save check
+	if event is InputEventKey and event.pressed and event.keycode == KEY_S:
+		ProgressionManager.save_progression()
+		print("Saved.")
+	#Reset save check
+	if event is InputEventKey and event.pressed and event.keycode == KEY_R:
+		ProgressionManager.reset_progression()
+		print("Progression reset.")
