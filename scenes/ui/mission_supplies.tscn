@@ -5,6 +5,30 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/supply_slot_row.tscn" id="3_slot"]
 [ext_resource type="PackedScene" path="res://scenes/ui/supply_card_row.tscn" id="4_card"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_topbar_normal"]
+bg_color = Color(0.58, 0.4, 0.24, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.32, 0.2, 0.11, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_topbar_hover"]
+bg_color = Color(0.65, 0.46, 0.28, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.32, 0.2, 0.11, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
 [node name="MissionSupplies" type="Control"]
 layout_mode = 3
 anchors_preset = 15
@@ -47,12 +71,14 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
+theme_override_font_sizes/font_size = 30
 text = "MISSION SUPPLIES"
 vertical_alignment = 1
 
 [node name="GoldPanel" type="PanelContainer" parent="MainMargin/MainLayout/TopBar"]
 custom_minimum_size = Vector2(180, 60)
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_topbar_normal")
 
 [node name="GoldMargin" type="MarginContainer" parent="MainMargin/MainLayout/TopBar/GoldPanel"]
 layout_mode = 2
@@ -76,11 +102,15 @@ stretch_mode = 5
 
 [node name="GoldLabel" type="Label" parent="MainMargin/MainLayout/TopBar/GoldPanel/GoldMargin/GoldContent"]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "GOLD: 0"
 
 [node name="BackButton" type="Button" parent="MainMargin/MainLayout/TopBar"]
 custom_minimum_size = Vector2(130, 60)
 layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_topbar_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_topbar_hover")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "BACK"
 
 [node name="HubContent" type="HBoxContainer" parent="MainMargin/MainLayout"]
@@ -105,6 +135,7 @@ theme_override_constants/separation = 12
 
 [node name="SlotsHeading" type="Label" parent="MainMargin/MainLayout/HubContent/SlotsPanel/SlotsMargin/SlotsContent"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 20
 text = "PRE-MISSION LOADOUT"
 horizontal_alignment = 1
 

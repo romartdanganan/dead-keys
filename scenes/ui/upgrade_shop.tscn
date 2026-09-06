@@ -4,6 +4,30 @@
 [ext_resource type="Texture2D" path="res://icon.svg" id="2_icon"]
 [ext_resource type="PackedScene" path="res://scenes/ui/upgrade_row.tscn" id="3_row"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_topbar_normal"]
+bg_color = Color(0.58, 0.4, 0.24, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.32, 0.2, 0.11, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_topbar_hover"]
+bg_color = Color(0.65, 0.46, 0.28, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.32, 0.2, 0.11, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
 [node name="UpgradeShop" type="Control"]
 layout_mode = 3
 anchors_preset = 15
@@ -46,12 +70,14 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
+theme_override_font_sizes/font_size = 30
 text = "UPGRADES"
 vertical_alignment = 1
 
 [node name="GoldPanel" type="PanelContainer" parent="MainMargin/MainLayout/TopBar"]
 custom_minimum_size = Vector2(180, 60)
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_topbar_normal")
 
 [node name="GoldMargin" type="MarginContainer" parent="MainMargin/MainLayout/TopBar/GoldPanel"]
 layout_mode = 2
@@ -75,11 +101,15 @@ stretch_mode = 5
 
 [node name="GoldLabel" type="Label" parent="MainMargin/MainLayout/TopBar/GoldPanel/GoldMargin/GoldContent"]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "GOLD: 0"
 
 [node name="BackButton" type="Button" parent="MainMargin/MainLayout/TopBar"]
 custom_minimum_size = Vector2(130, 60)
 layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_topbar_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_topbar_hover")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "BACK"
 
 [node name="RowsScroll" type="ScrollContainer" parent="MainMargin/MainLayout"]
@@ -93,6 +123,7 @@ theme_override_constants/separation = 12
 
 [node name="WeaponSectionLabel" type="Label" parent="MainMargin/MainLayout/RowsScroll/RowsContainer"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 20
 text = "WEAPON"
 
 [node name="FireRateRow" parent="MainMargin/MainLayout/RowsScroll/RowsContainer" instance=ExtResource("3_row")]
@@ -109,6 +140,7 @@ track_id = "magazine_capacity"
 
 [node name="BaseSectionLabel" type="Label" parent="MainMargin/MainLayout/RowsScroll/RowsContainer"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 20
 text = "BASE"
 
 [node name="FortifiedWallRow" parent="MainMargin/MainLayout/RowsScroll/RowsContainer" instance=ExtResource("3_row")]

@@ -37,7 +37,7 @@ enabled=PackedStringArray("res://addons/gut/plugin.cfg")
 
 [gui]
 
-theme/custom_font="res://assets/fonts/VT323-Regular.ttf"
+theme/custom="res://assets/fonts/game_theme.tres"
 
 [input]
 

@@ -19,7 +19,7 @@ corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_paper_panel"]
-bg_color = Color(0.91, 0.84, 0.68, 1)
+bg_color = Color(0.91, 0.84, 0.68, 0.75)
 border_width_left = 3
 border_width_top = 3
 border_width_right = 3
@@ -31,24 +31,24 @@ corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_open_normal"]
-bg_color = Color(0.85, 0.55, 0.22, 1)
+bg_color = Color(0.4, 0.27, 0.15, 1)
 border_width_left = 3
 border_width_top = 3
 border_width_right = 3
 border_width_bottom = 3
-border_color = Color(0.58, 0.34, 0.11, 1)
+border_color = Color(0.22, 0.13, 0.06, 1)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_open_hover"]
-bg_color = Color(0.92, 0.62, 0.28, 1)
+bg_color = Color(0.48, 0.33, 0.19, 1)
 border_width_left = 3
 border_width_top = 3
 border_width_right = 3
 border_width_bottom = 3
-border_color = Color(0.58, 0.34, 0.11, 1)
+border_color = Color(0.22, 0.13, 0.06, 1)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
@@ -185,23 +185,25 @@ layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="SettingsButton" type="Button" parent="MainMargin/MainLayout/TopBar" unique_id=1344751636]
-custom_minimum_size = Vector2(130, 60)
+custom_minimum_size = Vector2(150, 60)
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_topbar_normal")
 theme_override_styles/hover = SubResource("StyleBoxFlat_topbar_hover")
 theme_override_styles/disabled = SubResource("StyleBoxFlat_topbar_normal")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_disabled_color = Color(1, 1, 1, 0.6)
+theme_override_font_sizes/font_size = 26
 tooltip_text = "Settings will be implemented in a later issue"
 disabled = true
 text = "SETTINGS"
 
 [node name="MainMenuButton" type="Button" parent="MainMargin/MainLayout/TopBar" unique_id=945917127]
-custom_minimum_size = Vector2(130, 60)
+custom_minimum_size = Vector2(160, 60)
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_topbar_normal")
 theme_override_styles/hover = SubResource("StyleBoxFlat_topbar_hover")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 26
 text = "MAIN MENU"
 
 [node name="HubContent" type="HBoxContainer" parent="MainMargin/MainLayout" unique_id=1467665291]
@@ -250,12 +252,14 @@ layout_mode = 2
 [node name="UpgradesTitle" type="Label" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/UpgradesPanel/UpgradesMargin/UpgradesContent" unique_id=1922088674]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 30
 text = "UPGRADES"
 
 [node name="UpgradesDescription" type="Label" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/UpgradesPanel/UpgradesMargin/UpgradesContent" unique_id=17039473]
 layout_mode = 2
 size_flags_vertical = 6
 theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
+theme_override_font_sizes/font_size = 19
 text = "Improve your stats permanently."
 
 [node name="UpgradesButton" type="Button" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/UpgradesPanel/UpgradesMargin/UpgradesContent" unique_id=1554892126]
@@ -283,12 +287,14 @@ layout_mode = 2
 [node name="SuppliesTitle" type="Label" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/SuppliesPanel/SuppliesMargin/SuppliesContent" unique_id=901333258]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 30
 text = "MISSION SUPPLIES"
 
 [node name="SuppliesDescription" type="Label" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/SuppliesPanel/SuppliesMargin/SuppliesContent" unique_id=402151628]
 layout_mode = 2
 size_flags_vertical = 6
 theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
+theme_override_font_sizes/font_size = 19
 text = "Buy supplies for your next mission."
 
 [node name="SuppliesButton" type="Button" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/SuppliesPanel/SuppliesMargin/SuppliesContent" unique_id=1275023269]
@@ -316,12 +322,14 @@ layout_mode = 2
 [node name="AbilityTitle" type="Label" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/AbilityPanel/AbilityMargin/AbilityContent" unique_id=2045699377]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 30
 text = "ABILITY LOADOUT"
 
 [node name="AbilityDescription" type="Label" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/AbilityPanel/AbilityMargin/AbilityContent" unique_id=1863609894]
 layout_mode = 2
 size_flags_vertical = 6
 theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
+theme_override_font_sizes/font_size = 19
 text = "Choose one ability for your next
 mission."
 
@@ -412,12 +420,14 @@ stretch_mode = 5
 [node name="MissionTitleLabel" type="Label" parent="MainMargin/MainLayout/HubContent/MissionDetailsPanel/MissionDetailsMargin/MissionDetails" unique_id=699975284]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.3, 0.2, 0.1, 1)
+theme_override_font_sizes/font_size = 34
 text = "1. THE SUBURBS"
 
 [node name="MissionDescriptionLabel" type="Label" parent="MainMargin/MainLayout/HubContent/MissionDetailsPanel/MissionDetailsMargin/MissionDetails" unique_id=651823227]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.35, 0.26, 0.16, 1)
+theme_override_font_sizes/font_size = 19
 text = "A quiet neighborhood is under attack. Hold the line and  protect the area.
 "
 autowrap_mode = 3
@@ -425,11 +435,13 @@ autowrap_mode = 3
 [node name="MedalHeadingLabel" type="Label" parent="MainMargin/MainLayout/HubContent/MissionDetailsPanel/MissionDetailsMargin/MissionDetails" unique_id=1780648945]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.3, 0.2, 0.1, 1)
+theme_override_font_sizes/font_size = 30
 text = "BEST MEDAL"
 
 [node name="BestMedalLabel" type="Label" parent="MainMargin/MainLayout/HubContent/MissionDetailsPanel/MissionDetailsMargin/MissionDetails" unique_id=1280952726]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.35, 0.26, 0.16, 1)
+theme_override_font_sizes/font_size = 22
 text = "NONE"
 
 [node name="MissionDetailsSpacer" type="Control" parent="MainMargin/MainLayout/HubContent/MissionDetailsPanel/MissionDetailsMargin/MissionDetails" unique_id=1248698234]
@@ -437,10 +449,12 @@ layout_mode = 2
 size_flags_vertical = 3
 
 [node name="LaunchMissionButton" type="Button" parent="MainMargin/MainLayout/HubContent/MissionDetailsPanel/MissionDetailsMargin/MissionDetails" unique_id=1064126933]
+custom_minimum_size = Vector2(0, 70)
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_launch_normal")
 theme_override_styles/hover = SubResource("StyleBoxFlat_launch_hover")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 26
 tooltip_text = "Mission gameplay will be connected in a later issue"
 text = "LAUNCH MISSION"
 

@@ -1,12 +1,39 @@
-[gd_scene load_steps=3 format=3 uid="uid://k1bityq7o6hv"]
+[gd_scene load_steps=5 format=3 uid="uid://k1bityq7o6hv"]
 
 [ext_resource type="Texture2D" uid="uid://bgmlfxoymbhlh" path="res://icon.svg" id="1_tetin"]
 [ext_resource type="Script" uid="uid://ct64nm1vvpbw1" path="res://scripts/ui/mission_card.gd" id="1_uwixq"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card_normal"]
+bg_color = Color(0.91, 0.84, 0.68, 0.75)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.6, 0.47, 0.31, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card_hover"]
+bg_color = Color(0.95, 0.89, 0.75, 0.75)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.6, 0.47, 0.31, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
 [node name="MissionCard" type="Button"]
 custom_minimum_size = Vector2(135, 138)
 offset_right = 8.0
 offset_bottom = 8.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_card_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_card_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_card_normal")
 script = ExtResource("1_uwixq")
 
 [node name="CardMargin" type="MarginContainer" parent="."]
@@ -37,8 +64,10 @@ expand_mode = 1
 stretch_mode = 5
 
 [node name="MissionNameLabel" type="Label" parent="CardMargin/CardContent"]
-custom_minimum_size = Vector2(0, 36)
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
+theme_override_colors/font_color = Color(0.3, 0.2, 0.1, 1)
+theme_override_font_sizes/font_size = 20
 text = "1. THE SUBURBS"
 horizontal_alignment = 1
 vertical_alignment = 1
