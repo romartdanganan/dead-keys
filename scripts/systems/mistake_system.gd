@@ -6,6 +6,7 @@ extends Node
 @onready var weapon_controller: WeaponController = $"../World/WeaponController"
 @onready var mistakes_label: Label = $"../HUD/HUDRoot/TypingPanel/MistakePanel/MistakeMargin/MistakesLabel"
 @onready var ability_status_label: Label = $"../HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent/AbilitySection/AbilityStatusLabel"
+@onready var ability_combo_bar: ProgressBar = $"../HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent/AbilitySection/ProgressBar"
 
 # duration of a weapon jam in seconds — base value, overridden by the
 # Jam Duration upgrade (#25) in _ready()
@@ -122,3 +123,5 @@ func combo_reset() -> void:
 
 func update_combo_HUD() -> void:
 	ability_status_label.text = "COMBO: "+ str(combo) +" / "+ str(COMBO_MAX)
+	ability_combo_bar.max_value = COMBO_MAX
+	ability_combo_bar.value = combo
