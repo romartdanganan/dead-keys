@@ -52,6 +52,7 @@ var lives_remaining: int = 1
 # there's only ever one crate scene, same pattern as EnemyTypeDef's default
 const SUPPLY_CRATE_SCENE := preload("res://scenes/entities/supply_crate.tscn")
 const SupplyCatalog := preload("res://scripts/resources/supply_catalog.gd")
+const SupplyTextures := preload("res://scripts/resources/supply_textures.gd")
 
 const SUPPLY_FLIGHT_SECONDS: int = 3
 
@@ -164,7 +165,13 @@ func _setup_typing() -> void:
 
 func _setup_supplies() -> void:
 	for i in supply_slot_icons.size():
-		supply_slot_icons[i].modulate.a = 1.0 if not SupplyState.get_slot(i).is_empty() else 0.15
+		var supply_id := SupplyState.get_slot(i)
+		supply_slot_icons[i].modulate.a = 1.0 if not supply_id.is_empty() else 0.15
+
+		# keeps icon.svg placeholder if supply_id has no drawn crate yet
+		var texture := SupplyTextures.get_texture(supply_id)
+		if texture != null:
+			supply_slot_icons[i].texture = texture
 
 func _call_supply(slot_index: int) -> void:
 	# only one crate can be active at a time, and each slot fires once per mission

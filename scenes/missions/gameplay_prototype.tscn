@@ -1,8 +1,10 @@
 [gd_scene format=3 uid="uid://bfhjsurifryia"]
 
-[ext_resource type="Texture2D" uid="uid://d1nloet4fy00a" path="res://icon.svg" id="1_hw44m"]
+[ext_resource type="Texture2D" uid="uid://bgmlfxoymbhlh" path="res://icon.svg" id="1_hw44m"]
 [ext_resource type="Script" uid="uid://biiv0yqxp1y0w" path="res://scripts/missions/gameplay_prototype.gd" id="1_ivoev"]
-[ext_resource type="Texture2D" uid="uid://cjc67ydud85uc" path="res://assets/ui/crosshair.png" id="2_2o0v8"]
+[ext_resource type="Texture2D" uid="uid://cngk02pywnos6" path="res://assets/ui/ammo_icon.png" id="10_ammoicon"]
+[ext_resource type="Texture2D" uid="uid://c1m8brksixm7k" path="res://assets/ui/life_icon.png" id="11_lifeicon"]
+[ext_resource type="Texture2D" uid="uid://d0bwou78ljwj8" path="res://assets/ui/crosshair.png" id="2_2o0v8"]
 [ext_resource type="Script" uid="uid://bs8sp27gkkybi" path="res://scripts/systems/weapon_controller.gd" id="3_jfe48"]
 [ext_resource type="Script" uid="uid://dooywlfphubj7" path="res://scripts/systems/ammo_system.gd" id="4_2o0v8"]
 [ext_resource type="PackedScene" uid="uid://c1vn4ejy744uy" path="res://scenes/entities/projectile.tscn" id="4_sa8vt"]
@@ -164,7 +166,7 @@ alignment = 1
 [node name="LifeIcon1" type="TextureRect" parent="HUD/HUDRoot/LivesPanel/LivesMargin/LivesContent/LivesIcons" unique_id=1973587694]
 custom_minimum_size = Vector2(48, 48)
 layout_mode = 2
-texture = ExtResource("1_hw44m")
+texture = ExtResource("11_lifeicon")
 expand_mode = 1
 stretch_mode = 5
 
@@ -172,7 +174,7 @@ stretch_mode = 5
 modulate = Color(1, 1, 1, 0.27451)
 custom_minimum_size = Vector2(48, 48)
 layout_mode = 2
-texture = ExtResource("1_hw44m")
+texture = ExtResource("11_lifeicon")
 expand_mode = 1
 stretch_mode = 5
 
@@ -180,7 +182,7 @@ stretch_mode = 5
 modulate = Color(1, 1, 1, 0.27451)
 custom_minimum_size = Vector2(48, 48)
 layout_mode = 2
-texture = ExtResource("1_hw44m")
+texture = ExtResource("11_lifeicon")
 expand_mode = 1
 stretch_mode = 5
 
@@ -243,7 +245,7 @@ theme_override_constants/separation = 14
 custom_minimum_size = Vector2(80, 90)
 layout_mode = 2
 mouse_filter = 2
-texture = ExtResource("1_hw44m")
+texture = ExtResource("10_ammoicon")
 expand_mode = 1
 stretch_mode = 5
 

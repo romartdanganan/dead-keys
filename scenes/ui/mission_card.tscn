@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://ct64nm1vvpbw1" path="res://scripts/ui/mission_card.gd" id="1_uwixq"]
 
 [node name="MissionCard" type="Button"]
-custom_minimum_size = Vector2(150, 155)
+custom_minimum_size = Vector2(135, 138)
 offset_right = 8.0
 offset_bottom = 8.0
 script = ExtResource("1_uwixq")
@@ -28,7 +28,7 @@ mouse_filter = 2
 theme_override_constants/separation = 6
 
 [node name="MissionImage" type="TextureRect" parent="CardMargin/CardContent"]
-custom_minimum_size = Vector2(0, 95)
+custom_minimum_size = Vector2(0, 82)
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
@@ -37,7 +37,7 @@ expand_mode = 1
 stretch_mode = 5
 
 [node name="MissionNameLabel" type="Label" parent="CardMargin/CardContent"]
-custom_minimum_size = Vector2(0, 42)
+custom_minimum_size = Vector2(0, 36)
 layout_mode = 2
 text = "1. THE SUBURBS"
 horizontal_alignment = 1

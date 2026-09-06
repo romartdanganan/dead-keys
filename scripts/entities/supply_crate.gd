@@ -4,6 +4,8 @@ extends Node2D
 # a dropped supply crate (#29, GDD §2.2.4): claimed by typing its word
 # within EXPIRY_SECONDS, otherwise it despawns unclaimed
 
+const SupplyTextures := preload("res://scripts/resources/supply_textures.gd")
+
 signal claimed(crate: SupplyCrate)
 signal expired(crate: SupplyCrate)
 
@@ -13,6 +15,7 @@ const EXPIRY_SECONDS: float = 8.0
 
 @onready var expiry_timer: Timer = $ExpiryTimer
 @onready var time_bar: ProgressBar = $TimeBar
+@onready var crate_sprite: Sprite2D = $CrateSprite2D
 
 
 func _ready() -> void:
@@ -23,6 +26,11 @@ func _ready() -> void:
 
 	time_bar.max_value = EXPIRY_SECONDS
 	time_bar.value = EXPIRY_SECONDS
+
+	# keeps icon.svg placeholder if supply_type has no drawn crate yet
+	var texture := SupplyTextures.get_texture(supply_type)
+	if texture != null:
+		crate_sprite.texture = texture
 
 
 func _process(_delta: float) -> void:

@@ -1,7 +1,94 @@
 [gd_scene format=3 uid="uid://b2kwtocswathd"]
 
 [ext_resource type="Script" uid="uid://bli7w8w887at1" path="res://scripts/ui/main_menu.gd" id="1_fe2o3"]
-[ext_resource type="Texture2D" uid="uid://d1nloet4fy00a" path="res://icon.svg" id="1_sl1te"]
+[ext_resource type="Texture2D" path="res://assets/ui/main_menu_background.png" id="2_bgimg"]
+[ext_resource type="Texture2D" path="res://assets/ui/logo.png" id="3_logo"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_start_normal"]
+bg_color = Color(0.58, 0.4, 0.24, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.32, 0.2, 0.11, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_start_hover"]
+bg_color = Color(0.65, 0.46, 0.28, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.32, 0.2, 0.11, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_start_pressed"]
+bg_color = Color(0.48, 0.32, 0.18, 1)
+border_width_left = 4
+border_width_top = 2
+border_width_right = 4
+border_width_bottom = 2
+border_color = Color(0.32, 0.2, 0.11, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_settings_normal"]
+bg_color = Color(0.58, 0.4, 0.24, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.32, 0.2, 0.11, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_settings_hover"]
+bg_color = Color(0.65, 0.46, 0.28, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.32, 0.2, 0.11, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_quit_normal"]
+bg_color = Color(0.58, 0.4, 0.24, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.32, 0.2, 0.11, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_quit_hover"]
+bg_color = Color(0.65, 0.46, 0.28, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.32, 0.2, 0.11, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_button_panel"]
 
 [node name="MainMenu" type="Control" unique_id=609459095]
 layout_mode = 3
@@ -29,6 +116,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+texture = ExtResource("2_bgimg")
 expand_mode = 1
 stretch_mode = 6
 
@@ -39,8 +127,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 60
-theme_override_constants/margin_top = 40
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 60
 theme_override_constants/margin_bottom = 40
 
@@ -52,50 +140,93 @@ custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 
 [node name="LogoContainer" type="AspectRatioContainer" parent="MainMargin/MainLayout/LeftMenu" unique_id=1572100648]
-custom_minimum_size = Vector2(400, 220)
+custom_minimum_size = Vector2(400, 320)
 layout_mode = 2
-ratio = 1.8
+ratio = 1.3
 
 [node name="LogoImage" type="TextureRect" parent="MainMargin/MainLayout/LeftMenu/LogoContainer" unique_id=1675535844]
 layout_mode = 2
 mouse_filter = 2
-texture = ExtResource("1_sl1te")
+texture = ExtResource("3_logo")
 expand_mode = 1
 stretch_mode = 5
 
 [node name="LogoToButtonSpacer" type="Control" parent="MainMargin/MainLayout/LeftMenu" unique_id=461392860]
-custom_minimum_size = Vector2(0, 25)
+custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 
 [node name="ButtonPanel" type="PanelContainer" parent="MainMargin/MainLayout/LeftMenu" unique_id=376729914]
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_button_panel")
 
 [node name="ButtonMargin" type="MarginContainer" parent="MainMargin/MainLayout/LeftMenu/ButtonPanel" unique_id=1800779422]
 layout_mode = 2
-theme_override_constants/margin_left = 16
-theme_override_constants/margin_top = 16
-theme_override_constants/margin_right = 16
-theme_override_constants/margin_bottom = 16
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
 
 [node name="ButtonList" type="VBoxContainer" parent="MainMargin/MainLayout/LeftMenu/ButtonPanel/ButtonMargin" unique_id=869932536]
 layout_mode = 2
-theme_override_constants/separation = 12
+theme_override_constants/separation = 8
 
 [node name="StartButton" type="Button" parent="MainMargin/MainLayout/LeftMenu/ButtonPanel/ButtonMargin/ButtonList" unique_id=996742776]
-custom_minimum_size = Vector2(340, 70)
+custom_minimum_size = Vector2(260, 78)
 layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_start_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_start_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_start_pressed")
+text = ""
+
+[node name="StartButtonLabels" type="VBoxContainer" parent="MainMargin/MainLayout/LeftMenu/ButtonPanel/ButtonMargin/ButtonList/StartButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+alignment = 1
+theme_override_constants/separation = 0
+
+[node name="StartTitleLabel" type="Label" parent="MainMargin/MainLayout/LeftMenu/ButtonPanel/ButtonMargin/ButtonList/StartButton/StartButtonLabels"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 26
 text = "START"
+horizontal_alignment = 1
+
+[node name="StartSubtitleLabel" type="Label" parent="MainMargin/MainLayout/LeftMenu/ButtonPanel/ButtonMargin/ButtonList/StartButton/StartButtonLabels"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 0.93, 0.8, 0.85)
+theme_override_font_sizes/font_size = 12
+text = "ENTER HOME BASE"
+horizontal_alignment = 1
 
 [node name="SettingsButton" type="Button" parent="MainMargin/MainLayout/LeftMenu/ButtonPanel/ButtonMargin/ButtonList" unique_id=1464386404]
-custom_minimum_size = Vector2(340, 70)
+custom_minimum_size = Vector2(260, 70)
 layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_settings_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_settings_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_settings_normal")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_settings_normal")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_disabled_color = Color(1, 1, 1, 0.6)
+theme_override_font_sizes/font_size = 22
 tooltip_text = "Settings will be implemented in a later milestone"
 disabled = true
 text = "SETTINGS"
 
 [node name="QuitButton" type="Button" parent="MainMargin/MainLayout/LeftMenu/ButtonPanel/ButtonMargin/ButtonList" unique_id=1751942493]
-custom_minimum_size = Vector2(340, 70)
+custom_minimum_size = Vector2(260, 70)
 layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_quit_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_quit_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_quit_normal")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 22
 text = "QUIT"
 
 [node name="RightSpacer" type="Control" parent="MainMargin/MainLayout" unique_id=156603675]
