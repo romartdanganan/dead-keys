@@ -101,7 +101,7 @@ ability_id = "ricochet"
 ability_id = "ability_3"
 
 [node name="AbilityRow4" parent="MainMargin/MainLayout/GridArea/RowsContainer" unique_id=2134996650 instance=ExtResource("2_row")]
-ability_id = "ability_4"
+ability_id = "piercing_shot"
 
 [node name="AbilityRow5" parent="MainMargin/MainLayout/GridArea/RowsContainer" unique_id=678928303 instance=ExtResource("2_row")]
 ability_id = "ability_5"
