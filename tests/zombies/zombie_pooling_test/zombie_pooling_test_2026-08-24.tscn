@@ -1,0 +1,42 @@
+[gd_scene format=3 uid="uid://b1bojshl0yct2"]
+
+[ext_resource type="Script" uid="uid://dim64dnef850e" path="res://tests/zombies/zombie_pooling_test/zombie_pooling_test_2026-08-24.gd" id="1_g27mo"]
+[ext_resource type="Script" uid="uid://dooywlfphubj7" path="res://scripts/systems/ammo_system.gd" id="2_e3li8"]
+[ext_resource type="Script" uid="uid://bs8sp27gkkybi" path="res://scripts/systems/weapon_controller.gd" id="3_fn5em"]
+[ext_resource type="PackedScene" uid="uid://c1vn4ejy744uy" path="res://scenes/entities/projectile.tscn" id="4_x4bg7"]
+[ext_resource type="Script" uid="uid://cyanfkt2biqp3" path="res://scripts/typing/typing_controller.gd" id="5_oycm6"]
+
+[node name="RunnerWaveTest" type="Node2D" unique_id=1757444927]
+script = ExtResource("1_g27mo")
+
+[node name="World" type="Node2D" parent="." unique_id=1799816207]
+
+[node name="SpawnPointLeft" type="Marker2D" parent="World" unique_id=165202946]
+position = Vector2(200, 150)
+
+[node name="SpawnPointRight" type="Marker2D" parent="World" unique_id=2133728379]
+position = Vector2(1080, 150)
+
+[node name="WallTarget" type="Marker2D" parent="World" unique_id=646309388]
+position = Vector2(640, 590)
+
+[node name="ProjectileContainer" type="Node2D" parent="World" unique_id=177003867]
+
+[node name="AmmoSystem" type="Node" parent="World" unique_id=1070023635]
+script = ExtResource("2_e3li8")
+starting_capacity = 24
+
+[node name="WeaponController" type="Node2D" parent="World" unique_id=238400002]
+position = Vector2(640, 620)
+script = ExtResource("3_fn5em")
+projectile_scene = ExtResource("4_x4bg7")
+
+[node name="MuzzlePoint" type="Marker2D" parent="World/WeaponController" unique_id=1313186124]
+position = Vector2(0, -30)
+
+[node name="TypingController" type="Node" parent="." unique_id=1899344786]
+script = ExtResource("5_oycm6")
+
+[node name="StatusTimer" type="Timer" parent="." unique_id=262954682]
+wait_time = 2.0
+autostart = true

@@ -20,6 +20,8 @@ func equip(ability_id: String) -> void:
 	var ability := AbilityCatalog.get_ability(ability_id)
 	if ability.is_empty() or not ability.implemented:
 		return
+	if not UpgradeState.is_ability_owned(ability_id):
+		return
 	equipped_ability_id = ability_id
 
 

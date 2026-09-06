@@ -6,5 +6,4 @@
 script = ExtResource("1")
 enemy_id = "walker"
 display_name = "Walker"
-health = 3.0
 speed = 30.0

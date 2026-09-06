@@ -10,14 +10,21 @@ const ABILITIES: Array[Dictionary] = [
 		"display_name": "Spread Shot",
 		"description": "Next shot after Combo charges fires 3 bullets in a cone instead of 1.",
 		"implemented": true,
+		"cost": 0,
 	},
-	{"id": "ability_2", "display_name": "Ricochet", "description": "Coming in a future sprint.", "implemented": false},
-	{"id": "ability_3", "display_name": "Freeze Round", "description": "Coming in a future sprint.", "implemented": false},
-	{"id": "ability_4", "display_name": "Piercing Shot", "description": "Coming in a future sprint.", "implemented": false},
-	{"id": "ability_5", "display_name": "LOCKED", "description": "Coming in a future sprint.", "implemented": false},
-	{"id": "ability_6", "display_name": "LOCKED", "description": "Coming in a future sprint.", "implemented": false},
-	{"id": "ability_7", "display_name": "LOCKED", "description": "Coming in a future sprint.", "implemented": false},
-	{"id": "ability_8", "display_name": "LOCKED", "description": "Coming in a future sprint.", "implemented": false},
+	{
+		"id": "ricochet",
+		"display_name": "Ricochet",
+		"description": "Next shot after Combo charges bounces to 2 nearby zombies after its first hit, 3 zombies hit total.",
+		"implemented": true,
+		"cost": 200,
+	},
+	{"id": "ability_3", "display_name": "Freeze Round", "description": "Coming in a future sprint.", "implemented": false, "cost": 0},
+	{"id": "ability_4", "display_name": "Piercing Shot", "description": "Coming in a future sprint.", "implemented": false, "cost": 0},
+	{"id": "ability_5", "display_name": "LOCKED", "description": "Coming in a future sprint.", "implemented": false, "cost": 0},
+	{"id": "ability_6", "display_name": "LOCKED", "description": "Coming in a future sprint.", "implemented": false, "cost": 0},
+	{"id": "ability_7", "display_name": "LOCKED", "description": "Coming in a future sprint.", "implemented": false, "cost": 0},
+	{"id": "ability_8", "display_name": "LOCKED", "description": "Coming in a future sprint.", "implemented": false, "cost": 0},
 ]
 
 
