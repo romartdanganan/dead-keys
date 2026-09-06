@@ -16,6 +16,10 @@ var zombie_manager: ZombieManager = null
 var bounces_remaining: int = 0
 var _hit_zombies: Array[Zombie] = []
 
+# Piercing Shot ability support (#38). set true by WeaponController only for
+# a charged Piercing Shot, normal shots leave it false and behave as before
+var is_piercing: bool = false
+
 
 func _ready() -> void:
 	lifetime_remaining = maximum_lifetime
@@ -63,6 +67,11 @@ func _try_damage_target(target: Node) -> void:
 	if not target.has_method("take_damage"):
 		return
 
+	# prevents a fat hitbox from re-triggering area_entered on the same
+	# zombie more than once, matters most for Piercing Shot (#38)
+	if target is Zombie and target in _hit_zombies:
+		return
+
 	target.take_damage(damage)
 
 	if target is Zombie:
@@ -74,6 +83,11 @@ func _try_damage_target(target: Node) -> void:
 			bounces_remaining -= 1
 			_redirect_to(next_target)
 			return
+
+	# Piercing Shot (#38) keeps travelling after a hit, only the screen-exit
+	# notifier or lifetime timer frees it, not this collision handler
+	if is_piercing:
+		return
 
 	queue_free()
 

@@ -76,12 +76,16 @@ func try_fire(target_position: Vector2) -> bool:
 		attempted_fire_without_ammunition.emit()
 		return false
 
-	# Spread Shot (#24) and Ricochet (#36): consume the ability charge, not extra ammo
+	# Spread Shot (#24), Ricochet (#36) and Piercing Shot (#38): consume the
+	# ability charge, not extra ammo
 	if AbilityState.equipped_ability_id == "spread_shot" and AbilityState.is_charged:
 		_fire_spread_shot(target_position)
 		AbilityState.consume_charge()
 	elif AbilityState.equipped_ability_id == "ricochet" and AbilityState.is_charged:
 		_fire_ricochet_shot(target_position)
+		AbilityState.consume_charge()
+	elif AbilityState.equipped_ability_id == "piercing_shot" and AbilityState.is_charged:
+		_fire_piercing_shot(target_position)
 		AbilityState.consume_charge()
 	else:
 		_spawn_projectile(target_position)
@@ -103,6 +107,13 @@ func _fire_ricochet_shot(target_position: Vector2) -> void:
 		return
 	projectile.zombie_manager = zombie_manager
 	projectile.bounces_remaining = RICOCHET_BOUNCE_COUNT
+
+
+func _fire_piercing_shot(target_position: Vector2) -> void:
+	var projectile := _spawn_projectile(target_position)
+	if projectile == null:
+		return
+	projectile.is_piercing = true
 
 
 func _spawn_projectile(target_position: Vector2) -> Projectile:
