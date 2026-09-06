@@ -150,9 +150,9 @@ anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
 offset_left = -210.0
-offset_top = 46.0
+offset_top = 20.0
 offset_right = -20.0
-offset_bottom = 100.0
+offset_bottom = 74.0
 grow_horizontal = 0
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.9
@@ -502,18 +502,6 @@ text = "3"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ReturnHomeBaseButton" type="Button" parent="HUD/HUDRoot" unique_id=1435605431]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -8.0
-offset_top = 6.0
-offset_bottom = 34.0
-grow_horizontal = 0
-theme_override_font_sizes/font_size = 12
-text = "RETURN TO HUB"
-
 [node name="SupplyCallLabel" type="Label" parent="HUD/HUDRoot" unique_id=1761266415]
 mouse_filter = 2
 layout_mode = 1
@@ -536,5 +524,3 @@ script = ExtResource("9_67u5c")
 autostart = true
 
 [node name="WaveAnnouncement" parent="." instance=ExtResource("10_wave")]
-
-[connection signal="pressed" from="HUD/HUDRoot/ReturnHomeBaseButton" to="." method="_on_return_home_base_button_pressed"]
