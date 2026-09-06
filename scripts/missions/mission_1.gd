@@ -40,6 +40,13 @@ const RUNNER_TYPE: EnemyTypeDef = preload("res://resources/enemies/runner.tres")
 @onready var supply_call_label: Label = $HUD/HUDRoot/SupplyCallLabel
 @onready var wave_announcement: WaveAnnouncement = $WaveAnnouncement
 
+# Pause menu (#44). script preloaded as a type constant rather than relying
+# on the class_name global, same workaround already used for AbilityCatalog
+# above, needs an editor rescan to register on a fresh checkout otherwise
+const PauseMenu := preload("res://scripts/ui/pause_menu.gd")
+const PAUSE_MENU_SCENE := preload("res://scenes/ui/pause_menu.tscn")
+var pause_menu: PauseMenu = null
+
 var zombie_manager: ZombieManager
 
 # base wall HP, overridden by the Fortified Wall upgrade (#25) in _ready()
@@ -100,6 +107,10 @@ func _exit_tree() -> void:
 	Input.set_custom_mouse_cursor(null)
 
 func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_cancel"):
+		_open_pause_menu()
+		return
+
 	# check for left mouse click and attempt to fire weapon toward cursor
 	if (
 		event is InputEventMouseButton
@@ -260,7 +271,9 @@ func _apply_supply_effect(supply_id: String) -> void:
 
 func _activate_wall_damage_reduction() -> void:
 	wall_damage_reduction_active = true
-	get_tree().create_timer(EMERGENCY_WALL_REDUCTION_DURATION).timeout.connect(
+	# process_always=false so this respects the Pause menu (#44) instead of
+	# ticking down while gameplay is paused
+	get_tree().create_timer(EMERGENCY_WALL_REDUCTION_DURATION, false).timeout.connect(
 		func() -> void: wall_damage_reduction_active = false
 	)
 
@@ -431,14 +444,30 @@ func _on_all_waves_cleared() -> void:
 	return_to_home_base()
 
 
-func _on_return_home_base_button_pressed() -> void:
-	# NOTE: kept this exact function name, it's very likely connected to a
-	# Button's `pressed` signal via the editor's Signals panel, not visible
-	# in this file. Renaming it would break that connection silently.
+func _on_pause_menu_return_home_requested() -> void:
+	get_tree().paused = false
+	pause_menu.queue_free()
+	pause_menu = null
 	return_to_home_base()
+
+func _open_pause_menu() -> void:
+	if pause_menu != null:
+		return
+
+	pause_menu = PAUSE_MENU_SCENE.instantiate()
+	add_child(pause_menu)
+	pause_menu.resume_requested.connect(_on_pause_menu_resume_requested)
+	pause_menu.return_home_requested.connect(_on_pause_menu_return_home_requested)
+	get_tree().paused = true
+
+func _on_pause_menu_resume_requested() -> void:
+	get_tree().paused = false
+	pause_menu.queue_free()
+	pause_menu = null
 
 func return_to_home_base() -> void:
 	# Supplies are repurchased every mission per GDD §2.6, not persistent
+	get_tree().paused = false
 	SupplyState.clear_loadout()
 	get_tree().change_scene_to_file("res://scenes/ui/home_base.tscn")
 
