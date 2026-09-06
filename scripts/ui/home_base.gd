@@ -71,7 +71,7 @@ func _on_supplies_button_pressed() -> void:
 func _on_ability_button_pressed() -> void:
 	get_tree().change_scene_to_file("res://scenes/ui/ability_select.tscn")
 	
-	#Gold Debug text
+	
 func _on_gold_changed(new_gold: int) -> void:
 	$MainMargin/MainLayout/TopBar/GoldPanel/GoldMargin/GoldContent/GoldLabel.text = "Gold: %d" % new_gold
 

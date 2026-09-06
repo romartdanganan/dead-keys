@@ -36,7 +36,7 @@ func purchase_into_slot(slot_index: int, supply_id: String) -> bool:
 	if supply.is_empty():
 		return false
 
-	if not UpgradeState.spend_gold(supply.cost):
+	if not ProgressionManager.spend_gold(supply.cost):
 		return false
 
 	equipped_slots[slot_index] = supply_id
@@ -64,7 +64,7 @@ func sell_slot(slot_index: int) -> void:
 
 	var supply := SupplyCatalog.get_supply(supply_id)
 	if not supply.is_empty():
-		UpgradeState.add_gold(supply.cost)
+		ProgressionManager.add_gold(supply.cost)
 
 	equipped_slots[slot_index] = ""
 	loadout_changed.emit()

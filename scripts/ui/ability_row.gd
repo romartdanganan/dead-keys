@@ -36,7 +36,7 @@ func _ready() -> void:
 	# other cards buying an ability changes gold, which can flip this card
 	# between affordable and not, so it needs to react even when it isn't
 	# the one being interacted with
-	UpgradeState.gold_changed.connect(_on_gold_changed)
+	ProgressionManager.gold_changed.connect(_on_gold_changed)
 	refresh()
 
 
@@ -50,7 +50,7 @@ func refresh() -> void:
 	tooltip_text = ability.description
 
 	var equipped: bool = AbilityState.equipped_ability_id == ability_id
-	var owned: bool = UpgradeState.is_ability_owned(ability_id)
+	var owned: bool = ProgressionManager.is_ability_owned(ability_id)
 
 	if not ability.implemented:
 		status_label.text = "SOON"
@@ -62,7 +62,7 @@ func refresh() -> void:
 
 	if not owned:
 		var cost: int = ability.get("cost", 0)
-		var affordable := UpgradeState.can_afford(cost)
+		var affordable := ProgressionManager.can_afford(cost)
 		status_label.text = "BUY: %d GOLD" % cost
 		var locked_colour := COLOUR_HOVER if (is_hovering and affordable) else COLOUR_LOCKED
 		card_style.border_color = locked_colour
@@ -113,8 +113,8 @@ func _on_pressed() -> void:
 	# first click on a locked card buys it, a second click (now owned) equips
 	# it, kept as two separate steps to match the buy/select pattern already
 	# used by the Mission Supplies shop rather than inventing a new one
-	if not UpgradeState.is_ability_owned(ability_id):
-		UpgradeState.purchase_ability(ability_id)
+	if not ProgressionManager.is_ability_owned(ability_id):
+		ProgressionManager.purchase_ability(ability_id)
 		refresh()
 		return
 
