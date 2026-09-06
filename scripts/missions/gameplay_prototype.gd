@@ -393,12 +393,6 @@ func _on_all_waves_cleared() -> void:
 	return_to_home_base()
 
 
-func _on_return_home_base_button_pressed() -> void:
-	# NOTE: kept this exact function name, it's very likely connected to a
-	# Button's `pressed` signal via the editor's Signals panel, not visible
-	# in this file. Renaming it would break that connection silently.
-	return_to_home_base()
-
 func return_to_home_base() -> void:
 	# Supplies are repurchased every mission per GDD §2.6, not persistent
 	SupplyState.clear_loadout()
