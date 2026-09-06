@@ -6,7 +6,10 @@ const AbilityCatalog := preload("res://scripts/resources/ability_catalog.gd")
 
 
 @export var crosshair_texture: Texture2D
-@export var enemy_type: EnemyTypeDef = preload("res://resources/enemies/walker.tres")
+
+# base enemy types used to build Mission 1's waves in _build_mission_config()
+const WALKER_TYPE: EnemyTypeDef = preload("res://resources/enemies/walker.tres")
+const RUNNER_TYPE: EnemyTypeDef = preload("res://resources/enemies/runner.tres")
 
 @onready var ammo_system: AmmoSystem = $AmmoSystem
 @onready var ammo_label: Label = %AmmoLabel
@@ -35,6 +38,7 @@ const AbilityCatalog := preload("res://scripts/resources/ability_catalog.gd")
 	$HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent/SupplySection/SupplySlots/SupplySlot3/SlotPanel/SlotMargin/SupplyIcon1,
 ]
 @onready var supply_call_label: Label = $HUD/HUDRoot/SupplyCallLabel
+@onready var wave_announcement: WaveAnnouncement = $WaveAnnouncement
 
 var zombie_manager: ZombieManager
 
@@ -285,6 +289,7 @@ func _start_mission() -> void:
 	zombie_manager.spawn_points = spawn_points
 	zombie_manager.all_waves_cleared.connect(_on_all_waves_cleared)
 	zombie_manager.zombie_spawned.connect(_on_zombie_spawned)
+	zombie_manager.wave_started.connect(_on_wave_started)
 
 	# Ricochet (#36) needs the active zombie list, which doesn't exist until
 	# the mission actually starts, so this is set here rather than in configure()
@@ -295,26 +300,66 @@ func _start_mission() -> void:
 	zombie_manager.start_mission()
 
 	print("Mission started: ", mission.mission_name)
-	print("Wave 1: 2 Walkers | Wave 2: 1 Walker")
 	print("Type any active word shown above a zombie.")
 
-func _build_mission_config() -> MissionConfigDef:
-	var wave_1 := WaveEntry.new()
-	wave_1.enemy_type = enemy_type
-	wave_1.count = 10
-	wave_1.spawn_interval = 5
-	wave_1.start_delay = 0.5
+func _on_wave_started(wave_number: int, is_final_wave: bool) -> void:
+	if is_final_wave:
+		wave_announcement.show_text("FINAL WAVE")
+	else:
+		wave_announcement.show_wave(wave_number)
 
-	var wave_2 := WaveEntry.new()
-	wave_2.enemy_type = enemy_type
-	wave_2.count = 1
-	wave_2.spawn_interval = 5
-	wave_2.start_delay = 0.5
+func _build_mission_config() -> MissionConfigDef:
+	# wave 1: Walkers only, tutorial pacing per GDD §5.1. spawn_interval kept
+	# generous since Walker (speed 30) takes ~20s to cross the arena, so a
+	# short interval leaves too many on screen and stacked at once.
+	# numbers here assume a slower typist (~35-40 WPM), not just a fast one,
+	# per #33's upcoming playtest, not tuned solo off one person's speed
+	var wave_1 := WaveEntry.new()
+	wave_1.enemy_type = WALKER_TYPE
+	wave_1.count = 3
+	wave_1.spawn_interval = 3.5
+	wave_1.start_delay = 1.0
+
+	# wave 2: introduces Runner alongside Walker. two WaveEntry rows sharing
+	# display_wave_number = 2 so the player sees one "WAVE 2" announcement
+	# even though it spawns as two sequential typed batches (see WaveEntry).
+	# ZombieManager only starts wave_2b once wave_2a is fully cleared, so
+	# there's no cross-batch spawn overlap, only within-batch pacing to watch
+	var wave_2a := WaveEntry.new()
+	wave_2a.enemy_type = WALKER_TYPE
+	wave_2a.count = 2
+	wave_2a.spawn_interval = 3.0
+	wave_2a.start_delay = 2.5
+	wave_2a.display_wave_number = 2
+
+	var wave_2b := WaveEntry.new()
+	wave_2b.enemy_type = RUNNER_TYPE
+	wave_2b.count = 2
+	wave_2b.spawn_interval = 2.5
+	wave_2b.start_delay = 1.5
+	wave_2b.display_wave_number = 2
+
+	# wave 3 (final): same mix, slightly higher density, closing out the
+	# tutorial. is_final_wave is computed automatically by ZombieManager,
+	# nothing to flag here
+	var wave_3a := WaveEntry.new()
+	wave_3a.enemy_type = WALKER_TYPE
+	wave_3a.count = 3
+	wave_3a.spawn_interval = 3.0
+	wave_3a.start_delay = 2.5
+	wave_3a.display_wave_number = 3
+
+	var wave_3b := WaveEntry.new()
+	wave_3b.enemy_type = RUNNER_TYPE
+	wave_3b.count = 2
+	wave_3b.spawn_interval = 2.5
+	wave_3b.start_delay = 1.5
+	wave_3b.display_wave_number = 3
 
 	var mission := MissionConfigDef.new()
-	mission.mission_id = "mission_1_multi_wave_test"
-	mission.mission_name = "Defend the Suburbs - Wave 1 & 2"
-	mission.waves = [wave_1, wave_2]
+	mission.mission_id = "mission_1"
+	mission.mission_name = "Defend the Suburbs"
+	mission.waves = [wave_1, wave_2a, wave_2b, wave_3a, wave_3b]
 	mission.base_coin_reward = 50
 	return mission
 
