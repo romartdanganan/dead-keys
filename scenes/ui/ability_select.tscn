@@ -2,7 +2,8 @@
 
 [ext_resource type="Script" uid="uid://dt5bwmerk385n" path="res://scripts/ui/ability_select.gd" id="1_select"]
 [ext_resource type="PackedScene" path="res://scenes/ui/ability_row.tscn" id="2_row"]
-[ext_resource type="Texture2D" uid="uid://d1nloet4fy00a" path="res://icon.svg" id="3_icon"]
+[ext_resource type="Texture2D" uid="uid://dtxygfe036xnp" path="res://icon.svg" id="3_icon"]
+[ext_resource type="Texture2D" path="res://assets/sprites/coin.png" id="4_coin"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_topbar_normal"]
 bg_color = Color(0.58, 0.4, 0.24, 1)
@@ -88,7 +89,7 @@ alignment = 1
 custom_minimum_size = Vector2(36, 36)
 layout_mode = 2
 mouse_filter = 2
-texture = ExtResource("3_icon")
+texture = ExtResource("4_coin")
 expand_mode = 1
 stretch_mode = 5
 
@@ -131,7 +132,7 @@ ability_id = "ricochet"
 ability_id = "ability_3"
 
 [node name="AbilityRow4" parent="MainMargin/MainLayout/GridArea/RowsContainer" unique_id=2134996650 instance=ExtResource("2_row")]
-ability_id = "ability_4"
+ability_id = "piercing_shot"
 
 [node name="AbilityRow5" parent="MainMargin/MainLayout/GridArea/RowsContainer" unique_id=678928303 instance=ExtResource("2_row")]
 ability_id = "ability_5"

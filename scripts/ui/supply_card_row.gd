@@ -41,7 +41,7 @@ func refresh(selected_slot_occupied: bool = false) -> void:
 		buy_button.disabled = true
 	else:
 		buy_button.text = "BUY"
-		buy_button.disabled = not UpgradeState.can_afford(supply.cost)
+		buy_button.disabled = not ProgressionManager.can_afford(supply.cost)
 
 
 func _on_buy_pressed() -> void:

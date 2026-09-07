@@ -1,10 +1,11 @@
 [gd_scene format=3 uid="uid://c722iqq3v14iy"]
 
 [ext_resource type="Script" uid="uid://dwgmuxj6ali8m" path="res://scripts/ui/home_base.gd" id="1_xlecv"]
-[ext_resource type="Texture2D" uid="uid://bgmlfxoymbhlh" path="res://icon.svg" id="3_mkrqy"]
+[ext_resource type="Texture2D" uid="uid://dtxygfe036xnp" path="res://icon.svg" id="3_mkrqy"]
 [ext_resource type="PackedScene" uid="uid://k1bityq7o6hv" path="res://scenes/ui/mission_card.tscn" id="4_nywag"]
 [ext_resource type="Texture2D" uid="uid://dmf0qo03hx2k0" path="res://assets/ui/home_base_background.png" id="5_bgimg"]
 [ext_resource type="Texture2D" uid="uid://bdl8kbkf67gp8" path="res://assets/ui/logo_homebase.png" id="6_logo"]
+[ext_resource type="Texture2D" path="res://assets/sprites/coin.png" id="7_coin"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wood_panel"]
 bg_color = Color(0.58, 0.4, 0.24, 1)
@@ -173,7 +174,7 @@ alignment = 1
 custom_minimum_size = Vector2(36, 36)
 layout_mode = 2
 mouse_filter = 2
-texture = ExtResource("3_mkrqy")
+texture = ExtResource("7_coin")
 expand_mode = 1
 stretch_mode = 5
 

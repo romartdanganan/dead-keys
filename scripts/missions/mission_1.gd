@@ -6,7 +6,10 @@ const AbilityCatalog := preload("res://scripts/resources/ability_catalog.gd")
 
 
 @export var crosshair_texture: Texture2D
-@export var enemy_type: EnemyTypeDef = preload("res://resources/enemies/walker.tres")
+
+# base enemy types used to build Mission 1's waves in _build_mission_config()
+const WALKER_TYPE: EnemyTypeDef = preload("res://resources/enemies/walker.tres")
+const RUNNER_TYPE: EnemyTypeDef = preload("res://resources/enemies/runner.tres")
 
 @onready var ammo_system: AmmoSystem = $AmmoSystem
 @onready var ammo_label: Label = %AmmoLabel
@@ -35,6 +38,14 @@ const AbilityCatalog := preload("res://scripts/resources/ability_catalog.gd")
 	$HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent/SupplySection/SupplySlots/SupplySlot3/SlotPanel/SlotMargin/SupplyIcon1,
 ]
 @onready var supply_call_label: Label = $HUD/HUDRoot/SupplyCallLabel
+@onready var wave_announcement: WaveAnnouncement = $WaveAnnouncement
+
+# Pause menu (#44). script preloaded as a type constant rather than relying
+# on the class_name global, same workaround already used for AbilityCatalog
+# above, needs an editor rescan to register on a fresh checkout otherwise
+const PauseMenu := preload("res://scripts/ui/pause_menu.gd")
+const PAUSE_MENU_SCENE := preload("res://scenes/ui/pause_menu.tscn")
+var pause_menu: PauseMenu = null
 
 var zombie_manager: ZombieManager
 
@@ -88,15 +99,19 @@ func _ready() -> void:
 # Damage, and Magazine Capacity are applied in their own _setup_* functions
 # below since they need the relevant node to already be ready.
 func _apply_upgrades() -> void:
-	WALL_MAX_HEALTH = UpgradeState.get_upgrade_value("fortified_wall")
+	WALL_MAX_HEALTH = ProgressionManager.get_upgrade_value("fortified_wall")
 	wall_health = WALL_MAX_HEALTH
-	lives_remaining = UpgradeState.get_upgrade_value("extra_life")
+	lives_remaining = ProgressionManager.get_upgrade_value("extra_life")
 
 func _exit_tree() -> void:
 	# reset custom cursor back to system default on scene exit
 	Input.set_custom_mouse_cursor(null)
 
 func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_cancel"):
+		_open_pause_menu()
+		return
+
 	# check for left mouse click and attempt to fire weapon toward cursor
 	if (
 		event is InputEventMouseButton
@@ -137,7 +152,7 @@ func _setup_cursor() -> void:
 
 func _setup_ammo_hud() -> void:
 	# Magazine Capacity upgrade (#25)
-	ammo_system.set_maximum_ammunition(UpgradeState.get_upgrade_value("magazine_capacity"))
+	ammo_system.set_maximum_ammunition(ProgressionManager.get_upgrade_value("magazine_capacity"))
 
 	ammo_system.ammunition_changed.connect(_on_ammunition_changed)
 	_on_ammunition_changed(ammo_system.current_ammo, ammo_system.maximum_ammo)
@@ -153,11 +168,11 @@ func _setup_weapon() -> void:
 	weapon_controller.attempted_fire_without_ammunition.connect(_on_attempted_fire_without_ammunition)
 
 	# Fire Rate upgrade (#25): shots/s -> cooldown seconds
-	var shots_per_second: float = UpgradeState.get_upgrade_value("fire_rate")
+	var shots_per_second: float = ProgressionManager.get_upgrade_value("fire_rate")
 	weapon_controller.fire_cooldown = 1.0 / shots_per_second
 
 	# Bullet Damage upgrade (#25), applied to each projectile on fire
-	weapon_controller.bullet_damage = UpgradeState.get_upgrade_value("bullet_damage")
+	weapon_controller.bullet_damage = ProgressionManager.get_upgrade_value("bullet_damage")
 
 func _setup_typing() -> void:
 	typing_controller.word_completed.connect(_on_typing_word_completed)
@@ -263,7 +278,9 @@ func _apply_supply_effect(supply_id: String) -> void:
 
 func _activate_wall_damage_reduction() -> void:
 	wall_damage_reduction_active = true
-	get_tree().create_timer(EMERGENCY_WALL_REDUCTION_DURATION).timeout.connect(
+	# process_always=false so this respects the Pause menu (#44) instead of
+	# ticking down while gameplay is paused
+	get_tree().create_timer(EMERGENCY_WALL_REDUCTION_DURATION, false).timeout.connect(
 		func() -> void: wall_damage_reduction_active = false
 	)
 
@@ -292,6 +309,7 @@ func _start_mission() -> void:
 	zombie_manager.spawn_points = spawn_points
 	zombie_manager.all_waves_cleared.connect(_on_all_waves_cleared)
 	zombie_manager.zombie_spawned.connect(_on_zombie_spawned)
+	zombie_manager.wave_started.connect(_on_wave_started)
 
 	# Ricochet (#36) needs the active zombie list, which doesn't exist until
 	# the mission actually starts, so this is set here rather than in configure()
@@ -302,26 +320,66 @@ func _start_mission() -> void:
 	zombie_manager.start_mission()
 
 	print("Mission started: ", mission.mission_name)
-	print("Wave 1: 2 Walkers | Wave 2: 1 Walker")
 	print("Type any active word shown above a zombie.")
 
-func _build_mission_config() -> MissionConfigDef:
-	var wave_1 := WaveEntry.new()
-	wave_1.enemy_type = enemy_type
-	wave_1.count = 10
-	wave_1.spawn_interval = 5
-	wave_1.start_delay = 0.5
+func _on_wave_started(wave_number: int, is_final_wave: bool) -> void:
+	if is_final_wave:
+		wave_announcement.show_text("FINAL WAVE")
+	else:
+		wave_announcement.show_wave(wave_number)
 
-	var wave_2 := WaveEntry.new()
-	wave_2.enemy_type = enemy_type
-	wave_2.count = 1
-	wave_2.spawn_interval = 5
-	wave_2.start_delay = 0.5
+func _build_mission_config() -> MissionConfigDef:
+	# wave 1: Walkers only, tutorial pacing per GDD §5.1. spawn_interval kept
+	# generous since Walker (speed 30) takes ~20s to cross the arena, so a
+	# short interval leaves too many on screen and stacked at once.
+	# numbers here assume a slower typist (~35-40 WPM), not just a fast one,
+	# per #33's upcoming playtest, not tuned solo off one person's speed
+	var wave_1 := WaveEntry.new()
+	wave_1.enemy_type = WALKER_TYPE
+	wave_1.count = 3
+	wave_1.spawn_interval = 3.5
+	wave_1.start_delay = 1.0
+
+	# wave 2: introduces Runner alongside Walker. two WaveEntry rows sharing
+	# display_wave_number = 2 so the player sees one "WAVE 2" announcement
+	# even though it spawns as two sequential typed batches (see WaveEntry).
+	# ZombieManager only starts wave_2b once wave_2a is fully cleared, so
+	# there's no cross-batch spawn overlap, only within-batch pacing to watch
+	var wave_2a := WaveEntry.new()
+	wave_2a.enemy_type = WALKER_TYPE
+	wave_2a.count = 2
+	wave_2a.spawn_interval = 3.0
+	wave_2a.start_delay = 2.5
+	wave_2a.display_wave_number = 2
+
+	var wave_2b := WaveEntry.new()
+	wave_2b.enemy_type = RUNNER_TYPE
+	wave_2b.count = 2
+	wave_2b.spawn_interval = 2.5
+	wave_2b.start_delay = 1.5
+	wave_2b.display_wave_number = 2
+
+	# wave 3 (final): same mix, slightly higher density, closing out the
+	# tutorial. is_final_wave is computed automatically by ZombieManager,
+	# nothing to flag here
+	var wave_3a := WaveEntry.new()
+	wave_3a.enemy_type = WALKER_TYPE
+	wave_3a.count = 3
+	wave_3a.spawn_interval = 3.0
+	wave_3a.start_delay = 2.5
+	wave_3a.display_wave_number = 3
+
+	var wave_3b := WaveEntry.new()
+	wave_3b.enemy_type = RUNNER_TYPE
+	wave_3b.count = 2
+	wave_3b.spawn_interval = 2.5
+	wave_3b.start_delay = 1.5
+	wave_3b.display_wave_number = 3
 
 	var mission := MissionConfigDef.new()
-	mission.mission_id = "mission_1_multi_wave_test"
-	mission.mission_name = "Defend the Suburbs - Wave 1 & 2"
-	mission.waves = [wave_1, wave_2]
+	mission.mission_id = "mission_1"
+	mission.mission_name = "Defend the Suburbs"
+	mission.waves = [wave_1, wave_2a, wave_2b, wave_3a, wave_3b]
 	mission.base_coin_reward = 50
 	return mission
 
@@ -390,11 +448,36 @@ func _spend_life() -> void:
 
 func _on_all_waves_cleared() -> void:
 	print("Mission complete. Returning to home base.")
+	ProgressionManager.add_gold(zombie_manager.mission_config.base_coin_reward)
+	ProgressionManager.save_progression()
 	return_to_home_base()
 
 
+
+func _on_pause_menu_return_home_requested() -> void:
+	get_tree().paused = false
+	pause_menu.queue_free()
+	pause_menu = null
+	return_to_home_base()
+
+func _open_pause_menu() -> void:
+	if pause_menu != null:
+		return
+
+	pause_menu = PAUSE_MENU_SCENE.instantiate()
+	add_child(pause_menu)
+	pause_menu.resume_requested.connect(_on_pause_menu_resume_requested)
+	pause_menu.return_home_requested.connect(_on_pause_menu_return_home_requested)
+	get_tree().paused = true
+
+func _on_pause_menu_resume_requested() -> void:
+	get_tree().paused = false
+	pause_menu.queue_free()
+	pause_menu = null
+
 func return_to_home_base() -> void:
 	# Supplies are repurchased every mission per GDD §2.6, not persistent
+	get_tree().paused = false
 	SupplyState.clear_loadout()
 	get_tree().change_scene_to_file("res://scenes/ui/home_base.tscn")
 

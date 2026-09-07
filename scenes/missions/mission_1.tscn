@@ -1,15 +1,16 @@
 [gd_scene format=3 uid="uid://bfhjsurifryia"]
 
-[ext_resource type="Texture2D" uid="uid://bgmlfxoymbhlh" path="res://icon.svg" id="1_hw44m"]
-[ext_resource type="Script" uid="uid://biiv0yqxp1y0w" path="res://scripts/missions/gameplay_prototype.gd" id="1_ivoev"]
+[ext_resource type="Texture2D" uid="uid://d1nloet4fy00a" path="res://icon.svg" id="1_hw44m"]
+[ext_resource type="Script" path="res://scripts/missions/mission_1.gd" id="1_ivoev"]
 [ext_resource type="Texture2D" uid="uid://cngk02pywnos6" path="res://assets/ui/ammo_icon.png" id="10_ammoicon"]
 [ext_resource type="Texture2D" uid="uid://c1m8brksixm7k" path="res://assets/ui/life_icon.png" id="11_lifeicon"]
-[ext_resource type="Texture2D" uid="uid://d0bwou78ljwj8" path="res://assets/ui/crosshair.png" id="2_2o0v8"]
+[ext_resource type="Texture2D" uid="uid://cjc67ydud85uc" path="res://assets/ui/crosshair.png" id="2_2o0v8"]
 [ext_resource type="Script" uid="uid://bs8sp27gkkybi" path="res://scripts/systems/weapon_controller.gd" id="3_jfe48"]
 [ext_resource type="Script" uid="uid://dooywlfphubj7" path="res://scripts/systems/ammo_system.gd" id="4_2o0v8"]
 [ext_resource type="PackedScene" uid="uid://c1vn4ejy744uy" path="res://scenes/entities/projectile.tscn" id="4_sa8vt"]
 [ext_resource type="Script" uid="uid://cyanfkt2biqp3" path="res://scripts/typing/typing_controller.gd" id="8_pa0ib"]
 [ext_resource type="Script" uid="uid://dx6y26g4dhm7t" path="res://scripts/systems/mistake_system.gd" id="9_67u5c"]
+[ext_resource type="PackedScene" path="res://scenes/ui/wave_announcement.tscn" id="10_wave"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_combo_bg"]
 bg_color = Color(0.2, 0.16, 0.1, 1)
@@ -25,7 +26,7 @@ corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
-[node name="GameplayPrototype" type="Node2D" unique_id=277045778]
+[node name="Mission1" type="Node2D" unique_id=277045778]
 script = ExtResource("1_ivoev")
 crosshair_texture = ExtResource("2_2o0v8")
 
@@ -88,15 +89,17 @@ grow_vertical = 2
 mouse_filter = 2
 
 [node name="MissionPanel" type="PanelContainer" parent="HUD/HUDRoot" unique_id=1355168936]
-custom_minimum_size = Vector2(200, 54)
+mouse_filter = 2
+custom_minimum_size = Vector2(220, 64)
 layout_mode = 1
-offset_left = 20.0
-offset_top = 20.0
-offset_right = 220.0
-offset_bottom = 74.0
+offset_left = 16.0
+offset_top = 12.0
+offset_right = 236.0
+offset_bottom = 76.0
 size_flags_horizontal = 3
 
 [node name="MissionMargin" type="MarginContainer" parent="HUD/HUDRoot/MissionPanel" unique_id=1708111029]
+mouse_filter = 2
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 8
@@ -104,26 +107,30 @@ theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 8
 
 [node name="MissionNameLabel" type="Label" parent="HUD/HUDRoot/MissionPanel/MissionMargin" unique_id=362884432]
-custom_minimum_size = Vector2(0, 26)
+mouse_filter = 2
+custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
-theme_override_font_sizes/font_size = 17
+theme_override_font_sizes/font_size = 19
 text = "MISSION: THE SUBURBS"
 vertical_alignment = 1
 autowrap_mode = 3
 
 [node name="WallPanelAnchor" type="CenterContainer" parent="HUD/HUDRoot" unique_id=1338710707]
+mouse_filter = 2
 layout_mode = 1
 offset_top = 6.0
 offset_right = 1280.0
 offset_bottom = 78.0
 
 [node name="WallPanel" type="PanelContainer" parent="HUD/HUDRoot/WallPanelAnchor" unique_id=1806072418]
+mouse_filter = 2
 custom_minimum_size = Vector2(420, 64)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 1.4
 
 [node name="WallMargin" type="MarginContainer" parent="HUD/HUDRoot/WallPanelAnchor/WallPanel" unique_id=1278028382]
+mouse_filter = 2
 layout_mode = 2
 theme_override_constants/margin_left = 14
 theme_override_constants/margin_top = 10
@@ -131,11 +138,13 @@ theme_override_constants/margin_right = 14
 theme_override_constants/margin_bottom = 10
 
 [node name="WallContent" type="VBoxContainer" parent="HUD/HUDRoot/WallPanelAnchor/WallPanel/WallMargin" unique_id=484794018]
+mouse_filter = 2
 layout_mode = 2
-theme_override_constants/separation = 6
+theme_override_constants/separation = 4
 alignment = 1
 
 [node name="WallHealthLabel" type="Label" parent="HUD/HUDRoot/WallPanelAnchor/WallPanel/WallMargin/WallContent" unique_id=215311511]
+mouse_filter = 2
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "WALL HEALTH: 100 / 100"
@@ -143,34 +152,39 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="WallHealthBar" type="ProgressBar" parent="HUD/HUDRoot/WallPanelAnchor/WallPanel/WallMargin/WallContent" unique_id=550378873]
+mouse_filter = 2
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 size_flags_vertical = 1
 show_percentage = false
 
 [node name="LivesPanel" type="PanelContainer" parent="HUD/HUDRoot" unique_id=652850530]
-custom_minimum_size = Vector2(190, 54)
+mouse_filter = 2
+custom_minimum_size = Vector2(210, 64)
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -210.0
-offset_top = 20.0
-offset_right = -20.0
-offset_bottom = 74.0
+offset_left = -226.0
+offset_top = 12.0
+offset_right = -16.0
+offset_bottom = 76.0
 grow_horizontal = 0
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.9
 
 [node name="LivesMargin" type="MarginContainer" parent="HUD/HUDRoot/LivesPanel" unique_id=524424734]
+mouse_filter = 2
 layout_mode = 2
 
 [node name="LivesContent" type="VBoxContainer" parent="HUD/HUDRoot/LivesPanel/LivesMargin" unique_id=1982631515]
+mouse_filter = 2
 layout_mode = 2
 
 [node name="LivesLabel" type="Label" parent="HUD/HUDRoot/LivesPanel/LivesMargin/LivesContent" unique_id=1450119511]
+mouse_filter = 2
 layout_mode = 2
-theme_override_font_sizes/font_size = 17
+theme_override_font_sizes/font_size = 19
 text = "LIVES: 1"
 horizontal_alignment = 1
 
@@ -181,49 +195,55 @@ theme_override_constants/separation = 8
 alignment = 1
 
 [node name="LifeIcon1" type="TextureRect" parent="HUD/HUDRoot/LivesPanel/LivesMargin/LivesContent/LivesIcons" unique_id=1973587694]
-custom_minimum_size = Vector2(32, 32)
+mouse_filter = 2
+custom_minimum_size = Vector2(38, 38)
 layout_mode = 2
 texture = ExtResource("11_lifeicon")
 expand_mode = 1
 stretch_mode = 5
 
 [node name="LifeIcon2" type="TextureRect" parent="HUD/HUDRoot/LivesPanel/LivesMargin/LivesContent/LivesIcons" unique_id=1730912616]
+mouse_filter = 2
 modulate = Color(1, 1, 1, 0.27451)
-custom_minimum_size = Vector2(32, 32)
+custom_minimum_size = Vector2(38, 38)
 layout_mode = 2
 texture = ExtResource("11_lifeicon")
 expand_mode = 1
 stretch_mode = 5
 
 [node name="LifeIcon3" type="TextureRect" parent="HUD/HUDRoot/LivesPanel/LivesMargin/LivesContent/LivesIcons" unique_id=755160449]
+mouse_filter = 2
 modulate = Color(1, 1, 1, 0.27451)
-custom_minimum_size = Vector2(32, 32)
+custom_minimum_size = Vector2(38, 38)
 layout_mode = 2
 texture = ExtResource("11_lifeicon")
 expand_mode = 1
 stretch_mode = 5
 
 [node name="TypingPanel" type="VBoxContainer" parent="HUD/HUDRoot" unique_id=1745238665]
+mouse_filter = 2
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -260.0
-offset_top = -145.0
-offset_right = 260.0
-offset_bottom = -25.0
+offset_left = -120.0
+offset_top = -60.0
+offset_right = 120.0
+offset_bottom = -18.0
 grow_horizontal = 2
 grow_vertical = 0
-theme_override_constants/separation = 8
+theme_override_constants/separation = 6
 alignment = 2
 
 [node name="MistakePanel" type="PanelContainer" parent="HUD/HUDRoot/TypingPanel" unique_id=574466646]
+mouse_filter = 2
 custom_minimum_size = Vector2(220, 32)
 layout_mode = 2
 
 [node name="MistakeMargin" type="MarginContainer" parent="HUD/HUDRoot/TypingPanel/MistakePanel" unique_id=1370334121]
+mouse_filter = 2
 layout_mode = 2
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 4
@@ -231,6 +251,7 @@ theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 4
 
 [node name="MistakesLabel" type="Label" parent="HUD/HUDRoot/TypingPanel/MistakePanel/MistakeMargin" unique_id=267336724]
+mouse_filter = 2
 layout_mode = 2
 theme_override_font_sizes/font_size = 17
 text = "MISTAKES: 0 / 3"
@@ -238,6 +259,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="AmmoPanel" type="PanelContainer" parent="HUD/HUDRoot" unique_id=110014454]
+mouse_filter = 2
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
@@ -249,6 +271,7 @@ offset_bottom = -20.0
 grow_vertical = 0
 
 [node name="AmmoMargin" type="MarginContainer" parent="HUD/HUDRoot/AmmoPanel" unique_id=403543352]
+mouse_filter = 2
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 8
@@ -256,6 +279,7 @@ theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 8
 
 [node name="AmmoContent" type="HBoxContainer" parent="HUD/HUDRoot/AmmoPanel/AmmoMargin" unique_id=1510570189]
+mouse_filter = 2
 layout_mode = 2
 theme_override_constants/separation = 8
 
@@ -268,23 +292,27 @@ expand_mode = 1
 stretch_mode = 5
 
 [node name="AmmoInformation" type="VBoxContainer" parent="HUD/HUDRoot/AmmoPanel/AmmoMargin/AmmoContent" unique_id=1088190230]
+mouse_filter = 2
 layout_mode = 2
 size_flags_horizontal = 3
 alignment = 1
 
 [node name="AmmoLabel" type="Label" parent="HUD/HUDRoot/AmmoPanel/AmmoMargin/AmmoContent/AmmoInformation" unique_id=1655209337]
+mouse_filter = 2
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_font_sizes/font_size = 17
+theme_override_font_sizes/font_size = 22
 text = "AMMUNITON: "
 
 [node name="AmmoBar" type="ProgressBar" parent="HUD/HUDRoot/AmmoPanel/AmmoMargin/AmmoContent/AmmoInformation" unique_id=1402362511]
+mouse_filter = 2
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 16)
+custom_minimum_size = Vector2(0, 8)
 layout_mode = 2
 max_value = 8.0
 
 [node name="CombatUtilityPanel" type="PanelContainer" parent="HUD/HUDRoot" unique_id=1848018688]
+mouse_filter = 2
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -299,22 +327,27 @@ grow_horizontal = 0
 grow_vertical = 0
 
 [node name="CombatUtilityMargin" type="MarginContainer" parent="HUD/HUDRoot/CombatUtilityPanel" unique_id=615586060]
+mouse_filter = 2
 layout_mode = 2
 
 [node name="CombatUtilityContent" type="VBoxContainer" parent="HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin" unique_id=707121322]
+mouse_filter = 2
 layout_mode = 2
 theme_override_constants/separation = 6
 
 [node name="AbilitySection" type="VBoxContainer" parent="HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent" unique_id=1791033459]
+mouse_filter = 2
 layout_mode = 2
 
 [node name="AbilityHeadingLabel" type="Label" parent="HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent/AbilitySection" unique_id=1374394833]
+mouse_filter = 2
 layout_mode = 2
 theme_override_font_sizes/font_size = 17
 text = "ABILITY"
 horizontal_alignment = 1
 
 [node name="AbilityNameLabel" type="Label" parent="HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent/AbilitySection" unique_id=1407423609]
+mouse_filter = 2
 layout_mode = 2
 theme_override_colors/font_color = Color(0.95, 0.75, 0.2, 1)
 theme_override_font_sizes/font_size = 22
@@ -322,6 +355,7 @@ text = "SOME ABILITY"
 horizontal_alignment = 1
 
 [node name="ProgressBar" type="ProgressBar" parent="HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent/AbilitySection" unique_id=808598935]
+mouse_filter = 2
 custom_minimum_size = Vector2(0, 18)
 layout_mode = 2
 theme_override_styles/background = SubResource("StyleBoxFlat_combo_bg")
@@ -330,38 +364,46 @@ max_value = 5.0
 show_percentage = false
 
 [node name="AbilityStatusLabel" type="Label" parent="HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent/AbilitySection" unique_id=688955756]
+mouse_filter = 2
 layout_mode = 2
 theme_override_font_sizes/font_size = 17
 text = "COMBO: 0 / 5"
 
 [node name="UtilitySeparator" type="HSeparator" parent="HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent" unique_id=2052723228]
+mouse_filter = 2
 layout_mode = 2
 
 [node name="SupplySection" type="VBoxContainer" parent="HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent" unique_id=1438571328]
+mouse_filter = 2
 layout_mode = 2
 
 [node name="SupplyHeadingLabel" type="Label" parent="HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent/SupplySection" unique_id=1069520224]
+mouse_filter = 2
 layout_mode = 2
 theme_override_font_sizes/font_size = 17
 text = "CALL SUPPLY"
 horizontal_alignment = 1
 
 [node name="SupplySlots" type="HBoxContainer" parent="HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent/SupplySection" unique_id=1833255055]
+mouse_filter = 2
 layout_mode = 2
 theme_override_constants/separation = 8
 alignment = 1
 
 [node name="SupplySlot1" type="Control" parent="HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent/SupplySection/SupplySlots" unique_id=1549309498]
+mouse_filter = 2
 custom_minimum_size = Vector2(46, 60)
 layout_mode = 2
 
 [node name="SlotPanel" type="PanelContainer" parent="HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent/SupplySection/SupplySlots/SupplySlot1" unique_id=396512928]
+mouse_filter = 2
 custom_minimum_size = Vector2(46, 46)
 layout_mode = 1
 offset_right = 46.0
 offset_bottom = 46.0
 
 [node name="SlotMargin" type="MarginContainer" parent="HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent/SupplySection/SupplySlots/SupplySlot1/SlotPanel" unique_id=593189609]
+mouse_filter = 2
 layout_mode = 2
 theme_override_constants/margin_left = 4
 theme_override_constants/margin_top = 4
@@ -384,6 +426,7 @@ offset_bottom = 55.0
 mouse_filter = 2
 
 [node name="NumberLabel" type="Label" parent="HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent/SupplySection/SupplySlots/SupplySlot1/NumberBadge" unique_id=540017015]
+mouse_filter = 2
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
 text = "1"
@@ -391,16 +434,19 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="SupplySlot2" type="Control" parent="HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent/SupplySection/SupplySlots" unique_id=965002826]
+mouse_filter = 2
 custom_minimum_size = Vector2(46, 60)
 layout_mode = 2
 
 [node name="SlotPanel" type="PanelContainer" parent="HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent/SupplySection/SupplySlots/SupplySlot2" unique_id=962987273]
+mouse_filter = 2
 custom_minimum_size = Vector2(46, 46)
 layout_mode = 1
 offset_right = 46.0
 offset_bottom = 46.0
 
 [node name="SlotMargin" type="MarginContainer" parent="HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent/SupplySection/SupplySlots/SupplySlot2/SlotPanel" unique_id=824617392]
+mouse_filter = 2
 layout_mode = 2
 theme_override_constants/margin_left = 4
 theme_override_constants/margin_top = 4
@@ -424,6 +470,7 @@ offset_bottom = 55.0
 mouse_filter = 2
 
 [node name="NumberLabel" type="Label" parent="HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent/SupplySection/SupplySlots/SupplySlot2/NumberBadge" unique_id=7095303]
+mouse_filter = 2
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
 text = "2"
@@ -431,16 +478,19 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="SupplySlot3" type="Control" parent="HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent/SupplySection/SupplySlots" unique_id=146857344]
+mouse_filter = 2
 custom_minimum_size = Vector2(46, 60)
 layout_mode = 2
 
 [node name="SlotPanel" type="PanelContainer" parent="HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent/SupplySection/SupplySlots/SupplySlot3" unique_id=382852806]
+mouse_filter = 2
 custom_minimum_size = Vector2(46, 46)
 layout_mode = 1
 offset_right = 46.0
 offset_bottom = 46.0
 
 [node name="SlotMargin" type="MarginContainer" parent="HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent/SupplySection/SupplySlots/SupplySlot3/SlotPanel" unique_id=1325245210]
+mouse_filter = 2
 layout_mode = 2
 theme_override_constants/margin_left = 4
 theme_override_constants/margin_top = 4
@@ -464,6 +514,7 @@ offset_bottom = 55.0
 mouse_filter = 2
 
 [node name="NumberLabel" type="Label" parent="HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent/SupplySection/SupplySlots/SupplySlot3/NumberBadge" unique_id=199213074]
+mouse_filter = 2
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
 text = "3"
@@ -471,6 +522,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="SupplyCallLabel" type="Label" parent="HUD/HUDRoot" unique_id=1761266415]
+mouse_filter = 2
 layout_mode = 1
 offset_left = 1000.0
 offset_top = 320.0
@@ -490,4 +542,4 @@ script = ExtResource("9_67u5c")
 [node name="StatusTimer" type="Timer" parent="." unique_id=965495798]
 autostart = true
 
-
+[node name="WaveAnnouncement" parent="." instance=ExtResource("10_wave")]
