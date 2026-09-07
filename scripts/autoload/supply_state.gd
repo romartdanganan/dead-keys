@@ -40,6 +40,7 @@ func purchase_into_slot(slot_index: int, supply_id: String) -> bool:
 		return false
 
 	equipped_slots[slot_index] = supply_id
+	ProgressionManager.save_progression()
 	loadout_changed.emit()
 	return true
 
@@ -67,6 +68,7 @@ func sell_slot(slot_index: int) -> void:
 		ProgressionManager.add_gold(supply.cost)
 
 	equipped_slots[slot_index] = ""
+	ProgressionManager.save_progression()
 	loadout_changed.emit()
 
 
