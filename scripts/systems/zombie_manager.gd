@@ -66,7 +66,9 @@ func _run_next_wave() -> void:
 	_wave_index += 1
 
 	if wave.start_delay > 0.0:
-		await get_tree().create_timer(wave.start_delay).timeout
+		# process_always=false so this respects the Pause menu (#44) instead
+		# of ticking down while gameplay is paused
+		await get_tree().create_timer(wave.start_delay, false).timeout
 
 	# groups multiple WaveEntry rows under one announcement when display_wave_number
 	# is set, otherwise every entry announces its own position (see WaveEntry)
@@ -80,7 +82,7 @@ func _run_next_wave() -> void:
 			return
 		_spawn_zombie(wave.enemy_type)
 		if i < wave.count - 1 and wave.spawn_interval > 0.0:
-			await get_tree().create_timer(wave.spawn_interval).timeout
+			await get_tree().create_timer(wave.spawn_interval, false).timeout
 	await _wait_for_all_zombies_to_clear()
 	_run_next_wave()
 
