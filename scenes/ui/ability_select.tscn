@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dt5bwmerk385n" path="res://scripts/ui/ability_select.gd" id="1_select"]
 [ext_resource type="PackedScene" path="res://scenes/ui/ability_row.tscn" id="2_row"]
-[ext_resource type="Texture2D" uid="uid://d1nloet4fy00a" path="res://icon.svg" id="3_icon"]
+[ext_resource type="Texture2D" uid="uid://dtxygfe036xnp" path="res://icon.svg" id="3_icon"]
 
 [node name="AbilitySelect" type="Control" unique_id=788607357]
 layout_mode = 3

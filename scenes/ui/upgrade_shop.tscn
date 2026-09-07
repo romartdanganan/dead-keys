@@ -1,10 +1,10 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://ci6qtpy0fbqx2"]
 
-[ext_resource type="Script" path="res://scripts/ui/upgrade_shop.gd" id="1_shop"]
-[ext_resource type="Texture2D" path="res://icon.svg" id="2_icon"]
-[ext_resource type="PackedScene" path="res://scenes/ui/upgrade_row.tscn" id="3_row"]
+[ext_resource type="Script" uid="uid://pjehma15lsmr" path="res://scripts/ui/upgrade_shop.gd" id="1_shop"]
+[ext_resource type="Texture2D" uid="uid://dtxygfe036xnp" path="res://icon.svg" id="2_icon"]
+[ext_resource type="PackedScene" uid="uid://cwmwbkuglk6i" path="res://scenes/ui/upgrade_row.tscn" id="3_row"]
 
-[node name="UpgradeShop" type="Control"]
+[node name="UpgradeShop" type="Control" unique_id=545860099]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -13,7 +13,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_shop")
 
-[node name="BackgroundColor" type="ColorRect" parent="."]
+[node name="BackgroundColor" type="ColorRect" parent="." unique_id=253177660]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -22,7 +22,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.307571, 0.494309, 0.348993, 1)
 
-[node name="MainMargin" type="MarginContainer" parent="."]
+[node name="MainMargin" type="MarginContainer" parent="." unique_id=2100442351]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -34,38 +34,38 @@ theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 
-[node name="MainLayout" type="VBoxContainer" parent="MainMargin"]
+[node name="MainLayout" type="VBoxContainer" parent="MainMargin" unique_id=681165634]
 layout_mode = 2
 theme_override_constants/separation = 15
 
-[node name="TopBar" type="HBoxContainer" parent="MainMargin/MainLayout"]
+[node name="TopBar" type="HBoxContainer" parent="MainMargin/MainLayout" unique_id=899051697]
 custom_minimum_size = Vector2(0, 65)
 layout_mode = 2
 
-[node name="TitleLabel" type="Label" parent="MainMargin/MainLayout/TopBar"]
+[node name="TitleLabel" type="Label" parent="MainMargin/MainLayout/TopBar" unique_id=2138325509]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
 text = "UPGRADES"
 vertical_alignment = 1
 
-[node name="GoldPanel" type="PanelContainer" parent="MainMargin/MainLayout/TopBar"]
+[node name="GoldPanel" type="PanelContainer" parent="MainMargin/MainLayout/TopBar" unique_id=926234085]
 custom_minimum_size = Vector2(180, 60)
 layout_mode = 2
 
-[node name="GoldMargin" type="MarginContainer" parent="MainMargin/MainLayout/TopBar/GoldPanel"]
+[node name="GoldMargin" type="MarginContainer" parent="MainMargin/MainLayout/TopBar/GoldPanel" unique_id=2045585077]
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 14
 theme_override_constants/margin_bottom = 8
 
-[node name="GoldContent" type="HBoxContainer" parent="MainMargin/MainLayout/TopBar/GoldPanel/GoldMargin"]
+[node name="GoldContent" type="HBoxContainer" parent="MainMargin/MainLayout/TopBar/GoldPanel/GoldMargin" unique_id=782664176]
 layout_mode = 2
 theme_override_constants/separation = 8
 alignment = 1
 
-[node name="GoldIcon" type="TextureRect" parent="MainMargin/MainLayout/TopBar/GoldPanel/GoldMargin/GoldContent"]
+[node name="GoldIcon" type="TextureRect" parent="MainMargin/MainLayout/TopBar/GoldPanel/GoldMargin/GoldContent" unique_id=1815262430]
 custom_minimum_size = Vector2(36, 36)
 layout_mode = 2
 mouse_filter = 2
@@ -73,57 +73,57 @@ texture = ExtResource("2_icon")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="GoldLabel" type="Label" parent="MainMargin/MainLayout/TopBar/GoldPanel/GoldMargin/GoldContent"]
+[node name="GoldLabel" type="Label" parent="MainMargin/MainLayout/TopBar/GoldPanel/GoldMargin/GoldContent" unique_id=2089067276]
 layout_mode = 2
 text = "GOLD: 0"
 
-[node name="BackButton" type="Button" parent="MainMargin/MainLayout/TopBar"]
+[node name="BackButton" type="Button" parent="MainMargin/MainLayout/TopBar" unique_id=1866003866]
 custom_minimum_size = Vector2(130, 60)
 layout_mode = 2
 text = "BACK"
 
-[node name="RowsScroll" type="ScrollContainer" parent="MainMargin/MainLayout"]
+[node name="RowsScroll" type="ScrollContainer" parent="MainMargin/MainLayout" unique_id=1892643278]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="RowsContainer" type="VBoxContainer" parent="MainMargin/MainLayout/RowsScroll"]
+[node name="RowsContainer" type="VBoxContainer" parent="MainMargin/MainLayout/RowsScroll" unique_id=1144535608]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 12
 
-[node name="WeaponSectionLabel" type="Label" parent="MainMargin/MainLayout/RowsScroll/RowsContainer"]
+[node name="WeaponSectionLabel" type="Label" parent="MainMargin/MainLayout/RowsScroll/RowsContainer" unique_id=292463999]
 layout_mode = 2
 text = "WEAPON"
 
-[node name="FireRateRow" parent="MainMargin/MainLayout/RowsScroll/RowsContainer" instance=ExtResource("3_row")]
+[node name="FireRateRow" parent="MainMargin/MainLayout/RowsScroll/RowsContainer" unique_id=1451613026 instance=ExtResource("3_row")]
 layout_mode = 2
 track_id = "fire_rate"
 
-[node name="BulletDamageRow" parent="MainMargin/MainLayout/RowsScroll/RowsContainer" instance=ExtResource("3_row")]
+[node name="BulletDamageRow" parent="MainMargin/MainLayout/RowsScroll/RowsContainer" unique_id=1195815323 instance=ExtResource("3_row")]
 layout_mode = 2
 track_id = "bullet_damage"
 
-[node name="MagazineCapacityRow" parent="MainMargin/MainLayout/RowsScroll/RowsContainer" instance=ExtResource("3_row")]
+[node name="MagazineCapacityRow" parent="MainMargin/MainLayout/RowsScroll/RowsContainer" unique_id=570603422 instance=ExtResource("3_row")]
 layout_mode = 2
 track_id = "magazine_capacity"
 
-[node name="BaseSectionLabel" type="Label" parent="MainMargin/MainLayout/RowsScroll/RowsContainer"]
+[node name="BaseSectionLabel" type="Label" parent="MainMargin/MainLayout/RowsScroll/RowsContainer" unique_id=1065654148]
 layout_mode = 2
 text = "BASE"
 
-[node name="FortifiedWallRow" parent="MainMargin/MainLayout/RowsScroll/RowsContainer" instance=ExtResource("3_row")]
+[node name="FortifiedWallRow" parent="MainMargin/MainLayout/RowsScroll/RowsContainer" unique_id=1355270312 instance=ExtResource("3_row")]
 layout_mode = 2
 track_id = "fortified_wall"
 
-[node name="ExtraLifeRow" parent="MainMargin/MainLayout/RowsScroll/RowsContainer" instance=ExtResource("3_row")]
+[node name="ExtraLifeRow" parent="MainMargin/MainLayout/RowsScroll/RowsContainer" unique_id=1361072467 instance=ExtResource("3_row")]
 layout_mode = 2
 track_id = "extra_life"
 
-[node name="JamDurationRow" parent="MainMargin/MainLayout/RowsScroll/RowsContainer" instance=ExtResource("3_row")]
+[node name="JamDurationRow" parent="MainMargin/MainLayout/RowsScroll/RowsContainer" unique_id=438510090 instance=ExtResource("3_row")]
 layout_mode = 2
 track_id = "jam_duration"
 
-[node name="MistakeLeniencyRow" parent="MainMargin/MainLayout/RowsScroll/RowsContainer" instance=ExtResource("3_row")]
+[node name="MistakeLeniencyRow" parent="MainMargin/MainLayout/RowsScroll/RowsContainer" unique_id=1481291186 instance=ExtResource("3_row")]
 layout_mode = 2
 track_id = "mistake_leniency"
 

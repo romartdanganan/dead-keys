@@ -32,11 +32,11 @@ func _ready() -> void:
 	jam_time = jam_cooldown
 
 
-# reads current values from UpgradeState/UpgradeCatalog (#25). Safe to call
+# reads current values from ProgessionManger(#26). Safe to call
 # again later if upgrades can be purchased mid-run in a future milestone.
 func _apply_upgrades() -> void:
-	jam_cooldown = UpgradeState.get_upgrade_value("jam_duration")
-	mistakes_before_ammo_loss = UpgradeState.get_upgrade_value("mistake_leniency")
+	jam_cooldown = ProgressionManager.get_upgrade_value("jam_duration")
+	mistakes_before_ammo_loss = ProgressionManager.get_upgrade_value("mistake_leniency")
 
 
 func _process(delta: float) -> void:

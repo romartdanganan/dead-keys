@@ -30,7 +30,7 @@ func refresh() -> void:
 		push_warning("UpgradeRow has unknown track_id: " + track_id)
 		return
 
-	var current_level := UpgradeState.get_upgrade_level(track_id)
+	var current_level := ProgressionManager.get_upgrade_level(track_id)
 	var max_level := UpgradeCatalog.get_max_level(track_id)
 	var current_value: Variant = UpgradeCatalog.get_level_value(track_id, current_level)
 
@@ -46,7 +46,7 @@ func refresh() -> void:
 		var cost: int = UpgradeCatalog.get_cost_for_next_level(track_id, current_level)
 		cost_label.text = "COST: %d GOLD" % cost
 		buy_button.text = "UPGRADE"
-		buy_button.disabled = not UpgradeState.can_afford(cost)
+		buy_button.disabled = not ProgressionManager.can_afford(cost)
 
 
 func _on_buy_button_pressed() -> void:
