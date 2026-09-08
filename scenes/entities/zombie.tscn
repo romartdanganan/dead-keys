@@ -27,11 +27,13 @@ shape = SubResource("RectangleShape2D_1")
 
 [node name="WordLabel" type="RichTextLabel" parent="." unique_id=1320528697]
 z_index = 100
-offset_left = -64.0
-offset_top = -92.0
-offset_right = 64.0
-offset_bottom = -69.0
+offset_left = -110.0
+offset_top = -105.0
+offset_right = 110.0
+offset_bottom = -70.0
+theme_override_font_sizes/normal_font_size = 22
 bbcode_enabled = true
+fit_content = true
 horizontal_alignment = 1
 
 [connection signal="timeout" from="AttackTimer" to="." method="_on_attack_timer_timeout"]
