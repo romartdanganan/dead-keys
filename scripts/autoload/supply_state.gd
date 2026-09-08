@@ -12,8 +12,13 @@ const SupplyCatalog := preload("res://scripts/resources/supply_catalog.gd")
 signal loadout_changed
 
 const SLOT_COUNT := 3
+const SAVE_PATH := "user://supply_loadout.cfg"
 
 var equipped_slots: Array[String] = ["", "", ""]
+
+
+func _ready() -> void:
+	load_loadout()
 
 
 func get_slot(slot_index: int) -> String:
@@ -41,6 +46,7 @@ func purchase_into_slot(slot_index: int, supply_id: String) -> bool:
 
 	equipped_slots[slot_index] = supply_id
 	ProgressionManager.save_progression()
+	save_loadout()
 	loadout_changed.emit()
 	return true
 
@@ -49,6 +55,7 @@ func clear_slot(slot_index: int) -> void:
 	if slot_index < 0 or slot_index >= SLOT_COUNT:
 		return
 	equipped_slots[slot_index] = ""
+	save_loadout()
 	loadout_changed.emit()
 
 
@@ -69,6 +76,7 @@ func sell_slot(slot_index: int) -> void:
 
 	equipped_slots[slot_index] = ""
 	ProgressionManager.save_progression()
+	save_loadout()
 	loadout_changed.emit()
 
 
@@ -81,4 +89,19 @@ func first_empty_slot() -> int:
 
 func clear_loadout() -> void:
 	equipped_slots = ["", "", ""]
+	save_loadout()
 	loadout_changed.emit()
+
+
+func save_loadout() -> void:
+	var config := ConfigFile.new()
+	config.set_value("loadout", "equipped_slots", equipped_slots)
+	config.save(SAVE_PATH)
+
+
+func load_loadout() -> void:
+	var config := ConfigFile.new()
+	var err := config.load(SAVE_PATH)
+	if err != OK:
+		return # first launch, no save file yet, keep defaults
+	equipped_slots = config.get_value("loadout", "equipped_slots", equipped_slots)

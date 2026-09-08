@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/supply_slot_row.tscn" id="3_slot"]
 [ext_resource type="PackedScene" path="res://scenes/ui/supply_card_row.tscn" id="4_card"]
 [ext_resource type="Texture2D" path="res://assets/sprites/coin.png" id="5_coin"]
+[ext_resource type="Texture2D" path="res://assets/ui/home_base_basement.png" id="6_bg"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_topbar_normal"]
 bg_color = Color(0.58, 0.4, 0.24, 1)
@@ -39,14 +40,17 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_supplies")
 
-[node name="BackgroundColor" type="ColorRect" parent="." unique_id=1790513682]
+[node name="BackgroundColor" type="TextureRect" parent="." unique_id=1790513682]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.307571, 0.494309, 0.348993, 1)
+mouse_filter = 2
+texture = ExtResource("6_bg")
+expand_mode = 1
+stretch_mode = 6
 
 [node name="MainMargin" type="MarginContainer" parent="." unique_id=1901882869]
 layout_mode = 1
