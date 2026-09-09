@@ -33,8 +33,7 @@ func add_ammunition(amount: int) -> int:
 	var amount_added := current_ammo - previous_ammo
 
 	_emit_ammunition_changed()
-
-	Audio.play("correct_word")
+	Audio.play("add_ammo")
 	return amount_added
 
 

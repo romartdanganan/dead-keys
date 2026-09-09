@@ -368,6 +368,7 @@ func _on_wall_hit(damage: float) -> void:
 	print("Wall hit for ", effective_damage, " damage. Wall health: ", wall_health)
 	if wall_health <= 0.0:
 		_spend_life()
+	Audio.play("wall_damage")
 
 func _spend_life() -> void:
 	lives_remaining -= 1

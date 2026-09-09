@@ -66,6 +66,7 @@ func _try_damage_target(target: Node) -> void:
 	target.take_damage(damage)
 
 	if target is Zombie:
+		Audio.play("hit_zombie")
 		_hit_zombies.append(target)
 
 	if bounces_remaining > 0:
@@ -101,7 +102,7 @@ func _find_next_ricochet_target() -> Zombie:
 # repoints the projectile at a new target without resetting its lifetime,
 # so a ricochet chain can't outlive the normal shot lifetime by much
 func _redirect_to(target: Zombie) -> void:
-	Audio.play("ricochet1")
+	Audio.play("ricochet")
 	direction = global_position.direction_to(target.global_position).normalized()
 	rotation = direction.angle()
 

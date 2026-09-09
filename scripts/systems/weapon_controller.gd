@@ -67,6 +67,7 @@ func try_fire(target_position: Vector2) -> bool:
 		return false
 	
 	if set_jammed == true:
+		Audio.play("jammed")
 		return false
 
 	if cooldown_remaining > 0.0:
