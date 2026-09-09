@@ -59,6 +59,8 @@ func _show_mission_details(card: MissionCard) -> void:
 
 
 func _on_launch_mission_button_pressed() -> void:
+	Audio.clear_music()
+	Audio.play("play_music")
 	get_tree().change_scene_to_file("res://scenes/missions/gameplay_prototype.tscn")
 
 

@@ -1,5 +1,8 @@
 extends Control
 
+func _ready() -> void:
+	Audio.play("main_music")
+
 func _input(event):
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
@@ -9,7 +12,6 @@ func _input(event):
 				Audio.play("thud")
 
 func _on_start_button_pressed() -> void:
-	#Audio.play("click")
 	get_tree().change_scene_to_file("res://scenes/ui/home_base.tscn")
 
 

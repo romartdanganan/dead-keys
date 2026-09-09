@@ -17,7 +17,8 @@ const SFX: Dictionary = {
 	"wrong_keystroke": preload("res://assets/audio/temp_sounds/freesound_community-wrong-47985.mp3"),
 	
 	"game_over": preload("res://assets/audio/temp_sounds/game_over_man.mp3"),
-	"music": preload("res://assets/audio/temp_sounds/BossSong.mp3")
+	"play_music": preload("res://assets/audio/temp_sounds/BossSong.mp3"),
+	"main_music": preload("res://assets/audio/temp_sounds/grimsong.mp3")
 }
 
 var _active: Array[AudioStreamPlayer] = []
@@ -28,14 +29,14 @@ func play(audio_name: String, volume: float = 0.0):
 	if sound == null: return
 	
 	# Special handling for looping music
-	if audio_name == "music":
+	if audio_name == "main_music" or audio_name == "play_music" :
 		if _music_player and is_instance_valid(_music_player):
 			_music_player.stop()
 			_music_player.queue_free()
 		
 		_music_player = AudioStreamPlayer.new()
 		_music_player.stream = sound
-		_music_player.volume_db = -10
+		_music_player.volume_db = -5
 		add_child(_music_player)
 		
 		# Enable looping
