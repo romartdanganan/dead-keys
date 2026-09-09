@@ -101,6 +101,7 @@ func _find_next_ricochet_target() -> Zombie:
 # repoints the projectile at a new target without resetting its lifetime,
 # so a ricochet chain can't outlive the normal shot lifetime by much
 func _redirect_to(target: Zombie) -> void:
+	Audio.play("ricochet1")
 	direction = global_position.direction_to(target.global_position).normalized()
 	rotation = direction.angle()
 

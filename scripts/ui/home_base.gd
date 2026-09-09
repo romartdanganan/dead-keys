@@ -35,7 +35,7 @@ func _input(event):
 			if get_viewport().gui_get_hovered_control() is Button:
 				Audio.play("click")
 			else:
-				Audio.play("thud",-15)
+				Audio.play("thud")
 
 func _on_main_menu_button_pressed() -> void:
 	get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")

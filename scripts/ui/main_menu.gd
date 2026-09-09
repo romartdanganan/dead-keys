@@ -6,7 +6,7 @@ func _input(event):
 			if get_viewport().gui_get_hovered_control() is Button:
 				Audio.play("click")
 			else:
-				Audio.play("thud",-15)
+				Audio.play("thud")
 
 func _on_start_button_pressed() -> void:
 	#Audio.play("click")

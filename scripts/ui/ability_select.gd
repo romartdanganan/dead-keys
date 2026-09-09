@@ -24,7 +24,7 @@ func _input(event):
 			if get_viewport().gui_get_hovered_control() is Button:
 				Audio.play("click")
 			else:
-				Audio.play("thud",-15)
+				Audio.play("thud")
 
 func _on_gold_changed(new_gold: int) -> void:
 	gold_label.text = "GOLD: %d" % new_gold
