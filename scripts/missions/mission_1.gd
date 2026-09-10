@@ -391,7 +391,6 @@ func _on_ammunition_changed(current_ammo: int, maximum_ammo: int) -> void:
 	ammo_bar.value = current_ammo
 
 func _on_attempted_fire_without_ammunition() -> void:
-	# todo: replace print with empty-click sfx (e.g., AudioStreamPlayer)
 	print("Cannot fire: ammunition is empty")
 
 
@@ -424,6 +423,7 @@ func _on_zombie_died(dead_zombie: Zombie) -> void:
 	typing_controller.unregister_target(dead_zombie)
 
 func _on_zombie_damaged(damaged_zombie: Zombie) -> void:
+	Audio.play("hit_zombie")
 	print("Zombie health now: ", damaged_zombie.health)
 
 func _on_wall_hit(damage: float) -> void:
@@ -433,6 +433,7 @@ func _on_wall_hit(damage: float) -> void:
 	print("Wall hit for ", effective_damage, " damage. Wall health: ", wall_health)
 	if wall_health <= 0.0:
 		_spend_life()
+	Audio.play("wall_damage")
 
 func _spend_life() -> void:
 	lives_remaining -= 1
@@ -444,6 +445,7 @@ func _spend_life() -> void:
 		_update_wall_hud()
 	else:
 		print("Wall destroyed. No lives remaining. Returning to home base.")
+		Audio.play("game_over")
 		return_to_home_base()
 
 func _on_all_waves_cleared() -> void:
@@ -464,6 +466,7 @@ func _open_pause_menu() -> void:
 	if pause_menu != null:
 		return
 
+	Audio.play("pause")
 	pause_menu = PAUSE_MENU_SCENE.instantiate()
 	add_child(pause_menu)
 	pause_menu.resume_requested.connect(_on_pause_menu_resume_requested)
@@ -472,6 +475,7 @@ func _open_pause_menu() -> void:
 
 func _on_pause_menu_resume_requested() -> void:
 	get_tree().paused = false
+	Audio.play("resume")
 	pause_menu.queue_free()
 	pause_menu = null
 

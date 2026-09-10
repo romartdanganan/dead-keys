@@ -33,8 +33,16 @@ func _ready() -> void:
 	_show_mission_details(mission_1_card)
 	ProgressionManager.gold_changed.connect(_on_gold_changed)
 	_on_gold_changed(ProgressionManager.get_gold())
-	
-		
+
+
+func _input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+			if get_viewport().gui_get_hovered_control() is Button:
+				Audio.play("click")
+			else:
+				Audio.play("thud")
+
 func _on_main_menu_button_pressed() -> void:
 	get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
 
@@ -57,6 +65,8 @@ func _show_mission_details(card: MissionCard) -> void:
 
 
 func _on_launch_mission_button_pressed() -> void:
+	Audio.clear_music()
+	Audio.play("play_music")
 	get_tree().change_scene_to_file("res://scenes/missions/mission_1.tscn")
 
 

@@ -60,6 +60,7 @@ func _combo_increment() -> void:
 	combo += 1
 	
 	if combo >= COMBO_MAX:
+		Audio.play("ability_unlock")
 		AbilityState.set_charged(true)
 		combo_reset()
 	
@@ -80,6 +81,7 @@ func _typing_mistake() -> void:
 	if weapon_controller.set_jammed:
 		return
 
+	Audio.play("wrong_keystroke")
 	mistake_count += 1
 	count_check()
 
@@ -88,7 +90,8 @@ func _correct_stroke() -> void:
 	# typing during a jam should not change the jam display
 	if weapon_controller.set_jammed:
 		return
-
+	
+	Audio.play("correct_keystroke")
 	# a correct keystroke breaks the consecutive mistake streak
 	mistake_count = 0
 	mistakes_since_ammo_loss = 0

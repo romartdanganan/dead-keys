@@ -18,6 +18,13 @@ func _ready() -> void:
 			ability_rows.append(child)
 			child.select_pressed.connect(_on_row_select_pressed)
 
+func _input(event):
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+			if get_viewport().gui_get_hovered_control() is Button:
+				Audio.play("click")
+			else:
+				Audio.play("thud")
 
 func _on_gold_changed(new_gold: int) -> void:
 	$MainMargin/MainLayout/TopBar/GoldPanel/GoldMargin/GoldContent/GoldLabel.text = "GOLD: %d" % new_gold

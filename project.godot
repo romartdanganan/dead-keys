@@ -24,6 +24,7 @@ config/icon="res://icon.svg"
 ProgressionManager="*uid://c7aaageyxtx58"
 SupplyState="*res://scripts/autoload/supply_state.gd"
 AbilityState="*res://scripts/autoload/ability_state.gd"
+Audio="*uid://cdsuo51pusabe"
 
 [display]
 

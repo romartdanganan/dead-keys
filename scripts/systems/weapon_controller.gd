@@ -67,12 +67,14 @@ func try_fire(target_position: Vector2) -> bool:
 		return false
 	
 	if set_jammed == true:
+		Audio.play("jammed")
 		return false
 
 	if cooldown_remaining > 0.0:
 		return false
 
 	if not ammo_system.consume_ammunition(1):
+		Audio.play("no_ammo")
 		attempted_fire_without_ammunition.emit()
 		return false
 
@@ -81,14 +83,18 @@ func try_fire(target_position: Vector2) -> bool:
 	if AbilityState.equipped_ability_id == "spread_shot" and AbilityState.is_charged:
 		_fire_spread_shot(target_position)
 		AbilityState.consume_charge()
+		Audio.play("spread_shot")
 	elif AbilityState.equipped_ability_id == "ricochet" and AbilityState.is_charged:
 		_fire_ricochet_shot(target_position)
 		AbilityState.consume_charge()
+		Audio.play("shoot")
 	elif AbilityState.equipped_ability_id == "piercing_shot" and AbilityState.is_charged:
 		_fire_piercing_shot(target_position)
 		AbilityState.consume_charge()
+		Audio.play("shoot")
 	else:
 		_spawn_projectile(target_position)
+		Audio.play("shoot")
 
 	cooldown_remaining = fire_cooldown
 	return true
