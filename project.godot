@@ -21,7 +21,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-UpgradeState="*res://scripts/autoload/upgrade_state.gd"
+ProgressionManager="*uid://c7aaageyxtx58"
 SupplyState="*res://scripts/autoload/supply_state.gd"
 AbilityState="*res://scripts/autoload/ability_state.gd"
 Audio="*uid://cdsuo51pusabe"
@@ -35,6 +35,10 @@ window/stretch/mode="canvas_items"
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/gut/plugin.cfg")
+
+[gui]
+
+theme/custom="res://assets/fonts/game_theme.tres"
 
 [input]
 
@@ -86,5 +90,6 @@ debug_charge_ability={
 
 [rendering]
 
+textures/canvas_textures/default_texture_filter=0
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"

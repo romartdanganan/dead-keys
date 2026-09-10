@@ -2,6 +2,7 @@ class_name SupplyCardRow
 extends PanelContainer
 
 const SupplyCatalog := preload("res://scripts/resources/supply_catalog.gd")
+const SupplyTextures := preload("res://scripts/resources/supply_textures.gd")
 
 signal buy_pressed(supply_id: String)
 
@@ -10,6 +11,7 @@ signal buy_pressed(supply_id: String)
 @onready var name_label: Label = $Margin/Content/NameLabel
 @onready var cost_label: Label = $Margin/Content/CostLabel
 @onready var buy_button: Button = $Margin/Content/BuyButton
+@onready var icon_rect: TextureRect = $Margin/Content/Icon
 
 
 func _ready() -> void:
@@ -29,12 +31,17 @@ func refresh(selected_slot_occupied: bool = false) -> void:
 	tooltip_text = supply.description
 	cost_label.text = "%d GOLD" % supply.cost
 
+	# keeps icon.svg placeholder if supply_id has no drawn crate yet
+	var texture := SupplyTextures.get_texture(supply_id)
+	if texture != null:
+		icon_rect.texture = texture
+
 	if selected_slot_occupied:
 		buy_button.text = "SLOT FULL"
 		buy_button.disabled = true
 	else:
 		buy_button.text = "BUY"
-		buy_button.disabled = not UpgradeState.can_afford(supply.cost)
+		buy_button.disabled = not ProgressionManager.can_afford(supply.cost)
 
 
 func _on_buy_pressed() -> void:

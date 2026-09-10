@@ -15,8 +15,8 @@ var selected_slot: int = -1
 
 
 func _ready() -> void:
-	UpgradeState.gold_changed.connect(_on_gold_changed)
-	_on_gold_changed(UpgradeState.get_gold())
+	ProgressionManager.gold_changed.connect(_on_gold_changed)
+	_on_gold_changed(ProgressionManager.get_gold())
 
 	for child in slots_container.get_children():
 		if child is SupplySlotRow:
@@ -44,7 +44,7 @@ func _input(event):
 				Audio.play("thud",-15)
 
 func _on_gold_changed(new_gold: int) -> void:
-	gold_label.text = "GOLD: %d" % new_gold
+	$MainMargin/MainLayout/TopBar/GoldPanel/GoldMargin/GoldContent/GoldLabel.text = "GOLD: %d" % new_gold
 
 
 func _on_slot_pressed(slot_index: int) -> void:

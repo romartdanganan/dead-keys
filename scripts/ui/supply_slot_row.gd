@@ -2,6 +2,7 @@ class_name SupplySlotRow
 extends Button
 
 const SupplyCatalog := preload("res://scripts/resources/supply_catalog.gd")
+const SupplyTextures := preload("res://scripts/resources/supply_textures.gd")
 
 signal slot_pressed(slot_index: int)
 
@@ -48,6 +49,11 @@ func refresh(is_selected: bool) -> void:
 
 	icon_rect.modulate.a = 1.0
 	var supply := SupplyCatalog.get_supply(supply_id)
+
+	# keeps icon.svg placeholder if supply_id has no drawn crate yet
+	var texture := SupplyTextures.get_texture(supply_id)
+	if texture != null:
+		icon_rect.texture = texture
 
 	# hovering an occupied slot previews the sell price instead of the
 	# equipped supply, clicking then sells and refunds it

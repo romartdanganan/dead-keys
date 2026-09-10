@@ -13,8 +13,8 @@ var upgrade_rows: Array[UpgradeRow] = []
 
 
 func _ready() -> void:
-	UpgradeState.gold_changed.connect(_on_gold_changed)
-	_on_gold_changed(UpgradeState.get_gold())
+	ProgressionManager.gold_changed.connect(_on_gold_changed)
+	_on_gold_changed(ProgressionManager.get_gold())
 
 	for child in rows_container.get_children():
 		if child is UpgradeRow:
@@ -34,7 +34,7 @@ func _on_gold_changed(new_gold: int) -> void:
 
 
 func _on_row_buy_pressed(track_id: String) -> void:
-	UpgradeState.purchase_upgrade(track_id)
+	ProgressionManager.purchase_upgrade(track_id)
 	_refresh_all_rows()
 
 

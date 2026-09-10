@@ -9,8 +9,8 @@ var ability_rows: Array[AbilityRow] = []
 
 
 func _ready() -> void:
-	UpgradeState.gold_changed.connect(_on_gold_changed)
-	_on_gold_changed(UpgradeState.get_gold())
+	ProgressionManager.gold_changed.connect(_on_gold_changed)
+	_on_gold_changed(ProgressionManager.get_gold())
 
 	# collect the 8 ability cards laid out in the tscn and wire their clicks
 	for child in rows_container.get_children():
@@ -27,7 +27,7 @@ func _input(event):
 				Audio.play("thud")
 
 func _on_gold_changed(new_gold: int) -> void:
-	gold_label.text = "GOLD: %d" % new_gold
+	$MainMargin/MainLayout/TopBar/GoldPanel/GoldMargin/GoldContent/GoldLabel.text = "GOLD: %d" % new_gold
 
 
 func _on_row_select_pressed(ability_id: String) -> void:

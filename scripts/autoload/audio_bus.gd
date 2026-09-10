@@ -15,6 +15,8 @@ const SFX: Dictionary = {
 	"wall_damage": preload("res://assets/audio/temp_sounds/hurt.wav"), 
 	"correct_keystroke": preload("res://assets/audio/temp_sounds/coin.wav"),
 	"wrong_keystroke": preload("res://assets/audio/temp_sounds/freesound_community-wrong-47985.mp3"),
+	"pause": preload("res://assets/audio/temp_sounds/pause.mp3"),
+	"resume": preload("res://assets/audio/temp_sounds/resume.mp3"),
 	
 	"game_over": preload("res://assets/audio/temp_sounds/game_over_man.mp3"),
 	"play_music": preload("res://assets/audio/temp_sounds/BossSong.mp3"),
@@ -24,14 +26,30 @@ const SFX: Dictionary = {
 var _active: Array[AudioStreamPlayer] = []
 var _music_player: AudioStreamPlayer = null
 
-func play(audio_name: String, volume: float = 0.0):
+
+func _ready() -> void:
+	# autoloads default to PROCESS_MODE_PAUSABLE, meaning Audio (and any sound
+	# player added under it) would go silent the instant get_tree().paused
+	# becomes true. Without this, the "pause" sound cuts off immediately since
+	# it plays right before the pause flag flips.
+	process_mode = Node.PROCESS_MODE_ALWAYS
+
+func play(audio_name: String, volume: float = 0.0) -> void:
 	var sound: AudioStream = SFX.get(audio_name) as AudioStream
 	if sound == null: return
 	
-	# Special handling for looping music
+	# Special handling for looping music. Godot's per-asset "loop" checkbox
+	# lives in the .import file, which is gitignored (*.import) and never
+	# committed, so it can't be relied on across machines. Set it in code
+	# instead so looping works the same for everyone on a fresh checkout.
 	if audio_name == "main_music" or audio_name == "play_music" :
 		if _music_player and is_instance_valid(_music_player):
 			return
+		
+		if sound is AudioStreamMP3 or sound is AudioStreamOggVorbis:
+			sound.loop = true
+		elif sound is AudioStreamWAV:
+			sound.loop_mode = AudioStreamWAV.LOOP_FORWARD
 		
 		_music_player = AudioStreamPlayer.new()
 		_music_player.stream = sound
@@ -46,7 +64,9 @@ func play(audio_name: String, volume: float = 0.0):
 	player.stream = sound
 	player.volume_db = volume
 	
-	# audio volume editing
+	# audio volume editing. NOTE: these override whatever volume the caller
+	# passed in for these specific sounds — the volume parameter has no
+	# effect on the 8 names listed below, only on anything not in this list
 	if (audio_name == "spread_shot"
 	or audio_name == "correct_keystroke"):
 		player.volume_db = -15.0
@@ -73,14 +93,14 @@ func play(audio_name: String, volume: float = 0.0):
 	)
 	player.play()
 
-func clear_sounds():
+func clear_sounds() -> void:
 	for player in _active:
 		if is_instance_valid(player):
 			player.stop()
 			player.queue_free()
 	_active.clear()
 
-func clear_music():
+func clear_music() -> void:
 	if _music_player and is_instance_valid(_music_player):
 		_music_player.stop()
 		_music_player.queue_free()

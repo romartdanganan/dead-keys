@@ -1,0 +1,67 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/pause_menu.gd" id="1_pause"]
+
+[node name="PauseMenu" type="CanvasLayer"]
+layer = 10
+process_mode = 3
+script = ExtResource("1_pause")
+
+[node name="DimBackground" type="ColorRect" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.6)
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="MenuPanel" type="PanelContainer" parent="CenterContainer"]
+custom_minimum_size = Vector2(360, 0)
+layout_mode = 2
+
+[node name="MenuMargin" type="MarginContainer" parent="CenterContainer/MenuPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 24
+
+[node name="MenuList" type="VBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="PausedTitleLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "PAUSED"
+horizontal_alignment = 1
+
+[node name="ResumeButton" type="Button" parent="CenterContainer/MenuPanel/MenuMargin/MenuList"]
+custom_minimum_size = Vector2(0, 56)
+layout_mode = 2
+text = "RESUME"
+
+[node name="SettingsButton" type="Button" parent="CenterContainer/MenuPanel/MenuMargin/MenuList"]
+custom_minimum_size = Vector2(0, 56)
+layout_mode = 2
+tooltip_text = "Settings will be implemented in a later milestone"
+disabled = true
+text = "SETTINGS"
+
+[node name="ReturnHomeButton" type="Button" parent="CenterContainer/MenuPanel/MenuMargin/MenuList"]
+custom_minimum_size = Vector2(0, 56)
+layout_mode = 2
+text = "RETURN TO HUB"
+
+[connection signal="pressed" from="CenterContainer/MenuPanel/MenuMargin/MenuList/ResumeButton" to="." method="_on_resume_button_pressed"]
+[connection signal="pressed" from="CenterContainer/MenuPanel/MenuMargin/MenuList/ReturnHomeButton" to="." method="_on_return_home_button_pressed"]

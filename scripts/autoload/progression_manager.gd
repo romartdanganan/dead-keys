@@ -1,59 +1,32 @@
 extends Node
-
-# preload rather than rely on the class_name global (which needs an editor
-# filesystem rescan to register on a fresh checkout / new machine)
 const UpgradeCatalog := preload("res://scripts/resources/upgrade_catalog.gd")
 const AbilityCatalog := preload("res://scripts/resources/ability_catalog.gd")
-
-# TEMPORARY local store for gold + purchased upgrade levels + owned abilities (#25).
-#
-# This is intentionally NOT persistent and is not the real economy system.
-# Issue #26 ("Implement gold and save/progression system") owns the real
-# ProgressionManager autoload: mission-reward gold, save/load, and mission
-# unlock state.
-#
-# Integration note for #26: replace this autoload with ProgressionManager,
-# keeping these method names identical so the shop UI (upgrade_shop.gd,
-# upgrade_row.gd, ability_row.gd) and gameplay effect application
-# (gameplay_prototype.gd, weapon_controller.gd, mistake_system.gd,
-# ability_state.gd) don't need to change at all:
-#   get_gold(), can_afford(), spend_gold(), get_upgrade_level(),
-#   purchase_upgrade(), get_upgrade_value(), is_ability_owned(),
-#   purchase_ability()
-# Track ids/costs/values already live in one place: UpgradeCatalog
-# (scripts/resources/upgrade_catalog.gd). Ability ids/costs live in
-# AbilityCatalog (scripts/resources/ability_catalog.gd). #26 should persist
-# upgrade levels and owned abilities keyed by the same id strings used there.
-
 signal gold_changed(new_gold: int)
 signal upgrade_purchased(track_id: String, new_level: int)
 signal ability_unlocked(ability_id: String)
-
-# placeholder starting gold for local testing until #26 wires in real
-# mission-reward gold and save/load.
-var gold: int = 500
-
+var gold: int = 0
+var highest_unlocked: int = 1 #structure only for now, for future uses for level unlocked
 var upgrade_levels: Dictionary = {} # track_id (String) -> level (int), defaults to 0
-
+const SAVE_PATH = "user://progression.cfg"
 # ability ownership: player starts with Spread Shot only, the rest are
 # bought on the Ability Select screen. ability_id (String) -> owned (bool)
 var owned_abilities: Dictionary = {"spread_shot": true}
 
+func _ready() -> void:
+	load_progression()
 
+#GOLD Functions: 
 func get_gold() -> int:
 	return gold
 
-
 func can_afford(amount: int) -> bool:
 	return gold >= amount
-
 
 func add_gold(amount: int) -> void:
 	if amount <= 0:
 		return
 	gold += amount
 	gold_changed.emit(gold)
-
 
 func spend_gold(amount: int) -> bool:
 	if amount <= 0:
@@ -64,10 +37,9 @@ func spend_gold(amount: int) -> bool:
 	gold_changed.emit(gold)
 	return true
 
-
+#Upgrade-level Functions:
 func get_upgrade_level(track_id: String) -> int:
 	return upgrade_levels.get(track_id, 0)
-
 
 # attempts to purchase the next level of a track; returns false (no gold
 # spent) if already maxed or gold is insufficient
@@ -88,14 +60,53 @@ func purchase_upgrade(track_id: String) -> bool:
 	var new_level := current_level + 1
 	upgrade_levels[track_id] = new_level
 	upgrade_purchased.emit(track_id, new_level)
+	# save here because purchases happen at the Upgrade Shop
+	# between missions, not just on mission completion. Without this,
+	# buying an upgrade then quitting loses it.
+	save_progression()
 	return true
 
-
-# convenience: current effective value of a track given its purchased level
+#Return type is a Variant to track all values types of upgrades in the store
 func get_upgrade_value(track_id: String) -> Variant:
 	return UpgradeCatalog.get_level_value(track_id, get_upgrade_level(track_id))
 
+#Progression Functions:
 
+#key name MUST match the get_value() in load_progression()
+# a mismatch DOES NOT CAUSE ERROR and silently fall back to default
+
+func save_progression() -> void: 
+	var config := ConfigFile.new()
+	config.set_value("progression", "gold", gold)
+	config.set_value("progression", "upgrade_levels", upgrade_levels)
+	config.set_value("progression", "highest_unlocked", highest_unlocked)
+	config.set_value("progression", "owned_abilities", owned_abilities)
+	config.save(SAVE_PATH)
+
+
+func load_progression() -> void:
+	var config := ConfigFile.new()
+	var err := config.load(SAVE_PATH)
+	if err != OK:
+		return #first lanuch, no save file yet. Keep defaults
+	
+	gold = config.get_value("progression","gold", 0)
+	upgrade_levels = config.get_value("progression", "upgrade_levels",{})
+	highest_unlocked = config.get_value("progression", "highest_unlocked", 1)
+	owned_abilities = config.get_value("progression", "owned_abilities", owned_abilities)
+	gold_changed.emit(gold)
+	
+#DEV/DEBUG ONLY. wiped all of progression with no comfirmation.
+#remove later on.
+func reset_progression() -> void:
+	gold = 0
+	upgrade_levels = {}
+	highest_unlocked = 1
+	owned_abilities = {"spread_shot": true}
+	save_progression()
+	gold_changed.emit(gold)
+
+#Abilites functiions:
 func is_ability_owned(ability_id: String) -> bool:
 	return owned_abilities.get(ability_id, false)
 
@@ -117,4 +128,5 @@ func purchase_ability(ability_id: String) -> bool:
 
 	owned_abilities[ability_id] = true
 	ability_unlocked.emit(ability_id)
+	save_progression()
 	return true
