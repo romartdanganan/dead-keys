@@ -20,6 +20,12 @@ var _hit_zombies: Array[Zombie] = []
 # a charged Piercing Shot, normal shots leave it false and behave as before
 var is_piercing: bool = false
 
+# Freeze Round ability support (#37). set true by WeaponController only for
+# a charged Freeze Round shot, normal shots leave it false and behave as before
+var is_freeze_round: bool = false
+var freeze_duration: float = 0.0
+var freeze_radius: float = 0.0
+
 
 func _ready() -> void:
 	lifetime_remaining = maximum_lifetime
@@ -78,6 +84,9 @@ func _try_damage_target(target: Node) -> void:
 		Audio.play("hit_zombie")
 		_hit_zombies.append(target)
 
+	if is_freeze_round and target is Zombie:
+		_apply_freeze_round(target)
+
 	if bounces_remaining > 0:
 		var next_target := _find_next_ricochet_target()
 		if next_target != null:
@@ -91,6 +100,20 @@ func _try_damage_target(target: Node) -> void:
 		return
 
 	queue_free()
+
+
+# Freeze Round (#37): freezes the hit zombie and any other active zombies
+# within freeze_radius of it, for freeze_duration seconds each
+func _apply_freeze_round(hit_zombie: Zombie) -> void:
+	Audio.play("freeze")
+	hit_zombie.apply_freeze(freeze_duration)
+	if zombie_manager == null:
+		return
+	for zombie: Zombie in zombie_manager.active_zombies:
+		if zombie == hit_zombie:
+			continue
+		if zombie.global_position.distance_to(hit_zombie.global_position) <= freeze_radius:
+			zombie.apply_freeze(freeze_duration)
 
 
 # nearest not-yet-hit active zombie, used by Ricochet (#36) to pick the next

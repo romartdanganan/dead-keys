@@ -25,6 +25,9 @@ shape = SubResource("RectangleShape2D_1")
 
 [node name="AttackTimer" type="Timer" parent="." unique_id=1876217018]
 
+[node name="FreezeTimer" type="Timer" parent="." unique_id=1955317842]
+one_shot = true
+
 [node name="WordLabel" type="RichTextLabel" parent="." unique_id=1320528697]
 z_index = 100
 offset_left = -110.0

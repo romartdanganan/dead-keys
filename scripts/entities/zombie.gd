@@ -8,7 +8,7 @@ signal wall_contact()
 signal died(zombie: Zombie)
 signal damaged(zombie: Zombie)
 
-enum State { SPAWN, APPROACH, ATTACK, DEAD}
+enum State { SPAWN, APPROACH, ATTACK, DEAD, FROZEN }
 
 @export var enemy_type: EnemyTypeDef
 
@@ -21,11 +21,22 @@ var _time_alive: float = 0.0
 
 @onready var attack_timer: Timer = $AttackTimer
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
+@onready var freeze_timer: Timer = $FreezeTimer
+@onready var sprite: Sprite2D = $ZombieSprite2D
 
 const WALL_CONTACT_DISTANCE: float = 8.0
 
+# Freeze Round ability (#37): tint used so a frozen zombie visually reads as
+# frozen, not just internally flagged
+const FROZEN_TINT: Color = Color(0.55, 0.8, 1.0)
+
+# state entered before freezing, so a freeze that ends mid-attack resumes
+# attacking rather than always dropping back to APPROACH
+var _state_before_freeze: State = State.APPROACH
+
 func _ready() -> void:
 	attack_timer.timeout.connect(_on_attack_timer_timeout)
+	freeze_timer.timeout.connect(_on_freeze_timer_timeout)
 	if enemy_type:
 		health = enemy_type.health
 
@@ -40,6 +51,10 @@ func setup(type: EnemyTypeDef, wall: Node2D) -> void:
 	set_physics_process(true)
 	if collision_shape:
 		collision_shape.disabled = false
+	# pooled zombies reuse this node, a freeze from a previous life must
+	# not linger into the new one
+	freeze_timer.stop()
+	sprite.modulate = Color.WHITE
 	_enter_state(State.APPROACH)
 
 func _physics_process(delta: float) -> void:
@@ -71,8 +86,13 @@ func _enter_state(new_state: State) -> void:
 		State.ATTACK:
 			velocity = Vector2.ZERO
 			attack_timer.start()
+		State.FROZEN:
+			velocity = Vector2.ZERO
+			attack_timer.stop()
+			sprite.modulate = FROZEN_TINT
 		State.DEAD:
 			attack_timer.stop()
+			freeze_timer.stop()
 			velocity = Vector2.ZERO
 			if is_pooled:
 				_deactivate()
@@ -92,6 +112,23 @@ func _on_attack_timer_timeout() -> void:
 	if current_state != State.ATTACK:
 		return
 	wall_hit.emit(enemy_type.wall_damage)
+
+# Freeze Round ability (#37): fully stops movement and attack for
+# duration seconds. Re-applying to an already-frozen zombie just refreshes
+# the timer rather than stacking a second one.
+func apply_freeze(duration: float) -> void:
+	if current_state == State.DEAD:
+		return
+	if current_state != State.FROZEN:
+		_state_before_freeze = current_state
+		_enter_state(State.FROZEN)
+	freeze_timer.start(duration)
+
+func _on_freeze_timer_timeout() -> void:
+	if current_state != State.FROZEN:
+		return
+	sprite.modulate = Color.WHITE
+	_enter_state(_state_before_freeze)
 
 func take_damage(amount: float) -> bool:
 	if current_state == State.DEAD:

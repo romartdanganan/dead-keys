@@ -133,7 +133,7 @@ ability_id = "spread_shot"
 ability_id = "ricochet"
 
 [node name="AbilityRow3" parent="MainMargin/MainLayout/GridArea/RowsContainer" unique_id=2112244565 instance=ExtResource("2_row")]
-ability_id = "ability_3"
+ability_id = "freeze_round"
 
 [node name="AbilityRow4" parent="MainMargin/MainLayout/GridArea/RowsContainer" unique_id=2134996650 instance=ExtResource("2_row")]
 ability_id = "piercing_shot"
