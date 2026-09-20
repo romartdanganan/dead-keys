@@ -75,6 +75,9 @@ func before_each() -> void:
 	var ability_status_label := Label.new()
 	ability_status_label.name = "AbilityStatusLabel"
 	ability_section.add_child(ability_status_label)
+	var ability_combo_bar := ProgressBar.new()
+	ability_combo_bar.name = "ProgressBar"
+	ability_section.add_child(ability_combo_bar)
 
 	mistake_system = MistakeSystem.new()
 	mistake_system.name = "MistakeSystem"
