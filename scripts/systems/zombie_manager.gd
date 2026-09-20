@@ -87,7 +87,9 @@ func _run_next_wave() -> void:
 	_run_next_wave()
 
 func _wait_for_all_zombies_to_clear() -> void:
-	while _running and not active_zombies.is_empty():
+	# is_inside_tree() guard added (#37 playtest fix), prevents a crash if the
+	# mission scene changes while this loop is still waiting on a frame
+	while _running and is_inside_tree() and not active_zombies.is_empty():
 		await get_tree().process_frame
 
 func _spawn_zombie(type: EnemyTypeDef) -> void:

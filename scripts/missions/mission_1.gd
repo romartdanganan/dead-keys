@@ -482,6 +482,10 @@ func _on_pause_menu_resume_requested() -> void:
 func return_to_home_base() -> void:
 	# Supplies are repurchased every mission per GDD §2.6, not persistent
 	get_tree().paused = false
+	# stop the wave loop before the scene changes, fixes the pause menu
+	# return to hub crash found during the #37 playtest
+	if zombie_manager:
+		zombie_manager.stop_mission()
 	SupplyState.clear_loadout()
 	get_tree().change_scene_to_file("res://scenes/ui/home_base.tscn")
 
