@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bcsok2e0cyji2" path="res://scripts/entities/zombie.gd" id="1_frpv3"]
 [ext_resource type="Script" uid="uid://sylq37045jm3" path="res://scripts/resources/enemy_type_def.gd" id="2_47c00"]
-[ext_resource type="Texture2D" uid="uid://dtxygfe036xnp" path="res://icon.svg" id="2_asks5"]
+[ext_resource type="Texture2D" uid="uid://bgmlfxoymbhlh" path="res://icon.svg" id="2_asks5"]
 
 [sub_resource type="Resource" id="Resource_qgoda"]
 script = ExtResource("2_47c00")
