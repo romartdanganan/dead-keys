@@ -11,11 +11,18 @@ func test_spread_shot_is_implemented() -> void:
 	assert_true(ability.implemented)
 
 
-# the remaining 6 slots exist as placeholders but must stay locked
+# Freeze Round (#37) is now built, should be flagged implemented too
+func test_freeze_round_is_implemented() -> void:
+	var ability := AbilityCatalog.get_ability("freeze_round")
+	assert_false(ability.is_empty())
+	assert_true(ability.implemented)
+
+
+# the remaining 5 slots exist as placeholders but must stay locked
 # (not selectable) until they're actually built in a future sprint
 func test_locked_abilities_are_not_implemented() -> void:
 	var locked_ids := [
-		"ability_3", "ability_4",
+		"ability_4",
 		"ability_5", "ability_6", "ability_7", "ability_8"
 	]
 	for ability_id in locked_ids:
