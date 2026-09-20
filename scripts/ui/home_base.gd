@@ -30,6 +30,10 @@ extends Control
 
 
 func _ready() -> void:
+	# always return to lobby music here, fixes mission music continuing
+	# to play after Return to Hub, found during the #37 playtest
+	Audio.clear_music()
+	Audio.play("main_music")
 	_show_mission_details(mission_1_card)
 	ProgressionManager.gold_changed.connect(_on_gold_changed)
 	_on_gold_changed(ProgressionManager.get_gold())
