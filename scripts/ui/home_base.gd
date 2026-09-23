@@ -33,10 +33,14 @@ var settings_menu: Node = null
 
 
 func _ready() -> void:
-	# always return to lobby music here, fixes mission music continuing
-	# to play after Return to Hub, found during the #37 playtest
-	Audio.clear_music()
-	Audio.play("main_music")
+	# only swap to menu music if mission music is playing (returning from a
+	# mission). sub-screens like Upgrades navigate back here too, and they
+	# should not restart the already-playing menu music mid-song.
+	if Audio.is_playing("play_music"):
+		Audio.clear_music()
+		Audio.play("main_music")
+	else:
+		Audio.play("main_music")
 	_show_mission_details(mission_1_card)
 	ProgressionManager.gold_changed.connect(_on_gold_changed)
 	_on_gold_changed(ProgressionManager.get_gold())

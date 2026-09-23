@@ -140,3 +140,11 @@ func clear_music() -> void:
 		_music_player.stop()
 		_music_player.queue_free()
 		_music_player = null
+
+
+# returns true if the named track is the one currently playing
+func is_playing(audio_name: String) -> bool:
+	if not (_music_player and is_instance_valid(_music_player)):
+		return false
+	var stream := SFX.get(audio_name) as AudioStream
+	return stream != null and _music_player.stream == stream
