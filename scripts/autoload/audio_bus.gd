@@ -12,6 +12,7 @@ const SFX: Dictionary = {
 	"ability_unlock": preload("res://assets/audio/temp_sounds/heal.mp3"),
 	"spread_shot": preload("res://assets/audio/temp_sounds/shotgun-read-the-description.mp3"),
 	"ricochet": preload("res://assets/audio/temp_sounds/ricochet.MP3"),
+	"freeze": preload("res://assets/audio/temp_sounds/power_up.wav"),
 	"wall_damage": preload("res://assets/audio/temp_sounds/hurt.wav"), 
 	"correct_keystroke": preload("res://assets/audio/temp_sounds/coin.wav"),
 	"wrong_keystroke": preload("res://assets/audio/temp_sounds/freesound_community-wrong-47985.mp3"),

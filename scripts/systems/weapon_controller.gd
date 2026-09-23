@@ -27,6 +27,11 @@ const SPREAD_SHOT_ANGLE: float = deg_to_rad(25.0)
 # Ricochet (#36): bounces after the initial hit, 3 zombies hit total
 const RICOCHET_BOUNCE_COUNT: int = 2
 
+# Freeze Round (#37): duration and radius are not specified in the GDD,
+# first-pass judgment call, flagged in the MR for review
+const FREEZE_ROUND_DURATION: float = 2.5
+const FREEZE_ROUND_RADIUS: float = 140.0
+
 # inject dependencies from the main game scene
 func configure(
 	new_ammo_system: AmmoSystem,
@@ -92,6 +97,10 @@ func try_fire(target_position: Vector2) -> bool:
 		_fire_piercing_shot(target_position)
 		AbilityState.consume_charge()
 		Audio.play("shoot")
+	elif AbilityState.equipped_ability_id == "freeze_round" and AbilityState.is_charged:
+		_fire_freeze_round(target_position)
+		AbilityState.consume_charge()
+		Audio.play("shoot")
 	else:
 		_spawn_projectile(target_position)
 		Audio.play("shoot")
@@ -120,6 +129,16 @@ func _fire_piercing_shot(target_position: Vector2) -> void:
 	if projectile == null:
 		return
 	projectile.is_piercing = true
+
+
+func _fire_freeze_round(target_position: Vector2) -> void:
+	var projectile := _spawn_projectile(target_position)
+	if projectile == null:
+		return
+	projectile.zombie_manager = zombie_manager
+	projectile.is_freeze_round = true
+	projectile.freeze_duration = FREEZE_ROUND_DURATION
+	projectile.freeze_radius = FREEZE_ROUND_RADIUS
 
 
 func _spawn_projectile(target_position: Vector2) -> Projectile:

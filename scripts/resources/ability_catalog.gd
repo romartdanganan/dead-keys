@@ -19,7 +19,13 @@ const ABILITIES: Array[Dictionary] = [
 		"implemented": true,
 		"cost": 200,
 	},
-	{"id": "ability_3", "display_name": "Freeze Round", "description": "Coming in a future sprint.", "implemented": false, "cost": 0},
+	{
+		"id": "freeze_round",
+		"display_name": "Freeze Round",
+		"description": "Next shot after Combo charges fully freezes the hit zombie and nearby zombies in a small radius for a few seconds.",
+		"implemented": true,
+		"cost": 200,
+	},
 	{
 		"id": "piercing_shot",
 		"display_name": "Piercing Shot",
