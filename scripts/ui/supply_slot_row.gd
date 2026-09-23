@@ -21,8 +21,13 @@ var card_style: StyleBoxFlat
 var is_hovering: bool = false
 var is_selected_cache: bool = false
 
+# cached so the empty-slot branch can restore it after a sell (#47)
+var _default_texture: Texture2D
+
 
 func _ready() -> void:
+	_default_texture = icon_rect.texture
+
 	# duplicate so each slot can have its own border colour
 	card_style = get_theme_stylebox("normal").duplicate()
 	for state in ["normal", "hover", "pressed", "focus"]:
@@ -41,6 +46,8 @@ func refresh(is_selected: bool) -> void:
 	var supply_id := SupplyState.get_slot(slot_index)
 
 	if supply_id.is_empty():
+		# restore placeholder so the sold crate icon doesn't stay visible (#47)
+		icon_rect.texture = _default_texture
 		icon_rect.modulate.a = 0.3
 		name_label.text = "CLICK TO SELECT"
 		hint_label.text = ""
