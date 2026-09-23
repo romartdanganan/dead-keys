@@ -202,34 +202,6 @@ unique_name_in_owner = true
 layout_mode = 2
 button_pressed = true
 
-[node name="WordDifficultyRow" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList"]
-layout_mode = 2
-theme_override_constants/separation = 16
-
-[node name="WordDifficultyLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/WordDifficultyRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
-text = "WORD DIFFICULTY ASSIST"
-
-[node name="WordDifficultyToggle" type="CheckButton" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/WordDifficultyRow"]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="TypingSpeedRow" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList"]
-layout_mode = 2
-theme_override_constants/separation = 16
-
-[node name="TypingSpeedLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/TypingSpeedRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
-text = "TYPING SPEED ASSIST"
-
-[node name="TypingSpeedToggle" type="CheckButton" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/TypingSpeedRow"]
-unique_name_in_owner = true
-layout_mode = 2
-
 [node name="BackButton" type="Button" parent="CenterContainer/MenuPanel/MenuMargin/MenuList"]
 custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
@@ -244,6 +216,4 @@ text = "BACK"
 [connection signal="value_changed" from="CenterContainer/MenuPanel/MenuMargin/MenuList/MusicRow/MusicSlider" to="." method="_on_music_slider_value_changed"]
 [connection signal="value_changed" from="CenterContainer/MenuPanel/MenuMargin/MenuList/SFXRow/SFXSlider" to="." method="_on_sfx_slider_value_changed"]
 [connection signal="toggled" from="CenterContainer/MenuPanel/MenuMargin/MenuList/MistakeSystemRow/MistakeSystemToggle" to="." method="_on_mistake_system_toggle_toggled"]
-[connection signal="toggled" from="CenterContainer/MenuPanel/MenuMargin/MenuList/WordDifficultyRow/WordDifficultyToggle" to="." method="_on_word_difficulty_toggle_toggled"]
-[connection signal="toggled" from="CenterContainer/MenuPanel/MenuMargin/MenuList/TypingSpeedRow/TypingSpeedToggle" to="." method="_on_typing_speed_toggle_toggled"]
 [connection signal="pressed" from="CenterContainer/MenuPanel/MenuMargin/MenuList/BackButton" to="." method="_on_back_button_pressed"]

@@ -10,8 +10,6 @@ signal closed
 @onready var music_slider: HSlider = %MusicSlider
 @onready var sfx_slider: HSlider = %SFXSlider
 @onready var mistake_toggle: CheckButton = %MistakeSystemToggle
-@onready var word_difficulty_toggle: CheckButton = %WordDifficultyToggle
-@onready var typing_speed_toggle: CheckButton = %TypingSpeedToggle
 
 
 func _ready() -> void:
@@ -21,8 +19,6 @@ func _ready() -> void:
 	music_slider.value = SettingsState.music_volume
 	sfx_slider.value = SettingsState.sfx_volume
 	mistake_toggle.button_pressed = SettingsState.mistake_system_enabled
-	word_difficulty_toggle.button_pressed = SettingsState.word_difficulty_assist
-	typing_speed_toggle.button_pressed = SettingsState.typing_speed_assist
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -45,14 +41,6 @@ func _on_sfx_slider_value_changed(value: float) -> void:
 
 func _on_mistake_system_toggle_toggled(toggled_on: bool) -> void:
 	SettingsState.set_mistake_system_enabled(toggled_on)
-
-
-func _on_word_difficulty_toggle_toggled(toggled_on: bool) -> void:
-	SettingsState.set_word_difficulty_assist(toggled_on)
-
-
-func _on_typing_speed_toggle_toggled(toggled_on: bool) -> void:
-	SettingsState.set_typing_speed_assist(toggled_on)
 
 
 func _on_back_button_pressed() -> void:
