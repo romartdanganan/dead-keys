@@ -47,6 +47,11 @@ const PauseMenu := preload("res://scripts/ui/pause_menu.gd")
 const PAUSE_MENU_SCENE := preload("res://scenes/ui/pause_menu.tscn")
 var pause_menu: PauseMenu = null
 
+# Settings menu (#46), instanced here rather than by PauseMenu itself so it
+# stays reusable across missions, same reasoning as PauseMenu's own signals
+const SETTINGS_MENU_SCENE := preload("res://scenes/ui/settings_menu.tscn")
+var settings_menu: Node = null
+
 var zombie_manager: ZombieManager
 
 # base wall HP, overridden by the Fortified Wall upgrade (#25) in _ready()
@@ -471,6 +476,7 @@ func _open_pause_menu() -> void:
 	add_child(pause_menu)
 	pause_menu.resume_requested.connect(_on_pause_menu_resume_requested)
 	pause_menu.return_home_requested.connect(_on_pause_menu_return_home_requested)
+	pause_menu.settings_requested.connect(_on_pause_menu_settings_requested)
 	get_tree().paused = true
 
 func _on_pause_menu_resume_requested() -> void:
@@ -478,6 +484,21 @@ func _on_pause_menu_resume_requested() -> void:
 	Audio.play("resume")
 	pause_menu.queue_free()
 	pause_menu = null
+
+
+func _on_pause_menu_settings_requested() -> void:
+	# stacks on top of the still-open, still-paused PauseMenu rather than
+	# replacing it, SettingsMenu's higher layer (11 vs 10) draws it on top
+	if settings_menu != null:
+		return
+	settings_menu = SETTINGS_MENU_SCENE.instantiate()
+	add_child(settings_menu)
+	settings_menu.closed.connect(_on_settings_menu_closed)
+
+
+func _on_settings_menu_closed() -> void:
+	settings_menu.queue_free()
+	settings_menu = null
 
 func return_to_home_base() -> void:
 	# Supplies are repurchased every mission per GDD §2.6, not persistent

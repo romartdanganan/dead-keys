@@ -1,0 +1,249 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/settings_menu.gd" id="1_settings"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wood_panel"]
+bg_color = Color(0.58, 0.4, 0.24, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.32, 0.2, 0.11, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_back_normal"]
+bg_color = Color(0.4, 0.27, 0.15, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.22, 0.13, 0.06, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_back_hover"]
+bg_color = Color(0.48, 0.33, 0.19, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.22, 0.13, 0.06, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_slider_track"]
+content_margin_top = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.32, 0.2, 0.11, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_slider_fill"]
+content_margin_top = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.95, 0.9, 0.8, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_divider"]
+content_margin_top = 2.0
+content_margin_bottom = 2.0
+bg_color = Color(0.32, 0.2, 0.11, 1)
+
+[node name="SettingsMenu" type="CanvasLayer"]
+layer = 11
+process_mode = 3
+script = ExtResource("1_settings")
+
+[node name="DimBackground" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.6)
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="MenuPanel" type="PanelContainer" parent="CenterContainer"]
+custom_minimum_size = Vector2(540, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_wood_panel")
+
+[node name="MenuMargin" type="MarginContainer" parent="CenterContainer/MenuPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 22
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 22
+
+[node name="MenuList" type="VBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="SettingsTitleLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 38
+text = "SETTINGS"
+horizontal_alignment = 1
+
+[node name="AudioSectionLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 30
+text = "AUDIO"
+
+[node name="MasterRow" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="MasterLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/MasterRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
+text = "MASTER"
+
+[node name="MasterSlider" type="HSlider" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/MasterRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_styles/slider = SubResource("StyleBoxFlat_slider_track")
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_slider_fill")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxFlat_slider_fill")
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="MusicRow" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="MusicLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/MusicRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
+text = "MUSIC"
+
+[node name="MusicSlider" type="HSlider" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/MusicRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_styles/slider = SubResource("StyleBoxFlat_slider_track")
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_slider_fill")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxFlat_slider_fill")
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="SFXRow" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="SFXLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/SFXRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
+text = "SFX"
+
+[node name="SFXSlider" type="HSlider" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/SFXRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_styles/slider = SubResource("StyleBoxFlat_slider_track")
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_slider_fill")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxFlat_slider_fill")
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="SectionDivider" type="HSeparator" parent="CenterContainer/MenuPanel/MenuMargin/MenuList"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxFlat_divider")
+
+[node name="GameplaySectionLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 30
+text = "GAMEPLAY"
+
+[node name="MistakeSystemRow" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="MistakeSystemLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/MistakeSystemRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
+text = "MISTAKE SYSTEM"
+
+[node name="MistakeSystemToggle" type="CheckButton" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/MistakeSystemRow"]
+unique_name_in_owner = true
+layout_mode = 2
+button_pressed = true
+
+[node name="WordDifficultyRow" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="WordDifficultyLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/WordDifficultyRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
+text = "WORD DIFFICULTY ASSIST"
+
+[node name="WordDifficultyToggle" type="CheckButton" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/WordDifficultyRow"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="TypingSpeedRow" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="TypingSpeedLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/TypingSpeedRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
+text = "TYPING SPEED ASSIST"
+
+[node name="TypingSpeedToggle" type="CheckButton" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/TypingSpeedRow"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="BackButton" type="Button" parent="CenterContainer/MenuPanel/MenuMargin/MenuList"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_back_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_back_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_back_normal")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 26
+text = "BACK"
+
+[connection signal="value_changed" from="CenterContainer/MenuPanel/MenuMargin/MenuList/MasterRow/MasterSlider" to="." method="_on_master_slider_value_changed"]
+[connection signal="value_changed" from="CenterContainer/MenuPanel/MenuMargin/MenuList/MusicRow/MusicSlider" to="." method="_on_music_slider_value_changed"]
+[connection signal="value_changed" from="CenterContainer/MenuPanel/MenuMargin/MenuList/SFXRow/SFXSlider" to="." method="_on_sfx_slider_value_changed"]
+[connection signal="toggled" from="CenterContainer/MenuPanel/MenuMargin/MenuList/MistakeSystemRow/MistakeSystemToggle" to="." method="_on_mistake_system_toggle_toggled"]
+[connection signal="toggled" from="CenterContainer/MenuPanel/MenuMargin/MenuList/WordDifficultyRow/WordDifficultyToggle" to="." method="_on_word_difficulty_toggle_toggled"]
+[connection signal="toggled" from="CenterContainer/MenuPanel/MenuMargin/MenuList/TypingSpeedRow/TypingSpeedToggle" to="." method="_on_typing_speed_toggle_toggled"]
+[connection signal="pressed" from="CenterContainer/MenuPanel/MenuMargin/MenuList/BackButton" to="." method="_on_back_button_pressed"]

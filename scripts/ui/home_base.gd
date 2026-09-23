@@ -28,6 +28,9 @@ extends Control
 	/MissionTable/MissionGrid/Mission1Card
 )
 
+const SETTINGS_MENU_SCENE := preload("res://scenes/ui/settings_menu.tscn")
+var settings_menu: Node = null
+
 
 func _ready() -> void:
 	# always return to lobby music here, fixes mission music continuing
@@ -49,6 +52,19 @@ func _input(event: InputEvent) -> void:
 
 func _on_main_menu_button_pressed() -> void:
 	get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
+
+
+func _on_settings_button_pressed() -> void:
+	if settings_menu != null:
+		return
+	settings_menu = SETTINGS_MENU_SCENE.instantiate()
+	add_child(settings_menu)
+	settings_menu.closed.connect(_on_settings_menu_closed)
+
+
+func _on_settings_menu_closed() -> void:
+	settings_menu.queue_free()
+	settings_menu = null
 
 
 func _on_mission_1_card_pressed() -> void:
