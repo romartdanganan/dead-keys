@@ -1,6 +1,6 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://c3jm8yshobh2y"]
 
-[ext_resource type="Script" path="res://scripts/ui/settings_menu.gd" id="1_settings"]
+[ext_resource type="Script" uid="uid://06nlebbtfh6k" path="res://scripts/ui/settings_menu.gd" id="1_settings"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wood_panel"]
 bg_color = Color(0.58, 0.4, 0.24, 1)
@@ -13,6 +13,70 @@ corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tab_panel"]
+content_margin_left = 18.0
+content_margin_top = 16.0
+content_margin_right = 18.0
+content_margin_bottom = 16.0
+bg_color = Color(0.4, 0.27, 0.15, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.22, 0.13, 0.06, 1)
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tab_unselected"]
+content_margin_left = 18.0
+content_margin_top = 6.0
+content_margin_right = 18.0
+content_margin_bottom = 6.0
+bg_color = Color(0.32, 0.2, 0.11, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tab_hovered"]
+content_margin_left = 18.0
+content_margin_top = 6.0
+content_margin_right = 18.0
+content_margin_bottom = 6.0
+bg_color = Color(0.48, 0.33, 0.19, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tab_selected"]
+content_margin_left = 18.0
+content_margin_top = 6.0
+content_margin_right = 18.0
+content_margin_bottom = 6.0
+bg_color = Color(0.4, 0.27, 0.15, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_color = Color(0.22, 0.13, 0.06, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_slider_track"]
+content_margin_top = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.22, 0.13, 0.06, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_slider_fill"]
+content_margin_top = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.95, 0.9, 0.8, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dark_normal"]
 content_margin_left = 14.0
@@ -62,76 +126,12 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tab_selected"]
-content_margin_left = 18.0
-content_margin_top = 6.0
-content_margin_right = 18.0
-content_margin_bottom = 6.0
-bg_color = Color(0.4, 0.27, 0.15, 1)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_color = Color(0.22, 0.13, 0.06, 1)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tab_unselected"]
-content_margin_left = 18.0
-content_margin_top = 6.0
-content_margin_right = 18.0
-content_margin_bottom = 6.0
-bg_color = Color(0.32, 0.2, 0.11, 1)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tab_hovered"]
-content_margin_left = 18.0
-content_margin_top = 6.0
-content_margin_right = 18.0
-content_margin_bottom = 6.0
-bg_color = Color(0.48, 0.33, 0.19, 1)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tab_panel"]
-content_margin_left = 18.0
-content_margin_top = 16.0
-content_margin_right = 18.0
-content_margin_bottom = 16.0
-bg_color = Color(0.4, 0.27, 0.15, 1)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(0.22, 0.13, 0.06, 1)
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_slider_track"]
-content_margin_top = 5.0
-content_margin_bottom = 5.0
-bg_color = Color(0.22, 0.13, 0.06, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_slider_fill"]
-content_margin_top = 5.0
-content_margin_bottom = 5.0
-bg_color = Color(0.95, 0.9, 0.8, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-
-[node name="SettingsMenu" type="CanvasLayer"]
-layer = 11
+[node name="SettingsMenu" type="CanvasLayer" unique_id=1954217397]
 process_mode = 3
+layer = 11
 script = ExtResource("1_settings")
 
-[node name="DimBackground" type="ColorRect" parent="."]
+[node name="DimBackground" type="ColorRect" parent="." unique_id=597690518]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -139,7 +139,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.6)
 
-[node name="CenterContainer" type="CenterContainer" parent="."]
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=87163813]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -147,60 +147,60 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="MenuPanel" type="PanelContainer" parent="CenterContainer"]
+[node name="MenuPanel" type="PanelContainer" parent="CenterContainer" unique_id=1716021947]
 custom_minimum_size = Vector2(660, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_wood_panel")
 
-[node name="MenuMargin" type="MarginContainer" parent="CenterContainer/MenuPanel"]
+[node name="MenuMargin" type="MarginContainer" parent="CenterContainer/MenuPanel" unique_id=1753775289]
 layout_mode = 2
 theme_override_constants/margin_left = 26
 theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 26
 theme_override_constants/margin_bottom = 20
 
-[node name="MenuList" type="VBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin"]
+[node name="MenuList" type="VBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin" unique_id=156937274]
 layout_mode = 2
 theme_override_constants/separation = 14
 
-[node name="SettingsTitleLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList"]
+[node name="SettingsTitleLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList" unique_id=935473569]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 38
 text = "SETTINGS"
 horizontal_alignment = 1
 
-[node name="Tabs" type="TabContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList"]
+[node name="Tabs" type="TabContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList" unique_id=1500735854]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 330)
+custom_minimum_size = Vector2(0, 380)
 layout_mode = 2
 theme_override_colors/font_selected_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hovered_color = Color(1, 1, 1, 1)
 theme_override_colors/font_unselected_color = Color(0.95, 0.9, 0.8, 0.7)
 theme_override_font_sizes/font_size = 24
-theme_override_styles/tab_selected = SubResource("StyleBoxFlat_tab_selected")
+theme_override_styles/panel = SubResource("StyleBoxFlat_tab_panel")
 theme_override_styles/tab_unselected = SubResource("StyleBoxFlat_tab_unselected")
 theme_override_styles/tab_hovered = SubResource("StyleBoxFlat_tab_hovered")
+theme_override_styles/tab_selected = SubResource("StyleBoxFlat_tab_selected")
 theme_override_styles/tab_focus = SubResource("StyleBoxFlat_tab_selected")
-theme_override_styles/panel = SubResource("StyleBoxFlat_tab_panel")
 current_tab = 0
 
-[node name="AUDIO" type="VBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs"]
+[node name="AUDIO" type="VBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs" unique_id=927485808]
 layout_mode = 2
 theme_override_constants/separation = 14
 metadata/_tab_index = 0
 
-[node name="MasterRow" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/AUDIO"]
+[node name="MasterRow" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/AUDIO" unique_id=88656081]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="MasterLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/AUDIO/MasterRow"]
+[node name="MasterLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/AUDIO/MasterRow" unique_id=1455640266]
 custom_minimum_size = Vector2(130, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
 text = "MASTER"
 
-[node name="MasterSlider" type="HSlider" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/AUDIO/MasterRow"]
+[node name="MasterSlider" type="HSlider" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/AUDIO/MasterRow" unique_id=1891157221]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -212,7 +212,7 @@ max_value = 1.0
 step = 0.01
 value = 1.0
 
-[node name="MasterValueLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/AUDIO/MasterRow"]
+[node name="MasterValueLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/AUDIO/MasterRow" unique_id=341816647]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(70, 0)
 layout_mode = 2
@@ -220,17 +220,17 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "100%"
 horizontal_alignment = 2
 
-[node name="MusicRow" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/AUDIO"]
+[node name="MusicRow" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/AUDIO" unique_id=699217331]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="MusicLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/AUDIO/MusicRow"]
+[node name="MusicLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/AUDIO/MusicRow" unique_id=1453195640]
 custom_minimum_size = Vector2(130, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
 text = "MUSIC"
 
-[node name="MusicSlider" type="HSlider" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/AUDIO/MusicRow"]
+[node name="MusicSlider" type="HSlider" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/AUDIO/MusicRow" unique_id=584701959]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -242,7 +242,7 @@ max_value = 1.0
 step = 0.01
 value = 1.0
 
-[node name="MusicValueLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/AUDIO/MusicRow"]
+[node name="MusicValueLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/AUDIO/MusicRow" unique_id=1112459608]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(70, 0)
 layout_mode = 2
@@ -250,17 +250,17 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "100%"
 horizontal_alignment = 2
 
-[node name="SFXRow" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/AUDIO"]
+[node name="SFXRow" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/AUDIO" unique_id=1650091701]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="SFXLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/AUDIO/SFXRow"]
+[node name="SFXLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/AUDIO/SFXRow" unique_id=1377400583]
 custom_minimum_size = Vector2(130, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
 text = "SFX"
 
-[node name="SFXSlider" type="HSlider" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/AUDIO/SFXRow"]
+[node name="SFXSlider" type="HSlider" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/AUDIO/SFXRow" unique_id=1973733053]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -272,7 +272,7 @@ max_value = 1.0
 step = 0.01
 value = 1.0
 
-[node name="SFXValueLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/AUDIO/SFXRow"]
+[node name="SFXValueLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/AUDIO/SFXRow" unique_id=1081439430]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(70, 0)
 layout_mode = 2
@@ -280,58 +280,58 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "100%"
 horizontal_alignment = 2
 
-[node name="AudioHintLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/AUDIO"]
+[node name="AudioHintLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/AUDIO" unique_id=2080157277]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 0.75)
 theme_override_font_sizes/font_size = 20
 text = "Master scales everything. Music and SFX adjust the soundtrack and game sounds separately."
 autowrap_mode = 3
 
-[node name="GAMEPLAY" type="VBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs"]
+[node name="GAMEPLAY" type="VBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs" unique_id=1714233287]
 visible = false
 layout_mode = 2
 theme_override_constants/separation = 8
 metadata/_tab_index = 1
 
-[node name="MistakeSystemRow" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/GAMEPLAY"]
+[node name="MistakeSystemRow" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/GAMEPLAY" unique_id=20739000]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="MistakeSystemLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/GAMEPLAY/MistakeSystemRow"]
+[node name="MistakeSystemLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/GAMEPLAY/MistakeSystemRow" unique_id=1141914767]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
 text = "MISTAKE PENALTIES"
 
-[node name="MistakeSystemToggle" type="CheckButton" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/GAMEPLAY/MistakeSystemRow"]
+[node name="MistakeSystemToggle" type="CheckButton" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/GAMEPLAY/MistakeSystemRow" unique_id=806089995]
 unique_name_in_owner = true
 layout_mode = 2
 button_pressed = true
 
-[node name="MistakeHintLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/GAMEPLAY"]
+[node name="MistakeHintLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/GAMEPLAY" unique_id=344160959]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 0.75)
 theme_override_font_sizes/font_size = 20
 text = "When on, every wrong key costs 1 ammo and 3 wrong keys in a row jam your weapon. Turn off to type without penalties."
 autowrap_mode = 3
 
-[node name="DISPLAY" type="VBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs"]
+[node name="DISPLAY" type="VBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs" unique_id=612116458]
 visible = false
 layout_mode = 2
 theme_override_constants/separation = 14
 metadata/_tab_index = 2
 
-[node name="WindowModeRow" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/DISPLAY"]
+[node name="WindowModeRow" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/DISPLAY" unique_id=48638149]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="WindowModeLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/DISPLAY/WindowModeRow"]
+[node name="WindowModeLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/DISPLAY/WindowModeRow" unique_id=304608719]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
 text = "WINDOW MODE"
 
-[node name="WindowModeOption" type="OptionButton" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/DISPLAY/WindowModeRow"]
+[node name="WindowModeOption" type="OptionButton" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/DISPLAY/WindowModeRow" unique_id=1792587236]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(230, 48)
 layout_mode = 2
@@ -339,22 +339,22 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_colors/font_disabled_color = Color(1, 1, 1, 0.45)
 theme_override_styles/normal = SubResource("StyleBoxFlat_dark_normal")
-theme_override_styles/hover = SubResource("StyleBoxFlat_dark_hover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_dark_normal")
-theme_override_styles/focus = SubResource("StyleBoxFlat_dark_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_dark_hover")
 theme_override_styles/disabled = SubResource("StyleBoxFlat_dark_disabled")
+theme_override_styles/focus = SubResource("StyleBoxFlat_dark_normal")
 
-[node name="ResolutionRow" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/DISPLAY"]
+[node name="ResolutionRow" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/DISPLAY" unique_id=423163531]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="ResolutionLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/DISPLAY/ResolutionRow"]
+[node name="ResolutionLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/DISPLAY/ResolutionRow" unique_id=1864354198]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
 text = "RESOLUTION"
 
-[node name="ResolutionOption" type="OptionButton" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/DISPLAY/ResolutionRow"]
+[node name="ResolutionOption" type="OptionButton" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/DISPLAY/ResolutionRow" unique_id=1616253321]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(230, 48)
 layout_mode = 2
@@ -362,12 +362,12 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_colors/font_disabled_color = Color(1, 1, 1, 0.45)
 theme_override_styles/normal = SubResource("StyleBoxFlat_dark_normal")
-theme_override_styles/hover = SubResource("StyleBoxFlat_dark_hover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_dark_normal")
-theme_override_styles/focus = SubResource("StyleBoxFlat_dark_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_dark_hover")
 theme_override_styles/disabled = SubResource("StyleBoxFlat_dark_disabled")
+theme_override_styles/focus = SubResource("StyleBoxFlat_dark_normal")
 
-[node name="DisplayHintLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/DISPLAY"]
+[node name="DisplayHintLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/DISPLAY" unique_id=167521940]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 0.75)
@@ -375,14 +375,107 @@ theme_override_font_sizes/font_size = 20
 text = "Resolution sets the window size in windowed mode. Fullscreen always uses your screen's own resolution."
 autowrap_mode = 3
 
-[node name="BackButton" type="Button" parent="CenterContainer/MenuPanel/MenuMargin/MenuList"]
+[node name="CONTROLS" type="VBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs" unique_id=1796238699]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 10
+metadata/_tab_index = 3
+
+[node name="FireRow" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/CONTROLS" unique_id=790702287]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="FireLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/CONTROLS/FireRow" unique_id=953327868]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
+text = "FIRE"
+
+[node name="FireButton" type="Button" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/CONTROLS/FireRow" unique_id=439346000]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(230, 48)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_dark_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_dark_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_dark_hover")
+text = "Left Click"
+
+[node name="Supply1Row" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/CONTROLS" unique_id=577505934]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Supply1Label" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/CONTROLS/Supply1Row" unique_id=379082609]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
+text = "CALL SUPPLY 1"
+
+[node name="Supply1Button" type="Button" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/CONTROLS/Supply1Row" unique_id=2098072747]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(230, 48)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_dark_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_dark_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_dark_hover")
+text = "1"
+
+[node name="Supply2Row" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/CONTROLS" unique_id=1790793620]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Supply2Label" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/CONTROLS/Supply2Row" unique_id=137849801]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
+text = "CALL SUPPLY 2"
+
+[node name="Supply2Button" type="Button" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/CONTROLS/Supply2Row" unique_id=496255646]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(230, 48)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_dark_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_dark_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_dark_hover")
+text = "2"
+
+[node name="Supply3Row" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/CONTROLS" unique_id=337230359]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Supply3Label" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/CONTROLS/Supply3Row" unique_id=140701898]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
+text = "CALL SUPPLY 3"
+
+[node name="Supply3Button" type="Button" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/CONTROLS/Supply3Row" unique_id=532207171]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(230, 48)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_dark_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_dark_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_dark_hover")
+text = "3"
+
+[node name="ControlsHintLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/CONTROLS" unique_id=748303447]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 0.75)
+theme_override_font_sizes/font_size = 20
+text = "Click a binding then press any key or mouse button (not A-Z). Supply keys accept keyboard only. Duplicate bindings are rejected."
+autowrap_mode = 3
+
+[node name="BackButton" type="Button" parent="CenterContainer/MenuPanel/MenuMargin/MenuList" unique_id=1657156015]
 custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_dark_normal")
-theme_override_styles/hover = SubResource("StyleBoxFlat_dark_hover")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_dark_normal")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 26
+theme_override_styles/normal = SubResource("StyleBoxFlat_dark_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_dark_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_dark_hover")
 text = "BACK"
 
 [connection signal="value_changed" from="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/AUDIO/MasterRow/MasterSlider" to="." method="_on_master_slider_value_changed"]
@@ -391,4 +484,8 @@ text = "BACK"
 [connection signal="toggled" from="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/GAMEPLAY/MistakeSystemRow/MistakeSystemToggle" to="." method="_on_mistake_system_toggle_toggled"]
 [connection signal="item_selected" from="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/DISPLAY/WindowModeRow/WindowModeOption" to="." method="_on_window_mode_option_item_selected"]
 [connection signal="item_selected" from="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/DISPLAY/ResolutionRow/ResolutionOption" to="." method="_on_resolution_option_item_selected"]
+[connection signal="pressed" from="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/CONTROLS/FireRow/FireButton" to="." method="_on_fire_bind_pressed"]
+[connection signal="pressed" from="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/CONTROLS/Supply1Row/Supply1Button" to="." method="_on_supply_bind_pressed" binds= [0]]
+[connection signal="pressed" from="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/CONTROLS/Supply2Row/Supply2Button" to="." method="_on_supply_bind_pressed" binds= [1]]
+[connection signal="pressed" from="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/CONTROLS/Supply3Row/Supply3Button" to="." method="_on_supply_bind_pressed" binds= [2]]
 [connection signal="pressed" from="CenterContainer/MenuPanel/MenuMargin/MenuList/BackButton" to="." method="_on_back_button_pressed"]

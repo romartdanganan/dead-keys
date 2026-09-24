@@ -117,12 +117,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		_open_pause_menu()
 		return
 
-	# check for left mouse click and attempt to fire weapon toward cursor
-	if (
-		event is InputEventMouseButton
-		and event.button_index == MOUSE_BUTTON_LEFT
-		and event.pressed
-	):
+	# check for fire action (default left click, rebindable via Settings)
+	if event.is_action_pressed("fire"):
 		weapon_controller.try_fire(get_global_mouse_position())
 
 	# debug inputs to manually manipulate ammo system
