@@ -16,6 +16,7 @@ collision_layer = 4
 collision_mask = 3
 script = ExtResource("1_frpv3")
 enemy_type = SubResource("Resource_qgoda")
+debug_show_support_radius = true
 
 [node name="ZombieSprite2D" type="Sprite2D" parent="." unique_id=1622588626]
 texture = ExtResource("2_asks5")
