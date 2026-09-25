@@ -5,6 +5,7 @@ class_name EnemyTypeDef
 
 # Special behaviour tag values
 const BEHAVIOUR_ZIGZAG: String = "zigzag"
+const BEHAVIOUR_MEDIC: String = "medic"
 
 @export var enemy_id: String = ""
 @export var display_name: String = ""
@@ -15,6 +16,14 @@ const BEHAVIOUR_ZIGZAG: String = "zigzag"
 
 @export var word_pool_tag: String = "common" # Word tiers
 @export var special_behaviour_tag: String = ""
+
+@export var silhouette_scale: Vector2 = Vector2.ONE
+@export var silhouette_modulate: Color = Color.WHITE
+@export var word_label_border_color: Color = Color.WHITE
+
+# Only for Medic behaviour
+@export var heal_per_second: float = 10.0
+@export var support_radius: float = 180.0
 
 # Only for zigzag behaviour
 @export var zigzag_amplitude: float = 0.0
