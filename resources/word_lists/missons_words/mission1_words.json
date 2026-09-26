@@ -1,0 +1,5 @@
+{
+  "themes": ["Zombie", "Positive", "Suburb"],
+  "word_count": 20,
+  "allowed_buckets": ["3-4", "5-7", "8-10"]
+}
