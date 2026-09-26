@@ -198,8 +198,8 @@ func _complete_target(target_data: Dictionary) -> void:
 		supply_word_completed.emit(crate_target, completed_word)
 		return
 
-	# TODO: scale ammo reward by word length per GDD
-	word_completed.emit(completed_word, 1)
+	# ammo reward now scales with word length instead of a flat 1
+	word_completed.emit(completed_word, get_ammo_reward_for_word(completed_word))
 
 	# assign the living zombie a new word, avoiding its previous one
 	var replacement_word := _choose_unique_word_for_target(
@@ -312,3 +312,15 @@ func _choose_unique_word_for_target(target_to_replace: Dictionary, previous_word
 		return ""
 
 	return available_words.pick_random()
+
+
+# bullet count by word length: 3-4 = 1, 5-7 = 2, 8-10 = 3, 11+ = 4
+static func get_ammo_reward_for_word(word: String) -> int:
+	var length := word.length()
+	if length >= 11:
+		return 4
+	if length >= 8:
+		return 3
+	if length >= 5:
+		return 2
+	return 1
