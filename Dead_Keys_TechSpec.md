@@ -2,12 +2,12 @@
 
 | | |
 |---|---|
-| **Team** | Dead Keys (solo for Milestone 1; open to recruits from the design presentation, see GDD header) |
+| **Team** | Dead Keys (four members from Milestone 2, see GDD header) |
 | **Engine / platform** | Godot 4.7 (GDScript) / Windows, Linux (primary), macOS (secondary) |
 | **Companion doc** | `GDD.md`. This document does not restate gameplay numbers; it references them, following Lecture 3, "Reading and Writing GDDs." |
-| **Repo** | [add once the course namespace is created] |
-| **Doc version** | v0.3 |
-| **Last updated** | 2026-08-24 |
+| **Repo** | https://gitlab.ecs.vuw.ac.nz/course-work/cgra359/2026/assignments/danganroma/dead-keys |
+| **Doc version** | v0.4 |
+| **Last updated** | 2026-09-26 |
 
 ## Changelog
 
@@ -16,6 +16,7 @@
 | v0.1 | 2026-07-15 | Initial Tech Spec: architecture, system breakdown, data formats, save schema, CI, performance budgets, risk register | Romart Danganan |
 | v0.2 | 2026-07-29 | Added the implemented Main Menu and Operations Hub scene architecture, reusable MissionCard component, image placeholders, menu navigation approach, current repository structure, and Issue #6 UI behaviour. | Romart Danganan |
 | v0.3 | 2026-08-24 | Milestone 2/3 documentation sync (#16, overdue from Milestone 2). §2.1 autoloads rewritten to match what actually exists (`UpgradeState`/`AbilityState`/`SupplyState`, not the originally planned `GameState`/`SaveSystem`/`AudioBus`), with the Catalog-as-static-class architecture decision documented. §3 system entries renamed/corrected to match actual code (`AbilitySystem`→`AbilityState`, `SupplyController`→`SupplyState` + `gameplay_prototype.gd`, `Weapon`→`WeaponController`), and flagged the AmmoSystem word-length-scaling gap as a known prototype limitation, not a GDD change. §4 signal map and §5 data formats corrected to match real signal names/signatures and real resource types (the planned `UpgradeDef`/`SupplyDef`/`AbilityDef` `.tres` files and `word_length_to_bullets` table were never built). §7 Testing strategy updated to reflect GUT actually being set up (#34), not just planned: replaced the planned test-target list with what's actually implemented, including catalog/state systems (`UpgradeCatalog`, `AbilityCatalog`, `SupplyCatalog`, `SupplyState`) that didn't exist when this section was first written. | Romart Danganan |
+| v0.4 | 2026-09-26 | Sprint 5 documentation sync (#51). §2.1 autoloads rewritten again: `UpgradeState` was replaced by Nicole's `ProgressionManager` (#26), and the `Audio` autoload (#40) exists; `SettingsState` noted as arriving with #46. §3 updated for the current code: AmmoSystem word-length gap closed (#50), Combo counter implemented inside `MistakeSystem`, all four abilities handled in `WeaponController`, gameplay scene is now `mission_1.gd` (#42), Medic `SUPPORT` state on `Zombie` (#39). §4 signal map combo rows are no longer planned. §5/§6 save format corrected from the planned JSON file to the `ConfigFile` saves that actually ship. §7 test list updated with the current GUT files. | Romart Danganan |
 
 
 ---
@@ -42,9 +43,11 @@ Godot 4.7, GDScript only (no C#/GDExtension this trimester, since that's one les
 
 | Autoload | Responsibility |
 |---|---|
-| `UpgradeState` | Gold balance and purchased Upgrade Track levels for the current session. Exposes `get_gold()`, `spend_gold()`, `get_upgrade_level()`, `purchase_upgrade()`. Currently a temporary local store (#25); not yet persisted to disk, that's #26 (`ProgressionManager`), which is expected to replace this autoload behind the same method names. |
-| `AbilityState` | The currently equipped ability and the current mission's charge flag (#24). Exposes `equip()`, `set_charged()`, `consume_charge()`. `set_charged()` is the seam #23 (Combo system) is expected to call once built; currently driven by a temporary debug key instead. |
-| `SupplyState` | The 3-slot Mission Supplies loadout (#29). Exposes `get_slot()`, `purchase_into_slot()`, `sell_slot()`, `clear_loadout()`. Spends from `UpgradeState`'s gold, the same pool as Upgrades, not a separate one. |
+| `ProgressionManager` | Gold, purchased Upgrade Track levels, owned abilities and the highest unlocked mission (#26). Exposes `get_gold()`, `add_gold()`, `spend_gold()`, `get_upgrade_level()`, `get_upgrade_value()`, `purchase_upgrade()`, `is_ability_owned()`. Saves to `user://progression.cfg` (see §6). Replaced the temporary `UpgradeState` autoload from #25. `highest_unlocked` is stored but not yet read by the Home Base, that wiring is #32. |
+| `AbilityState` | The currently equipped ability and the current mission's charge flag (#24). Exposes `equip()`, `set_charged()`, `consume_charge()`, `reset_for_mission()`. `MistakeSystem`'s Combo counter calls `set_charged(true)` at 5 kills. |
+| `SupplyState` | The 3-slot Mission Supplies loadout (#29). Exposes `get_slot()`, `purchase_into_slot()`, `sell_slot()`, `clear_loadout()`. Spends from `ProgressionManager`'s gold, the same pool as Upgrades. |
+| `Audio` | Music and SFX playback (`audio_bus.gd`, #40). Exposes `play()`, `clear_music()`, `is_playing()`, and bus volume helpers used by the Settings menu. |
+| `SettingsState` | Arrives with the Settings menu (#46, in review): volumes, mistake-system toggle, window mode/resolution, and fire/supply key bindings, saved to `user://settings.cfg`. |
 
 **Architecture change from the original plan:** upgrade/ability/supply *definitions* (costs, effect values, display names) turned out simpler as static data tables (`UpgradeCatalog`, `AbilityCatalog`, `SupplyCatalog`, plain `RefCounted` classes under `scripts/resources/`, not autoloads, not `.tres` resources) rather than the originally planned per-item `.tres` Resources loaded by an autoload. This was a pragmatic implementation call made while actually building #24/#25/#29, not a deliberate GDD-level redesign: it avoids needing a resource-authoring workflow for content that's currently small and code-defined anyway. Each Catalog exposes lookup functions (e.g. `UpgradeCatalog.get_track(id)`) that the equivalent *state* autoload above calls into. This keeps the door open to migrating to real `.tres` resources later without changing how any consumer calls in, only how the Catalog itself is implemented internally.
 
@@ -102,37 +105,37 @@ Each entry maps 1:1 to a GDD §2.2.x system. Numbers referenced (e.g. "5-kill th
 Captures `InputEventKey`, resolved through the OS keyboard layout (not raw physical scancode; this is the GDD §10 flagged risk). Matches typed characters against a shared typed-prefix across all currently-active targets (Zombies and, since #29, Supply crates), not a single target's word buffer as originally scoped, needed once multiple simultaneous Zombies had to share one input stream (#22). Emits `typing_mistake`, `correct_stroke`, `word_completed(word, ammunition_reward)`, `supply_word_completed(crate, word)`.
 
 ### 3.2 AmmoSystem
-Listens to `word_completed`. **Implementation gap, flagged not fixed (#16):** the GDD's word-length-to-bullet-count scaling (§2.2.1) is not yet built, every completed word currently grants a flat 1 ammo regardless of length, tracked by an existing `# TODO: scale ammo reward by word length per GDD` comment in `typing_controller.gd`. This is a prototype limitation, not an accepted design change, the GDD's ammo table is unchanged and still describes the intended behaviour. Adds to the ammo pool, capped at `UpgradeState`'s Magazine Capacity value. Emits `ammunition_changed(current, maximum)`.
+Listens to `word_completed` (via `mission_1.gd`). The reward amount is decided in `TypingController.get_ammo_reward_for_word()`, a static function mapping word length to bullet count per GDD §2.2.1 (#50, closing the flat-1-ammo gap flagged in v0.3). Adds to the ammo pool, capped at the Magazine Capacity upgrade value from `ProgressionManager`. Emits `ammunition_changed(current, maximum)`.
 
 ### 3.3 MistakeSystem
-Listens to `typing_mistake` (emitted by `TypingController`). The GDD's accessibility toggle (§2.2.2/§2.8) is not yet built, there's no `mistake_system_enabled` option since the Settings menu doesn't exist yet (rejected as premature until more underlying systems land, see the Settings issue discussion). Otherwise: decrements ammo (unless already 0, still building toward the jam), increments a consecutive-mistake counter, triggers a jam at 3 consecutive mistakes (Mistake Leniency upgrade delays *when* ammo is lost, not the jam threshold itself, an interpretation of the GDD's upgrade table flagged for review during #25), starts a jam timer (`UpgradeState`'s Jam Duration value) during which firing is a no-op. Does not yet emit a combo-reset signal, that's #23's territory once built.
+Listens to `typing_mistake` (emitted by `TypingController`). The GDD's accessibility toggle (§2.2.2/§2.8) is `SettingsState.mistake_system_enabled`, arriving with #46; when off, `_typing_mistake()` returns early. Otherwise: decrements ammo (unless already 0, still building toward the jam), increments a consecutive-mistake counter, triggers a jam at 3 consecutive mistakes (Mistake Leniency upgrade delays *when* ammo is lost, not the jam threshold itself, an interpretation of the GDD's upgrade table flagged for review during #25), starts a jam timer (the Jam Duration upgrade value) during which firing is a no-op. Also owns the Combo counter, see §3.4.
 
-### 3.4 ComboSystem
-Single `combo_count`. Increments on zombie-killed, resets to 0 on either `combo_reset` (from a mistake) or `wall_hit` (zombie reached the wall), whichever fires first. At the GDD-defined threshold, emits `ability_charged` and locks in the charge (a separate bool, `charge_available`, that survives further combo resets; see GDD §2.2.3 edge case).
+### 3.4 Combo counter (inside MistakeSystem)
+Built as part of `mistake_system.gd` rather than a separate `ComboSystem` node, since both react to the same typing signals. `combo` increments when a target is unregistered (a kill), and `combo_reset()` sets it to 0 on a mistake or when a zombie's `wall_contact` signal fires. At `COMBO_MAX` (5) it calls `AbilityState.set_charged(true)`; the charge lives in `AbilityState` and survives later combo resets (GDD §2.2.3 edge case). A leftover debug key in `mission_1.gd` can still force a charge and should be removed before submission.
 
 ### 3.5 AbilitySystem
-Implemented as the `AbilityState` autoload plus effect-specific logic in the consuming system (currently just `WeaponController` for Spread Shot), rather than a dedicated `AbilitySystem` node. Holds the equipped ability id (set pre-mission via the Ability Select screen, immutable once a mission loads, enforced structurally since there's no in-mission path back to that screen rather than a separate runtime lock flag) and a charge bool. `WeaponController.try_fire()` checks `AbilityState.is_charged` and consumes it via `AbilityState.consume_charge()` on the next shot. Charge resets to false at mission start (`AbilityState.reset_for_mission()`), so nothing carries between missions.
+Implemented as the `AbilityState` autoload plus effect-specific logic in the consuming system (currently just `WeaponController` for Spread Shot), rather than a dedicated `AbilitySystem` node. All four launch abilities (Spread Shot #24, Ricochet #36, Freeze Round #37, Piercing Shot #38) are handled as branches in `WeaponController.try_fire()`. Holds the equipped ability id (set pre-mission via the Ability Select screen, immutable once a mission loads, enforced structurally since there's no in-mission path back to that screen rather than a separate runtime lock flag) and a charge bool. `WeaponController.try_fire()` checks `AbilityState.is_charged` and consumes it via `AbilityState.consume_charge()` on the next shot. Charge resets to false at mission start (`AbilityState.reset_for_mission()`), so nothing carries between missions.
 
 ### 3.6 SupplyState (renamed from the originally planned SupplyController)
-Loadout selection lives in the `SupplyState` autoload (see §2.1); the call/spawn/claim flow itself lives directly in `gameplay_prototype.gd` rather than a separate node, since there's currently only one gameplay scene to wire it into. On Supply input (keys 1–3, real input actions, not debug-only): if the selected slot contains a supply, no crate is currently active, and that slot hasn't already been used this mission, starts a 3 s countdown (shown on-HUD, not silent) then spawns a `SupplyCrate` at the arena's fixed `SupplyLandingPoint` `Marker2D`. The crate registers with `TypingController` the same way a `Zombie` does (shared word pool, shared collision-avoidance), an 8 s `Timer` on the crate itself handles expiry. On claim, applies the crate's effect (GDD §2.2.4) directly in `gameplay_prototype.gd`. There is no collision-based removal path; this was cut from the GDD and there is no code path for it.
+Loadout selection lives in the `SupplyState` autoload (see §2.1); the call/spawn/claim flow itself lives directly in `mission_1.gd` (renamed from `gameplay_prototype.gd` in #42) rather than a separate node, since there's currently only one gameplay scene to wire it into. On Supply input (keys 1–3, real input actions, not debug-only): if the selected slot contains a supply, no crate is currently active, and that slot hasn't already been used this mission, starts a 3 s countdown (shown on-HUD, not silent) then spawns a `SupplyCrate` at the arena's fixed `SupplyLandingPoint` `Marker2D`. The crate registers with `TypingController` the same way a `Zombie` does (shared word pool, shared collision-avoidance), an 8 s `Timer` on the crate itself handles expiry. On claim, applies the crate's effect (GDD §2.2.4) directly in `mission_1.gd`. There is no collision-based removal path; this was cut from the GDD and there is no code path for it.
 
 ### 3.7 ZombieManager / Zombie
-One shared state machine (Spawn → Approach → Attack → Dead) implemented once in `Zombie.gd`. Per-type extra behaviour (Medic/Spitter/Commander/Exploder) is an optional attached component node rather than a subclass, so adding a new special behaviour later is "attach a component," not "branch the class hierarchy." Stats (health, speed, word-pool tag) come from an `EnemyType` resource (§5), so balancing is a data edit.
+One shared state machine (Spawn → Approach → Attack → Dead) implemented once in `Zombie.gd`. Per-type extra behaviour (Medic/Spitter/Commander/Exploder) is an optional attached component node rather than a subclass, so adding a new special behaviour later is "attach a component," not "branch the class hierarchy." In practice the Medic (#39) was added as an extra `SUPPORT` state inside `zombie.gd` plus `heal_per_second`/`support_radius` fields on `EnemyTypeDef`, and Freeze Round added a `FROZEN` state the same way. Zombies are pooled (`zombie_pool.gd`, #28). Separation/flocking (GDD §8.1) is not built yet. Stats (health, speed, word-pool tag) come from an `EnemyType` resource (§5), so balancing is a data edit.
 
 ### 3.8 WordLabelManager
 Positions and z-orders floating word labels above zombies. Implements the GDD §2.2.1 overlap rule: label priority goes to whichever zombie is closest to the wall; when multiple zombies are equidistant, labels are staggered/offset rather than any being fully hidden. This is implemented as a simple sort-by-distance-to-wall each frame, with a minimum on-screen offset enforced between any two labels whose bounding boxes would otherwise intersect.
 
 ### 3.9 WeaponController (renamed from the originally planned Weapon)
-Handles Fire input, cooldown timer, damage application on hit. Reads Fire Rate and Bullet Damage from `UpgradeState` (which resolves the current value via `UpgradeCatalog`) rather than owning its own copy of either number. Also handles the Spread Shot ability effect (§3.5) directly, firing a 3-projectile cone instead of a single shot when `AbilityState.is_charged`.
+Handles Fire input, cooldown timer, damage application on hit. Reads Fire Rate and Bullet Damage from `ProgressionManager` (which resolves the current value via `UpgradeCatalog`) rather than owning its own copy of either number. Also handles all four ability effects (§3.5) directly when `AbilityState.is_charged`.
 
 ### 3.10 UpgradeCatalog / AbilityCatalog / SupplyCatalog (detailed)
 The single place each turns "id + purchased level" into "current effective value" (`UpgradeCatalog`), or looks up a display definition (`AbilityCatalog`, `SupplyCatalog`). Every gameplay system asks one of these instead of hard-coding a number, which is what keeps the GDD's upgrade table (§2.6.1) and the Mission Supplies effects table (§2.2.4) as the actual source of truth. See §2.1 for why these are static classes rather than autoloads.
 
-### 3.11 SaveSystem
-JSON to disk, written only at `MissionEnd` on completion (never mid-mission, matching GDD §2.8). See schema in §6.
+### 3.11 Saving
+There is no separate SaveSystem; `ProgressionManager` saves itself with Godot's `ConfigFile` when a mission is completed and after shop purchases (never mid-mission, matching GDD §2.8). See §6.
 
 ### 3.12 ProgressionManager
-Tracks which missions are unlocked (linear, per GDD §2.7) and each mission's best medal.
+See §2.1. Stores `highest_unlocked` for linear unlocks (GDD §2.7); the Home Base still launches Mission 1 directly until #32 wires cards to it. Best medals are not stored yet because mission ratings do not exist.
 
 ### 3.13 Main Menu and Operations Hub UI
 
@@ -152,17 +155,19 @@ The current exported properties are suitable for the UI prototype. When `Mission
 
 ## 4. Signal map (summary)
 
-*Rows marked "planned" are aspirational, describing #23 (Combo system) and later systems that don't exist yet; kept as the intended design, not a contradiction.*
+*Updated v0.4: the Combo rows are now built (inside `MistakeSystem`), so nothing in this table is planned-only any more.*
 
 | Signal | Emitted by | Consumed by |
 |---|---|---|
 | `typing_mistake` / `correct_stroke` | TypingController | MistakeSystem |
-| `word_completed(word, ammunition_reward)` | TypingController | AmmoSystem |
-| `supply_word_completed(crate, word)` | TypingController | `gameplay_prototype.gd` (claims the crate) |
+| `word_completed(word, ammunition_reward)` | TypingController | `mission_1.gd` (adds to AmmoSystem) |
+| `supply_word_completed(crate, word)` | TypingController | `mission_1.gd` (claims the crate) |
 | `ammunition_changed(current, maximum)` | AmmoSystem | HUD |
-| `combo_reset` (planned) | MistakeSystem, WallController (on `wall_hit`) | ComboSystem |
-| `combo_changed(value)` / `ability_charged` (planned) | ComboSystem | HUD, AbilityState |
-| `wall_hit(damage)` | Zombie (Attack state) | `gameplay_prototype.gd` |
+| `wall_contact()` | Zombie (reaches the wall) | `MistakeSystem.combo_reset()` |
+| `charged_changed(is_charged)` | AbilityState | HUD |
+| `wall_hit(damage)` | Zombie (Attack state) | `mission_1.gd` |
+| `gold_changed(new_gold)` | ProgressionManager | Home Base and shop UIs |
+| `wave_started(wave_number, is_final_wave)` / `all_waves_cleared` | ZombieManager | `mission_1.gd` (wave banner, mission complete) |
 | `died(zombie)` | Zombie (on lethal hit) | ZombieManager, TypingController (unregisters the target) |
 | `pressed()` | MissionCard instance | HomeBase mission-details controller |
 
@@ -176,41 +181,29 @@ Actually-built content is an external `.tres` Resource where noted below. Upgrad
 |---|---|---|
 | `EnemyTypeDef.tres` | health, speed, word-pool tag, special-behaviour tag (optional) | Zombie.gd |
 | `MissionConfigDef` / `WaveEntry` | mission id, waves (enemy type, count, spawn interval, start delay), base coin reward | ZombieManager |
-| `UpgradeCatalog`, `AbilityCatalog`, `SupplyCatalog` | static tables: id, display name, cost/level or per-level effect value (`scripts/resources/`) | `UpgradeState`, `AbilityState`, `SupplyState` |
+| `UpgradeCatalog`, `AbilityCatalog`, `SupplyCatalog` | static tables: id, display name, cost/level or per-level effect value (`scripts/resources/`) | `ProgressionManager`, `AbilityState`, `SupplyState` |
+| Word list JSON | `theme`, `words` array (`resources/word_lists/`) | `TypingController` |
 
-Not yet built: `WordListDef` (per-mission difficulty-tiered word lists, GDD §2.2.1), and the `word_length_to_bullets` lookup, see §3.2's flagged gap.
+The word list is currently a single placeholder file; the per-mission system with length buckets is #43. The word length to bullet count mapping is a small static function (§3.2) rather than a data table, since the tiers come straight from GDD §2.2.1.
 
 ---
 
 ## 6. Save file schema
 
-Checkpoint-based, one write per completed mission (GDD §2.8). Example shape:
+Checkpoint-based, one write per completed mission (GDD §2.8). The original plan was a single JSON file; what shipped is Godot `ConfigFile` saves, which handle Dictionaries without a custom serializer. Progression and settings are separate files so resetting one never wipes the other.
 
-```json
-{
-  "coins": 0,
-  "upgrades": {
-    "fire_rate": 0,
-    "bullet_damage": 0,
-    "magazine_capacity": 0,
-    "fortified_wall": 0,
-    "extra_life": 0,
-    "jam_duration": 0,
-    "mistake_leniency": 0
-  },
-  "missions": {
-    "mission_1": { "unlocked": true, "best_medal": "gold" },
-    "mission_2": { "unlocked": false, "best_medal": null }
-  },
-  "options": {
-    "mistake_system_enabled": true,
-    "word_difficulty_assist": false,
-    "typing_speed_assist": false
-  }
-}
+`user://progression.cfg`, section `[progression]`:
+
+```ini
+gold=0
+upgrade_levels={ "fire_rate": 0, "magazine_capacity": 1 }
+highest_unlocked=1
+owned_abilities={ "spread_shot": true }
 ```
 
-Upgrade levels are stored as integers (current level per track); `UpgradeCatalog` resolves the integer to an effect value, so the save file never stores a balance number directly, only "how many levels bought." **Not yet implemented**, this schema is still the design blueprint; `UpgradeState` currently holds this shape in memory only, with no save/load (that's #26, `ProgressionManager`).
+`user://settings.cfg` (arrives with #46): volumes, `mistake_system_enabled`, window mode, resolution, and key bindings.
+
+Upgrade levels are stored as integers (current level per track); `UpgradeCatalog` resolves the integer to an effect value, so the save file never stores a balance number directly, only "how many levels bought." Keys must match between `save_progression()` and `load_progression()`, a mismatch silently falls back to the default instead of erroring. Best medals per mission are not stored yet.
 
 ---
 
@@ -224,8 +217,10 @@ Current coverage, prioritised the same way originally planned, by how pure/logic
 2. **MistakeSystem**: 3-mistake jam trigger, jam-during-jam edge case (#20), Mistake Leniency threshold.
 3. **UpgradeCatalog, AbilityCatalog, SupplyCatalog**: data-table lookups (level values, costs, max levels), not anticipated when this section was first written, since these systems (#24/#25/#29) didn't exist yet.
 4. **SupplyState**: purchase/sell/refund logic, slot-occupancy rules, including the overwrite-prevention fix found during #29's manual testing.
+5. **Zombie freeze** (`test_zombie_freeze.gd`, #37): Freeze Round state entry and recovery.
+6. **Ammo reward tiers** (`test_ammo_reward.gd`, #50): word length to bullet count, including tier boundaries.
 
-Not yet covered: ComboSystem (#23, not yet built) and anything mission-flow-level (covered instead by manual tests under `tests/manual/`, per the existing convention).
+Isolated enemy test scenes (for example the Medic healing test, #39) live under `tests/zombies/`. Not yet covered by GUT: the Combo counter and anything mission-flow-level (covered instead by manual tests under `tests/manual/`, per the existing convention).
 
 Manual/integration test pass at each milestone checkpoint against the timings and numbers claimed in GDD §11 (Playtesting Plan): that section already defines what gets measured, this section just defines what gets automated first.
 
