@@ -215,8 +215,6 @@ theme_override_styles/disabled = SubResource("StyleBoxFlat_settings_normal")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_disabled_color = Color(1, 1, 1, 0.6)
 theme_override_font_sizes/font_size = 26
-tooltip_text = "Settings will be implemented in a later milestone"
-disabled = true
 text = "SETTINGS"
 
 [node name="QuitButton" type="Button" parent="MainMargin/MainLayout/LeftMenu/ButtonPanel/ButtonMargin/ButtonList" unique_id=1751942493]
@@ -234,4 +232,5 @@ layout_mode = 2
 size_flags_horizontal = 3
 
 [connection signal="pressed" from="MainMargin/MainLayout/LeftMenu/ButtonPanel/ButtonMargin/ButtonList/StartButton" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="MainMargin/MainLayout/LeftMenu/ButtonPanel/ButtonMargin/ButtonList/SettingsButton" to="." method="_on_settings_button_pressed"]
 [connection signal="pressed" from="MainMargin/MainLayout/LeftMenu/ButtonPanel/ButtonMargin/ButtonList/QuitButton" to="." method="_on_quit_button_pressed"]

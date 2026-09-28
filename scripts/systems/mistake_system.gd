@@ -68,6 +68,10 @@ func _combo_increment() -> void:
 
 
 func _typing_mistake() -> void:
+	# accessibility toggle (#46): mistakes cost nothing while this is off
+	if not SettingsState.mistake_system_enabled:
+		return
+
 	# Mistake Leniency (#25): only charge ammo once this many consecutive
 	# mistakes have happened. Base level (1) reproduces the original
 	# behaviour of losing ammo on every single mistake, jammed or not.

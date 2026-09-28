@@ -12,6 +12,9 @@ var ammo_system: AmmoSystem
 var typing_controller: TypingController
 var weapon_controller: WeaponController
 
+# restored after each test so the real saved setting isn't left changed
+var _saved_mistake_setting: bool = true
+
 
 # builds a minimal node tree matching MistakeSystem's expected sibling
 # layout (AmmoSystem, TypingController, World/WeaponController, and the
@@ -93,6 +96,15 @@ func before_each() -> void:
 	mistake_system.mistake_count = 0
 	mistake_system.mistakes_since_ammo_loss = 0
 
+	# a saved settings.cfg with penalties off would fail every test here,
+	# set directly rather than via the setter so nothing gets saved
+	_saved_mistake_setting = SettingsState.mistake_system_enabled
+	SettingsState.mistake_system_enabled = true
+
+
+func after_each() -> void:
+	SettingsState.mistake_system_enabled = _saved_mistake_setting
+
 
 # three typing_mistake signals in a row should flip the weapon jammed,
 # but the first two alone should not
@@ -167,3 +179,16 @@ func test_mistake_leniency_delays_ammo_loss_until_the_threshold() -> void:
 func test_mistake_with_zero_ammo_does_not_go_negative() -> void:
 	typing_controller.typing_mistake.emit()
 	assert_eq(ammo_system.current_ammo, 0)
+
+
+# with mistake penalties off in Settings, mistakes cost no ammo and
+# never build toward a jam
+func test_mistakes_are_ignored_when_penalties_disabled() -> void:
+	ammo_system.add_ammunition(8)
+	SettingsState.mistake_system_enabled = false
+
+	for i in 3:
+		typing_controller.typing_mistake.emit()
+
+	assert_eq(ammo_system.current_ammo, 8)
+	assert_false(weapon_controller.set_jammed)

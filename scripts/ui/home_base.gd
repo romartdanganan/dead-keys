@@ -28,12 +28,19 @@ extends Control
 	/MissionTable/MissionGrid/Mission1Card
 )
 
+const SETTINGS_MENU_SCENE := preload("res://scenes/ui/settings_menu.tscn")
+var settings_menu: Node = null
+
 
 func _ready() -> void:
-	# always return to lobby music here, fixes mission music continuing
-	# to play after Return to Hub, found during the #37 playtest
-	Audio.clear_music()
-	Audio.play("main_music")
+	# only swap to menu music if mission music is playing (returning from a
+	# mission). sub-screens like Upgrades navigate back here too, and they
+	# should not restart the already-playing menu music mid-song.
+	if Audio.is_playing("play_music"):
+		Audio.clear_music()
+		Audio.play("main_music")
+	else:
+		Audio.play("main_music")
 	_show_mission_details(mission_1_card)
 	ProgressionManager.gold_changed.connect(_on_gold_changed)
 	_on_gold_changed(ProgressionManager.get_gold())
@@ -49,6 +56,19 @@ func _input(event: InputEvent) -> void:
 
 func _on_main_menu_button_pressed() -> void:
 	get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
+
+
+func _on_settings_button_pressed() -> void:
+	if settings_menu != null:
+		return
+	settings_menu = SETTINGS_MENU_SCENE.instantiate()
+	add_child(settings_menu)
+	settings_menu.closed.connect(_on_settings_menu_closed)
+
+
+func _on_settings_menu_closed() -> void:
+	settings_menu.queue_free()
+	settings_menu = null
 
 
 func _on_mission_1_card_pressed() -> void:

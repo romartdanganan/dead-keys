@@ -54,8 +54,6 @@ text = "RESUME"
 [node name="SettingsButton" type="Button" parent="CenterContainer/MenuPanel/MenuMargin/MenuList"]
 custom_minimum_size = Vector2(0, 56)
 layout_mode = 2
-tooltip_text = "Settings will be implemented in a later milestone"
-disabled = true
 text = "SETTINGS"
 
 [node name="ReturnHomeButton" type="Button" parent="CenterContainer/MenuPanel/MenuMargin/MenuList"]
@@ -64,4 +62,5 @@ layout_mode = 2
 text = "RETURN TO HUB"
 
 [connection signal="pressed" from="CenterContainer/MenuPanel/MenuMargin/MenuList/ResumeButton" to="." method="_on_resume_button_pressed"]
+[connection signal="pressed" from="CenterContainer/MenuPanel/MenuMargin/MenuList/SettingsButton" to="." method="_on_settings_button_pressed"]
 [connection signal="pressed" from="CenterContainer/MenuPanel/MenuMargin/MenuList/ReturnHomeButton" to="." method="_on_return_home_button_pressed"]
