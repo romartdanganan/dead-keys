@@ -27,7 +27,6 @@ const RUNNER_TYPE: EnemyTypeDef = preload("res://resources/enemies/runner.tres")
 @onready var mistake_system: MistakeSystem = $MistakeSystem
 @onready var ability_name_label: Label = $HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent/AbilitySection/AbilityNameLabel
 @onready var projectile_container: Node2D = $World/ProjectileContainer
-@onready var spawn_points: Array[Marker2D] = [$World/EnemySpawnArea/SpawnLeftBoundary, $World/EnemySpawnArea/SpawnCentreGuide, $World/EnemySpawnArea/SpawnRightBoundary]
 @onready var wall_target: Marker2D = $World/WallAttackLine
 @onready var status_timer: Timer = $StatusTimer
 @onready var supply_landing_point: Marker2D = $World/SupplyLandingPoint
@@ -307,7 +306,6 @@ func _start_mission() -> void:
 	add_child(zombie_manager)
 	zombie_manager.mission_config = mission
 	zombie_manager.wall_target = wall_target
-	zombie_manager.spawn_points = spawn_points
 	zombie_manager.all_waves_cleared.connect(_on_all_waves_cleared)
 	zombie_manager.zombie_spawned.connect(_on_zombie_spawned)
 	zombie_manager.wave_started.connect(_on_wave_started)
