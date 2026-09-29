@@ -16,7 +16,7 @@ enum State { SPAWN, APPROACH, SUPPORT, ATTACK, DEAD, FROZEN }
 		debug_show_support_radius = value
 		queue_redraw()
 
-var current_state: State = State.SPAWN
+var current_state: State = State.APPROACH
 var health: float = 0.0
 var wall_target: Node2D = null
 var current_word: String = "" #TODO: Under the assumption an external system will adjust this
