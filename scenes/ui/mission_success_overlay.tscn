@@ -41,8 +41,18 @@ theme_override_constants/separation = 16
 [node name="Mission Success" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList" unique_id=2062771061]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
-text = "MISSION SUCCESS!!!"
+text = "MISSION COMPLETE!!!"
 horizontal_alignment = 1
+
+[node name="Stats" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList" unique_id=238503722]
+layout_mode = 2
+text = "Gold Earned: "
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Restart" type="Button" parent="CenterContainer/MenuPanel/MenuMargin/MenuList" unique_id=1996530699]
+layout_mode = 2
+text = "REPLAY"
 
 [node name="Next Mission" type="Button" parent="CenterContainer/MenuPanel/MenuMargin/MenuList" unique_id=1510285321]
 layout_mode = 2
@@ -50,7 +60,8 @@ text = "NEXT MISSION"
 
 [node name="ReturnToHub" type="Button" parent="CenterContainer/MenuPanel/MenuMargin/MenuList" unique_id=176246772]
 layout_mode = 2
-text = "RETURN TO HUB"
+text = "RETURN TO BASE"
 
+[connection signal="pressed" from="CenterContainer/MenuPanel/MenuMargin/MenuList/Restart" to="." method="_on_restart_pressed"]
 [connection signal="pressed" from="CenterContainer/MenuPanel/MenuMargin/MenuList/Next Mission" to="." method="_on_next_mission_pressed"]
 [connection signal="pressed" from="CenterContainer/MenuPanel/MenuMargin/MenuList/ReturnToHub" to="." method="_on_return_to_hub_pressed"]
