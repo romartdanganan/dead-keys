@@ -1,14 +1,13 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://0ky6aewuj73b"]
 
-[ext_resource type="Script" path="res://scripts/ui/pause_menu.gd" id="1_pause"]
+[ext_resource type="Script" uid="uid://0r7jddpjypo" path="res://scripts/ui/pause_menu.gd" id="1_pause"]
 
-[node name="PauseMenu" type="CanvasLayer"]
-layer = 10
+[node name="PauseMenu" type="CanvasLayer" unique_id=1080331402]
 process_mode = 3
+layer = 10
 script = ExtResource("1_pause")
 
-[node name="DimBackground" type="ColorRect" parent="."]
-layout_mode = 3
+[node name="DimBackground" type="ColorRect" parent="." unique_id=1913858661]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -16,8 +15,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.6)
 
-[node name="CenterContainer" type="CenterContainer" parent="."]
-layout_mode = 3
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=1468946320]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -25,38 +23,38 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="MenuPanel" type="PanelContainer" parent="CenterContainer"]
+[node name="MenuPanel" type="PanelContainer" parent="CenterContainer" unique_id=1033350293]
 custom_minimum_size = Vector2(360, 0)
 layout_mode = 2
 
-[node name="MenuMargin" type="MarginContainer" parent="CenterContainer/MenuPanel"]
+[node name="MenuMargin" type="MarginContainer" parent="CenterContainer/MenuPanel" unique_id=846379642]
 layout_mode = 2
 theme_override_constants/margin_left = 30
 theme_override_constants/margin_top = 24
 theme_override_constants/margin_right = 30
 theme_override_constants/margin_bottom = 24
 
-[node name="MenuList" type="VBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin"]
+[node name="MenuList" type="VBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin" unique_id=201882599]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="PausedTitleLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList"]
+[node name="PausedTitleLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList" unique_id=175757748]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "PAUSED"
 horizontal_alignment = 1
 
-[node name="ResumeButton" type="Button" parent="CenterContainer/MenuPanel/MenuMargin/MenuList"]
+[node name="ResumeButton" type="Button" parent="CenterContainer/MenuPanel/MenuMargin/MenuList" unique_id=675729664]
 custom_minimum_size = Vector2(0, 56)
 layout_mode = 2
 text = "RESUME"
 
-[node name="SettingsButton" type="Button" parent="CenterContainer/MenuPanel/MenuMargin/MenuList"]
+[node name="SettingsButton" type="Button" parent="CenterContainer/MenuPanel/MenuMargin/MenuList" unique_id=974669074]
 custom_minimum_size = Vector2(0, 56)
 layout_mode = 2
 text = "SETTINGS"
 
-[node name="ReturnHomeButton" type="Button" parent="CenterContainer/MenuPanel/MenuMargin/MenuList"]
+[node name="ReturnHomeButton" type="Button" parent="CenterContainer/MenuPanel/MenuMargin/MenuList" unique_id=1891027686]
 custom_minimum_size = Vector2(0, 56)
 layout_mode = 2
 text = "RETURN TO HUB"

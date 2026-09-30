@@ -1,0 +1,56 @@
+[gd_scene format=3 uid="uid://hjwfsbgu4qmu"]
+
+[ext_resource type="Script" uid="uid://cyll2v8hoada1" path="res://scripts/ui/mission_success_overlay.gd" id="1_3j4qs"]
+
+[node name="MissionSuccessOverlay" type="CanvasLayer" unique_id=1639251873]
+process_mode = 3
+layer = 10
+script = ExtResource("1_3j4qs")
+
+[node name="DimBackground" type="ColorRect" parent="." unique_id=254310088]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.6)
+
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=1392815095]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="MenuPanel" type="PanelContainer" parent="CenterContainer" unique_id=1226880031]
+custom_minimum_size = Vector2(360, 0)
+layout_mode = 2
+
+[node name="MenuMargin" type="MarginContainer" parent="CenterContainer/MenuPanel" unique_id=1002177125]
+layout_mode = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 24
+
+[node name="MenuList" type="VBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin" unique_id=1212327667]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Mission Success" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList" unique_id=2062771061]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "MISSION SUCCESS!!!"
+horizontal_alignment = 1
+
+[node name="Next Mission" type="Button" parent="CenterContainer/MenuPanel/MenuMargin/MenuList" unique_id=1510285321]
+layout_mode = 2
+text = "NEXT MISSION"
+
+[node name="ReturnToHub" type="Button" parent="CenterContainer/MenuPanel/MenuMargin/MenuList" unique_id=176246772]
+layout_mode = 2
+text = "RETURN TO HUB"
+
+[connection signal="pressed" from="CenterContainer/MenuPanel/MenuMargin/MenuList/Next Mission" to="." method="_on_next_mission_pressed"]
+[connection signal="pressed" from="CenterContainer/MenuPanel/MenuMargin/MenuList/ReturnToHub" to="." method="_on_return_to_hub_pressed"]
