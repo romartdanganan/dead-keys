@@ -4,13 +4,21 @@ extends Node
 signal typing_mistake
 signal correct_stroke
 signal word_completed(word: String, ammunition_reward: int)
+signal supply_word_completed(crate: Node, word: String)
+signal target_unregistered()
 
 # keeps the old single-target prototype scene working temporarily
 @export var word_label: RichTextLabel
 
 const LETTERS := "abcdefghijklmnopqrstuvwxyz"
 
-# TODO: replace static test_words array with data-driven word lists loaded from external resource (.tres/JSON) per mission difficulty
+# placeholder word list source. this is a temporary stand-in for #43's
+# real per-mission word list system, kept here only so Mission 1 is
+# playable in the meantime. safe to repoint or replace this loading logic
+# entirely once the real system lands
+@export var word_list_path: String = "res://resources/word_lists/mission_1_words_PLACEHOLDER.json"
+
+# fallback used if word_list_path is empty or fails to load
 var test_words: Array[String] = [
 	"code",
 	"walker",
@@ -34,9 +42,40 @@ var typed_prefix: String = ""
 
 
 func _ready() -> void:
+	_load_word_list()
+
 	# temporary compatibility for the existing single-target prototype
 	if is_instance_valid(word_label):
 		register_target(word_label, word_label)
+
+
+# loads test_words from word_list_path if set and valid, otherwise keeps
+# the hardcoded fallback above. see the comment on word_list_path
+func _load_word_list() -> void:
+	if word_list_path.is_empty():
+		return
+
+	if not FileAccess.file_exists(word_list_path):
+		push_warning("TypingController: word_list_path not found, using fallback words: " + word_list_path)
+		return
+
+	var file := FileAccess.open(word_list_path, FileAccess.READ)
+	var parsed = JSON.parse_string(file.get_as_text())
+
+	if typeof(parsed) != TYPE_DICTIONARY or not parsed.has("words"):
+		push_warning("TypingController: word_list_path malformed, using fallback words: " + word_list_path)
+		return
+
+	var loaded_words: Array[String] = []
+	for entry in parsed["words"]:
+		if typeof(entry) == TYPE_STRING:
+			loaded_words.append(entry)
+
+	if loaded_words.is_empty():
+		push_warning("TypingController: word_list_path had no usable words, using fallback words: " + word_list_path)
+		return
+
+	test_words = loaded_words
 
 
 # deal with the last input, catch the keypress and print out the unicode
@@ -63,7 +102,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	check_letter(typed_character)
 
 
-func register_target(target: Node, label: RichTextLabel) -> void:
+func register_target(target: Node, label: RichTextLabel, kind: String = "zombie") -> void:
 	if not is_instance_valid(target) or not is_instance_valid(label):
 		return
 
@@ -82,6 +121,7 @@ func register_target(target: Node, label: RichTextLabel) -> void:
 		"target": target,
 		"label": label,
 		"word": new_word,
+		"kind": kind,
 	})
 
 	_update_all_labels()
@@ -89,11 +129,19 @@ func register_target(target: Node, label: RichTextLabel) -> void:
 
 func unregister_target(target: Node) -> void:
 	# iterate backwards to safely remove targets without skipping indices
+	var removed := false
 	for index in range(active_targets.size() - 1, -1, -1):
 		if active_targets[index]["target"] == target:
 			active_targets.remove_at(index)
+			removed = true
+
+	# a target already removed should not fire a second unregister, this
+	# guards against duplicate signal connections on a reused pooled node
+	if not removed:
+		return
 
 	typed_prefix = ""
+	target_unregistered.emit()
 	_update_all_labels()
 
 
@@ -137,14 +185,21 @@ func check_letter(typed_character: String) -> void:
 
 func _complete_target(target_data: Dictionary) -> void:
 	var completed_word: String = target_data["word"]
+	var kind: String = target_data.get("kind", "zombie")
 
 	print("WORD COMPLETE: ", completed_word)
 
-	# TODO: scale ammo reward by word length per GDD
-	word_completed.emit(completed_word, 1)
-
-	# reset typed prefix before assigning the replacement word
 	typed_prefix = ""
+
+	# supply crates are claimed once, not reassigned a new word like zombies
+	if kind == "supply":
+		var crate_target: Node = target_data["target"]
+		unregister_target(crate_target)
+		supply_word_completed.emit(crate_target, completed_word)
+		return
+
+	# ammo reward now scales with word length instead of a flat 1
+	word_completed.emit(completed_word, get_ammo_reward_for_word(completed_word))
 
 	# assign the living zombie a new word, avoiding its previous one
 	var replacement_word := _choose_unique_word_for_target(
@@ -257,3 +312,15 @@ func _choose_unique_word_for_target(target_to_replace: Dictionary, previous_word
 		return ""
 
 	return available_words.pick_random()
+
+
+# bullet count by word length: 3-4 = 1, 5-7 = 2, 8-10 = 3, 11+ = 4
+static func get_ammo_reward_for_word(word: String) -> int:
+	var length := word.length()
+	if length >= 11:
+		return 4
+	if length >= 8:
+		return 3
+	if length >= 5:
+		return 2
+	return 1

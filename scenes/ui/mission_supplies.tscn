@@ -1,0 +1,187 @@
+[gd_scene format=3 uid="uid://skrc6sdvsq2t"]
+
+[ext_resource type="Script" uid="uid://cpydkoilm8gcn" path="res://scripts/ui/mission_supplies.gd" id="1_supplies"]
+[ext_resource type="Texture2D" uid="uid://dtxygfe036xnp" path="res://icon.svg" id="2_icon"]
+[ext_resource type="PackedScene" path="res://scenes/ui/supply_slot_row.tscn" id="3_slot"]
+[ext_resource type="PackedScene" path="res://scenes/ui/supply_card_row.tscn" id="4_card"]
+[ext_resource type="Texture2D" path="res://assets/sprites/coin.png" id="5_coin"]
+[ext_resource type="Texture2D" path="res://assets/ui/home_base_basement.png" id="6_bg"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_topbar_normal"]
+bg_color = Color(0.58, 0.4, 0.24, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.32, 0.2, 0.11, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_topbar_hover"]
+bg_color = Color(0.65, 0.46, 0.28, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.32, 0.2, 0.11, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[node name="MissionSupplies" type="Control" unique_id=980812974]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_supplies")
+
+[node name="BackgroundColor" type="TextureRect" parent="." unique_id=1790513682]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("6_bg")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="MainMargin" type="MarginContainer" parent="." unique_id=1901882869]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="MainLayout" type="VBoxContainer" parent="MainMargin" unique_id=2081704348]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="TopBar" type="HBoxContainer" parent="MainMargin/MainLayout" unique_id=1589615123]
+custom_minimum_size = Vector2(0, 65)
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="MainMargin/MainLayout/TopBar" unique_id=1305798594]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme_override_font_sizes/font_size = 30
+text = "MISSION SUPPLIES"
+vertical_alignment = 1
+
+[node name="GoldPanel" type="PanelContainer" parent="MainMargin/MainLayout/TopBar" unique_id=685477591]
+custom_minimum_size = Vector2(180, 60)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_topbar_normal")
+
+[node name="GoldMargin" type="MarginContainer" parent="MainMargin/MainLayout/TopBar/GoldPanel" unique_id=340416807]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 8
+
+[node name="GoldContent" type="HBoxContainer" parent="MainMargin/MainLayout/TopBar/GoldPanel/GoldMargin" unique_id=581692559]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="GoldIcon" type="TextureRect" parent="MainMargin/MainLayout/TopBar/GoldPanel/GoldMargin/GoldContent" unique_id=1789637977]
+custom_minimum_size = Vector2(36, 36)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("5_coin")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="GoldLabel" type="Label" parent="MainMargin/MainLayout/TopBar/GoldPanel/GoldMargin/GoldContent" unique_id=380002606]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "GOLD: 0"
+
+[node name="BackButton" type="Button" parent="MainMargin/MainLayout/TopBar" unique_id=1251318318]
+custom_minimum_size = Vector2(130, 60)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_topbar_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_topbar_hover")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "BACK"
+
+[node name="HubContent" type="HBoxContainer" parent="MainMargin/MainLayout" unique_id=861019601]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 30
+
+[node name="SlotsPanel" type="PanelContainer" parent="MainMargin/MainLayout/HubContent" unique_id=793052024]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+
+[node name="SlotsMargin" type="MarginContainer" parent="MainMargin/MainLayout/HubContent/SlotsPanel" unique_id=1771696856]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 14
+
+[node name="SlotsContent" type="VBoxContainer" parent="MainMargin/MainLayout/HubContent/SlotsPanel/SlotsMargin" unique_id=1575391578]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="SlotsHeading" type="Label" parent="MainMargin/MainLayout/HubContent/SlotsPanel/SlotsMargin/SlotsContent" unique_id=515595229]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "PRE-MISSION LOADOUT"
+horizontal_alignment = 1
+
+[node name="SlotsList" type="VBoxContainer" parent="MainMargin/MainLayout/HubContent/SlotsPanel/SlotsMargin/SlotsContent" unique_id=142097133]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="SupplySlotRow1" parent="MainMargin/MainLayout/HubContent/SlotsPanel/SlotsMargin/SlotsContent/SlotsList" unique_id=1302050433 instance=ExtResource("3_slot")]
+
+[node name="SupplySlotRow2" parent="MainMargin/MainLayout/HubContent/SlotsPanel/SlotsMargin/SlotsContent/SlotsList" unique_id=1297953311 instance=ExtResource("3_slot")]
+slot_index = 1
+
+[node name="SupplySlotRow3" parent="MainMargin/MainLayout/HubContent/SlotsPanel/SlotsMargin/SlotsContent/SlotsList" unique_id=1496683921 instance=ExtResource("3_slot")]
+slot_index = 2
+
+[node name="CardsArea" type="CenterContainer" parent="MainMargin/MainLayout/HubContent" unique_id=833405694]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="CardsContainer" type="GridContainer" parent="MainMargin/MainLayout/HubContent/CardsArea" unique_id=85571727]
+layout_mode = 2
+theme_override_constants/h_separation = 20
+theme_override_constants/v_separation = 20
+columns = 2
+
+[node name="AmmoCrateCard" parent="MainMargin/MainLayout/HubContent/CardsArea/CardsContainer" unique_id=412317640 instance=ExtResource("4_card")]
+supply_id = "ammo_crate"
+
+[node name="MedicalCrateCard" parent="MainMargin/MainLayout/HubContent/CardsArea/CardsContainer" unique_id=986508539 instance=ExtResource("4_card")]
+supply_id = "medical_crate"
+
+[node name="CombatCrateCard" parent="MainMargin/MainLayout/HubContent/CardsArea/CardsContainer" unique_id=1311123493 instance=ExtResource("4_card")]
+supply_id = "combat_crate"
+
+[node name="EmergencyCrateCard" parent="MainMargin/MainLayout/HubContent/CardsArea/CardsContainer" unique_id=983451627 instance=ExtResource("4_card")]
+supply_id = "emergency_crate"
+
+[node name="FooterLabel" type="Label" parent="MainMargin/MainLayout" unique_id=2115400641]
+layout_mode = 2
+text = "Press 1, 2, or 3 during a mission to call your equipped supply"
+horizontal_alignment = 1
+
+[connection signal="pressed" from="MainMargin/MainLayout/TopBar/BackButton" to="." method="_on_back_button_pressed"]

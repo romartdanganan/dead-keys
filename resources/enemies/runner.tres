@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="EnemyTypeDef" format=3 uid="uid://c8eporsyh4tg2"]
+
+[ext_resource type="Script" uid="uid://sylq37045jm3" path="res://scripts/resources/enemy_type_def.gd" id="1_cq475"]
+
+[resource]
+script = ExtResource("1_cq475")
+enemy_id = "runner"
+display_name = "Runner"
+health = 15.0
+speed = 100.0
+special_behaviour_tag = "zigzag"
+zigzag_amplitude = 1.0
+zigzag_frequency = 0.9

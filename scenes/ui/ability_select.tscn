@@ -1,0 +1,158 @@
+[gd_scene format=3 uid="uid://b80k875xua3mt"]
+
+[ext_resource type="Script" uid="uid://dt5bwmerk385n" path="res://scripts/ui/ability_select.gd" id="1_select"]
+[ext_resource type="PackedScene" path="res://scenes/ui/ability_row.tscn" id="2_row"]
+[ext_resource type="Texture2D" uid="uid://dtxygfe036xnp" path="res://icon.svg" id="3_icon"]
+[ext_resource type="Texture2D" path="res://assets/sprites/coin.png" id="4_coin"]
+[ext_resource type="Texture2D" path="res://assets/ui/home_base_basement.png" id="5_bg"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_topbar_normal"]
+bg_color = Color(0.58, 0.4, 0.24, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.32, 0.2, 0.11, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_topbar_hover"]
+bg_color = Color(0.65, 0.46, 0.28, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.32, 0.2, 0.11, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[node name="AbilitySelect" type="Control" unique_id=788607357]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_select")
+
+[node name="BackgroundColor" type="TextureRect" parent="." unique_id=767763835]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("5_bg")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="MainMargin" type="MarginContainer" parent="." unique_id=1284311060]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="MainLayout" type="VBoxContainer" parent="MainMargin" unique_id=17941071]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="TopBar" type="HBoxContainer" parent="MainMargin/MainLayout" unique_id=1600667297]
+custom_minimum_size = Vector2(0, 65)
+layout_mode = 2
+alignment = 2
+
+[node name="GoldPanel" type="PanelContainer" parent="MainMargin/MainLayout/TopBar" unique_id=1101010101]
+custom_minimum_size = Vector2(180, 60)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_topbar_normal")
+
+[node name="GoldMargin" type="MarginContainer" parent="MainMargin/MainLayout/TopBar/GoldPanel" unique_id=1101010102]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 8
+
+[node name="GoldContent" type="HBoxContainer" parent="MainMargin/MainLayout/TopBar/GoldPanel/GoldMargin" unique_id=1101010103]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="GoldIcon" type="TextureRect" parent="MainMargin/MainLayout/TopBar/GoldPanel/GoldMargin/GoldContent" unique_id=1101010104]
+custom_minimum_size = Vector2(36, 36)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("4_coin")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="GoldLabel" type="Label" parent="MainMargin/MainLayout/TopBar/GoldPanel/GoldMargin/GoldContent" unique_id=1101010105]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "GOLD: 0"
+
+[node name="BackButton" type="Button" parent="MainMargin/MainLayout/TopBar" unique_id=446777170]
+custom_minimum_size = Vector2(130, 60)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_topbar_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_topbar_hover")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "BACK"
+
+[node name="TitleLabel" type="Label" parent="MainMargin/MainLayout" unique_id=450038867]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "CHOOSE YOUR ABILITY"
+horizontal_alignment = 1
+
+[node name="GridArea" type="CenterContainer" parent="MainMargin/MainLayout" unique_id=425598982]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="RowsContainer" type="GridContainer" parent="MainMargin/MainLayout/GridArea" unique_id=805481506]
+layout_mode = 2
+theme_override_constants/h_separation = 20
+theme_override_constants/v_separation = 20
+columns = 4
+
+[node name="AbilityRow1" parent="MainMargin/MainLayout/GridArea/RowsContainer" unique_id=983147876 instance=ExtResource("2_row")]
+ability_id = "spread_shot"
+
+[node name="AbilityRow2" parent="MainMargin/MainLayout/GridArea/RowsContainer" unique_id=2033099954 instance=ExtResource("2_row")]
+ability_id = "ricochet"
+
+[node name="AbilityRow3" parent="MainMargin/MainLayout/GridArea/RowsContainer" unique_id=2112244565 instance=ExtResource("2_row")]
+ability_id = "freeze_round"
+
+[node name="AbilityRow4" parent="MainMargin/MainLayout/GridArea/RowsContainer" unique_id=2134996650 instance=ExtResource("2_row")]
+ability_id = "piercing_shot"
+
+[node name="AbilityRow5" parent="MainMargin/MainLayout/GridArea/RowsContainer" unique_id=678928303 instance=ExtResource("2_row")]
+ability_id = "ability_5"
+
+[node name="AbilityRow6" parent="MainMargin/MainLayout/GridArea/RowsContainer" unique_id=188292557 instance=ExtResource("2_row")]
+ability_id = "ability_6"
+
+[node name="AbilityRow7" parent="MainMargin/MainLayout/GridArea/RowsContainer" unique_id=1110831331 instance=ExtResource("2_row")]
+ability_id = "ability_7"
+
+[node name="AbilityRow8" parent="MainMargin/MainLayout/GridArea/RowsContainer" unique_id=1429888782 instance=ExtResource("2_row")]
+ability_id = "ability_8"
+
+[node name="FooterLabel" type="Label" parent="MainMargin/MainLayout" unique_id=1098776656]
+layout_mode = 2
+text = "One ability equipped per mission, no stacking"
+horizontal_alignment = 1
+
+[connection signal="pressed" from="MainMargin/MainLayout/TopBar/BackButton" to="." method="_on_back_button_pressed"]

@@ -2,12 +2,12 @@
 
 | | |
 |---|---|
-| **Team** | Dead Keys (solo for Milestone 1; open to recruits from the design presentation) |
-| **Members & roles** | @danganroma (design lead · tech lead · art lead · producer) |
+| **Team** | Dead Keys (solo for Milestone 1; team of four from Milestone 2) |
+| **Members & roles** | Romart Danganan (design lead, lead programmer, producer, integration and testing); William Johnston (enemies, wave spawning, pooling); Nicole Lai (progression, gold and save, word lists); Josiah Natanielu (mistake and combo systems, audio) |
 | **Engine / platform** | Godot 4.7 / Windows, Linux (primary), macOS (secondary) |
 | **Repo** | https://gitlab.ecs.vuw.ac.nz/course-work/cgra359/2026/assignments/danganroma/dead-keys |
-| **Doc version** | v1.1 |
-| **Last updated** | 39/07/2026 |
+| **Doc version** | v1.3 |
+| **Last updated** | 26/09/2026 |
 
 ## Changelog
 
@@ -19,6 +19,8 @@
 | v0.9 | 2026-07-15 | Large review and edits to logic and game mechanics: Call Supply moved Q→RMB, ammo tiers now scale bullet count only (not type), added mistake-system accessibility toggle, unified combo/kill-streak into one Combo counter, added Permanent Upgrade Tracks table (§2.6.1); locked scope to a single upgradeable weapon (multi-weapon flagged as deferred stretch idea); removed player-position-based supply drop and zombie-collision crate removal; removed on-screen player-character framing (no player model), simplified help-system tooltips, added word-label overlap/priority rule | Romart Danganan |
 | v1.0 | 2026-07-22 | Retouched Call Supply from RMB→Nums(1 to 3) and added enemy types to scope | Romart Danganan |
 | v1.1 | 2026-07-29 | Refined the Main Menu and Home Base design: added replaceable illustrated logo/background placeholders, gold display, upgrade/supply/ability panels, reusable illustrated mission cards, sequential mission locking, selected-mission details with best medal, and navigation back to the Main Menu. Removed XP from the hub design because XP is not part of the progression model. | Romart Danganan |
+| v1.2 | 2026-08-24 | Milestone 2/3 documentation sync (#16, overdue from Milestone 2). Updated MoSCoW table statuses and milestone references to match the actual sprint schedule (`milestone2.md`) instead of the original week numbers. Added concrete Mission Supplies crate effects (§2.2.4) now that they're implemented, including the Emergency Crate redesign from jam-clear to a wall damage reduction plus partial ammo refill (originally scoped as jam-clear in issue #29, changed after review found clearing a jam took about as long as typing the crate's own word). Documented that a Supply is consumed the moment its call is made, not only on a successful claim, an implementation decision made during #29. Filled in Magazine Capacity's per-level values (§2.6.1), left blank in the original table. Updated §10 to reflect that GUT unit testing (#34) is implemented, not just planned. | Romart Danganan |
+| v1.3 | 2026-09-26 | Sprint 5 documentation sync (#51). Header updated to list the full team. MoSCoW statuses updated to match `dev`: all four launch abilities done (#24, #36, #37, #38), gold/save and permanent upgrades done (#25, #26), Walker, Runner and Medic done (#11, #27, #39) with Brute still open (#30), Mission 1 done (#42) with Mission 2 open (#31), Mistake-system toggle built in the Settings menu (#46, in review). Added rows for the Pause menu, Settings menu and audio system. §2.8 and §7 now separate what a player can actually change in the Settings menu from options that are deferred past Milestone 3 (word-difficulty assist, typing-speed assist, colourblind palette, screen-shake/flash, subtitle size, hold-to-fire). §2.8 save model updated to match what ProgressionManager actually persists. Ammo reward now scales with word length as §2.2.1 always specified (#50), so no rule change was needed there. | Romart Danganan |
 ---
 
 # 1. Page One - The Core
@@ -86,18 +88,21 @@ Stylised, slightly cartoonish 2D top-down, closer to Plants vs. Zombies than Lef
 
 | Feature | Priority | Milestone | Owner | Status |
 |---|---|---|---|---|
-| TypingController + AmmoSystem | Must | Prototype (wk 3-5) | Romart Danganan | not started |
-| Manual aim/fire + mistake system | Must | Prototype (wk 3-5) | Romart Danganan | not started |
-| Home base, shop, ProgressionManager | Should | Vertical slice (wk 6-8) | Romart Danganan | not started |
-| Ability loadout system (4 abilities) | Should | Vertical slice (wk 6-8) | Romart Danganan | not started |
-| Mission Supplies system | Should | Vertical slice (wk 6-8) | Romart Danganan | not started |
-| Missions 1-3 + first boss | Should | Vertical slice (wk 6-8) | Romart Danganan | not started |
-| First 4 enemy types (Walker, Runner, Brute, Medic) | Should | Vertical slice (wk 6-8) | Romart Danganan | not started |
-| Mistake-system accessibility toggle | Could | Vertical slice (wk 6-8) | Romart Danganan | not started |
-| Remaining 4 enemy types (Spitter, Exploder, Commander, Armoured) | Could | Final (wk 9-10) | Romart Danganan | not started |
-| Remaining 4 abilities | Could | Final (wk 9-10) | Romart Danganan | not started |
-| Missions 4-6 + second boss | Could | Final (wk 9-10) | Romart Danganan | not started |
-| Mission rating / medals | Could | Final (wk 9-10) | Romart Danganan | not started |
+| TypingController + AmmoSystem | Must | Milestone 2 | Romart Danganan | done (word-length ammo scaling added in #50) |
+| Manual aim/fire + mistake system | Must | Milestone 2 | Romart Danganan, Josiah Natanielu | done |
+| Home base, shop, ProgressionManager | Should | Milestone 3 | Romart Danganan, Nicole Lai | done (Upgrade Shop #25, gold/save #26, Mission Supplies #29); mission unlock wiring in progress (#32) |
+| Ability loadout system (4 abilities) | Should | Milestone 3 | Romart Danganan | done (Spread Shot #24, Ricochet #36, Freeze Round #37, Piercing Shot #38) |
+| Mission Supplies system | Should | Milestone 3 | Romart Danganan | done (#29) |
+| Missions 1-3 + first boss | Should | Milestone 3 | Romart Danganan | in progress (Mission 1 done #42; Mission 2 not started #31; Mission 3 and boss not started) |
+| First 4 enemy types (Walker, Runner, Brute, Medic) | Should | Milestone 3 | William Johnston | in progress (Walker #11, Runner #27, Medic #39 done; Brute not started #30) |
+| Pause menu | Should | Milestone 3 | Romart Danganan | done (#44) |
+| Settings menu (volume, display, controls) | Should | Milestone 3 | Romart Danganan, Josiah Natanielu | in review (#46) |
+| Audio / SFX and music | Should | Milestone 3 | Josiah Natanielu | in progress (#40, foundation and music merged) |
+| Mistake-system accessibility toggle | Could | Milestone 3 | Romart Danganan | in review (built as part of #46) |
+| Remaining 4 enemy types (Spitter, Exploder, Commander, Armoured) | Could | Final | William Johnston | not started (Commander scoped in #30) |
+| Remaining 4 abilities | Could | Final | Romart Danganan | not started |
+| Missions 4-6 + second boss | Could | Final | Romart Danganan | not started |
+| Mission rating / medals | Could | Final | Romart Danganan | not started (best-medal label on mission cards is a placeholder) |
 | Multiple purchasable weapons | Won't (this trimester) | - | - | deferred stretch idea |
 | Online multiplayer | Won't | - | - | non-goal |
 | Controller support | Won't | - | - | non-goal |
@@ -147,8 +152,19 @@ Stylised, slightly cartoonish 2D top-down, closer to Plants vs. Zombies than Lef
 ### 2.2.4 Mission Supplies System
 
 - **Intent:** pillar 2 (secondary layer) plus an ongoing coin sink (§2.6).
-- **Rules:** before a mission, coins purchase Supplies (Ammo Crate, Medical Crate, Combat Crate, Emergency Crate); up to 3 purchased supplies are placed into numbered HUD slots 1-3 for that mission, with one supply in each occupied slot. Pressing the number key that matches a supply's HUD icon triggers that specific helicopter drop; the crate lands at a designated supply-drop landing spot (a fixed point per arena) after a 3 s flight. A word then appears above the crate; the player has 8 seconds to type it before the crate expires and is removed. A successful type opens it immediately and consumes the selected supply, leaving that numbered slot empty. Only one crate can be active at a time; another supply cannot be activated while a crate is live and unclaimed.
+- **Rules:** before a mission, coins purchase Supplies (Ammo Crate, Medical Crate, Combat Crate, Emergency Crate); up to 3 purchased supplies are placed into numbered HUD slots 1-3 for that mission, with one supply in each occupied slot. Pressing the number key that matches a supply's HUD icon triggers that specific helicopter drop; the crate lands at a designated supply-drop landing spot (a fixed point per arena) after a 3 s flight. A word then appears above the crate; the player has 8 seconds to type it before the crate expires and is removed. A successful type opens it immediately and applies the crate's effect. Only one crate can be active at a time; another supply cannot be activated while a crate is live and unclaimed.
   *Design note: the crate's landing point was originally described as "within 4 m of the player's position" - but there is no on-screen player character to anchor that to (§4.3), so it's now a fixed designated drop spot per arena instead. The earlier rule where a zombie colliding with the crate also removed it has been cut; the 8 s timer alone is enough pressure without adding a second failure state.*
+  *Design note (added in implementation, #29): a Supply's numbered slot empties the moment its call is made (the number key is pressed), not only on a successful claim. This was chosen over the strictly claim-only version originally implied above, since "pressing the key is the commitment" is a simpler mental model, matches the existing "activation is player-triggered" framing below, and avoids a case where a missed crate leaves the player unsure whether their supply is still available.*
+- **Crate effects:**
+
+  | Crate | Effect |
+  |---|---|
+  | Ammo Crate | Refills ammunition to maximum capacity |
+  | Medical Crate | Repairs the wall for 50% of its maximum health |
+  | Combat Crate | +50% bullet damage for the rest of the mission |
+  | Emergency Crate | Reduces wall damage taken by 50% for 15 seconds, and refills 50% of maximum ammunition |
+
+  *Design note (#29): the Emergency Crate was originally scoped as an instant jam-clear plus full ammo refill. Changed after review: typing the crate's own word takes about as long as the jam it would be clearing, so the effect barely mattered in practice. The wall-damage-reduction version gives it a distinct niche (a "breathing room" panic button) rather than overlapping with the Ammo Crate. Exact numbers (50%/15s/50%) are a first-pass balance choice, not playtested yet.*
 - **Edge cases:** pressing a number whose supply slot is empty does nothing, and its HUD icon remains visibly empty. Pressing another occupied supply slot while a crate is already active also does nothing. Supplies are never lost for a mission ending early, since activation is player-triggered rather than scheduled (this preserves the original pitch's core insight about player agency).
 
 ![Fig. 6: Mission Supplies drop sequence](images/fig6_supply_drop.png)
@@ -205,7 +221,7 @@ The game ships with **one weapon** (see §1.6 non-goals), so weapon progression 
 |---|---|---|---|---|
 | Fire Rate | Weapon | 2.0 → 2.5 → 3.0 → 4.0 shots/s | 3 | 150 / 250 / 400 |
 | Bullet Damage | Weapon | +2 dmg/hit per level (10 base) | 3 | 150 / 300 / 500 |
-| Magazine Capacity | Weapon | Raises max stored ammo | 3 | 100 / 200 / 350 |
+| Magazine Capacity | Weapon | 8 → 12 → 16 → 20 max ammo | 3 | 100 / 200 / 350 |
 | Fortified Wall | Base | +25 max wall health per level | 3 | 100 / 200 / 350 |
 | Extra Life | Base | +1 life (starts at 1, caps at 3) | 2 | 300 / 500 |
 | Jam Duration | Base | Jam length 2.0s → 1.5s → 1.0s | 2 | 150 / 250 |
@@ -220,7 +236,7 @@ Missions unlock linearly: complete mission N to unlock N+1, no branching. Diffic
 
 ## 2.8 Game options, saving, replay
 
-Save model: checkpoint-based, one checkpoint per completed mission, persisting coins, unlocked equipment, and each mission's best medal. There is no mid-mission save; abandoning a mission mid-run does not bank partial coin earnings, which stays consistent with the Mission Supplies design (progress only banks on completion, never on an interrupted attempt). Options: word-difficulty assist, typing-speed assist (extends crate expiry time and the combo window), mistake-system toggle (disables bullet loss and jam on incorrect keystrokes, see §2.2.2), master/music/SFX volume sliders, colourblind-safe palette toggle, screen-shake and flash toggle. No cheats or easter eggs planned this trimester (see non-goals).
+Save model: checkpoint-based, one checkpoint per completed mission, persisting coins, purchased upgrade levels, owned abilities, and the highest unlocked mission (each mission's best medal will be added once mission ratings exist). There is no mid-mission save; abandoning a mission mid-run does not bank partial coin earnings, which stays consistent with the Mission Supplies design (progress only banks on completion, never on an interrupted attempt). Options in the Settings menu (#46): master/music/SFX volume sliders, mistake-system toggle (disables bullet loss and jam on incorrect keystrokes, see §2.2.2), windowed/fullscreen and resolution, and rebinding for Fire and the three supply slots. Settings save separately from progression. Deferred past Milestone 3 and not in the build: word-difficulty assist, typing-speed assist (would extend crate expiry time and the combo window), colourblind-safe palette toggle, screen-shake and flash toggle. These were cut from the Settings menu during #46 rather than shipped as toggles that do nothing. No cheats or easter eggs planned this trimester (see non-goals).
 
 ---
 
@@ -315,11 +331,11 @@ A "How to Play" page in the pause menu, plus the on-screen callouts already comm
 
 ## 7. Controls & Accessibility - owner: Romart Danganan
 
-- Full input remapping: **yes** for aim, fire, and the three supply-slot actions. **No** for the typing keys themselves, since they must match the displayed word exactly; this is flagged as a known accessibility limitation, mitigated by the word-difficulty, typing-speed, and mistake-system toggle assist options below rather than remapping. The default supply inputs are number keys 1-3 so they do not conflict with letter-based word typing.
-- Hold-to-toggle alternative for Fire: **yes**, once the higher fire-rate weapon upgrade is unlocked.
+- Full input remapping: **yes** for fire and the three supply-slot actions (Settings menu Controls tab, #46); aim is the mouse itself so there is nothing to remap. **No** for the typing keys themselves, since they must match the displayed word exactly; this is flagged as a known accessibility limitation, mitigated by the mistake-system toggle rather than remapping. The default supply inputs are number keys 1-3 so they do not conflict with letter-based word typing.
+- Hold-to-toggle alternative for Fire: **deferred**, not in the Milestone 3 build.
 - Colour is never the only information channel: **yes**, enemy types are differentiated by silhouette and word-label border colour together, and the palette is checked for colour-blindness.
-- Subtitle size/contrast options: **yes**, for on-screen callouts. Screen-shake and flash toggles: **yes**.
-- Difficulty options framed as player choice (assist modes), not shame: **yes**, word-difficulty assist, typing-speed assist, and the mistake-system toggle (§2.2.2, §2.8) are all named as such.
+- Subtitle size/contrast options: **deferred**. Screen-shake and flash toggles: **deferred** (the game has no screen shake or flash effects yet, so there is nothing to toggle).
+- Difficulty options framed as player choice (assist modes), not shame: **yes**, the mistake-system toggle (§2.2.2, §2.8) is named as an assist option. Word-difficulty and typing-speed assists are deferred (see §2.8).
 - Text size minimum: **16 pt at 1080p** for floating word labels, larger than typical UI text since they must be read at a glance mid-combat.
 
 ---
@@ -348,7 +364,7 @@ Stylised, high-contrast 2D top-down, favouring clear silhouettes over horror det
 
 # 10. Technical - owner: Romart Danganan
 
-Engine: Godot 4.7 (GDScript), pinned. Target: Windows and Linux desktop primary, macOS secondary. Minimum spec target is deliberately low, no 3D lighting or large asset streaming, so the game should run on integrated graphics from the last decade. Toolchain: Godot editor, Git/GitLab for version control, and GUT (Godot Unit Test) for planned automated tests (see `Dead_Keys_TechSpec.md`). Automated CI/CD is not currently configured; project validation and testing are performed locally in Godot, with a pipeline considered later if time permits. Data formats: word lists, mission configs, and supply definitions are external `.tres`/JSON resources, not hard-coded, so tuning doesn't require a rebuild. Network requirements: none, see non-goals. Vertical-slice risks to prove early: raw keystroke capture reliability via Godot's `InputEventKey` across keyboard layouts (the entire game depends on this working correctly, so it's the first thing built in Week 3), and HUD performance with 20+ concurrent floating word labels on screen at once.
+Engine: Godot 4.7 (GDScript), pinned. Target: Windows and Linux desktop primary, macOS secondary. Minimum spec target is deliberately low, no 3D lighting or large asset streaming, so the game should run on integrated graphics from the last decade. Toolchain: Godot editor, Git/GitLab for version control, and GUT (Godot Unit Test), implemented (#34), see `Dead_Keys_TechSpec.md` §7 for coverage. Automated CI/CD is not currently configured; project validation and testing are performed locally in Godot, with a pipeline considered later if time permits. Data formats: word lists, mission configs, and supply definitions are external `.tres`/JSON resources, not hard-coded, so tuning doesn't require a rebuild. Network requirements: none, see non-goals. Vertical-slice risks to prove early: raw keystroke capture reliability via Godot's `InputEventKey` across keyboard layouts (the entire game depends on this working correctly, so it's the first thing built in Week 3), and HUD performance with 20+ concurrent floating word labels on screen at once.
 
 ---
 

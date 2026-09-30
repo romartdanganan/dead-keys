@@ -1,0 +1,47 @@
+extends Control
+
+# preload rather than rely on the class_name global (which needs an editor
+# filesystem rescan to register on a fresh checkout / new machine)
+const UpgradeRow := preload("res://scripts/ui/upgrade_row.gd")
+
+@onready var gold_label: Label = $MainMargin/MainLayout/TopBar/GoldPanel/GoldMargin/GoldContent/GoldLabel
+@onready var rows_container: VBoxContainer = (
+	$MainMargin/MainLayout/RowsScroll/RowsContainer
+)
+
+var upgrade_rows: Array[UpgradeRow] = []
+
+
+func _ready() -> void:
+	ProgressionManager.gold_changed.connect(_on_gold_changed)
+	_on_gold_changed(ProgressionManager.get_gold())
+
+	for child in rows_container.get_children():
+		if child is UpgradeRow:
+			upgrade_rows.append(child)
+			child.buy_pressed.connect(_on_row_buy_pressed)
+
+func _input(event):
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+			if get_viewport().gui_get_hovered_control() is Button:
+				Audio.play("click")
+			else:
+				Audio.play("thud",-15)
+
+func _on_gold_changed(new_gold: int) -> void:
+	gold_label.text = "GOLD: %d" % new_gold
+
+
+func _on_row_buy_pressed(track_id: String) -> void:
+	ProgressionManager.purchase_upgrade(track_id)
+	_refresh_all_rows()
+
+
+func _refresh_all_rows() -> void:
+	for row in upgrade_rows:
+		row.refresh()
+
+
+func _on_back_button_pressed() -> void:
+	get_tree().change_scene_to_file("res://scenes/ui/home_base.tscn")

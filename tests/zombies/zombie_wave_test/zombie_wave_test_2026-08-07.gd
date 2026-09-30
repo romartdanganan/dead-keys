@@ -3,7 +3,6 @@ extends Node2D
 @export var enemy_type: EnemyTypeDef = preload("res://resources/enemies/walker.tres")
  
 @onready var wall_target: Marker2D = $WallTarget
-@onready var spawn_points: Array[Marker2D] = [$SpawnPoint1, $SpawnPoint2]
 @onready var status_timer: Timer = $StatusTimer
 
 const TypingControllerScript: Script = preload("res://scripts/typing/typing_controller.gd")
@@ -33,7 +32,6 @@ func _ready() -> void:
 
 	zombie_manager.mission_config = mission
 	zombie_manager.wall_target = wall_target
-	zombie_manager.spawn_points = spawn_points
 
 	zombie_manager.all_waves_cleared.connect(_on_all_waves_cleared)
 	zombie_manager.zombie_spawned.connect(_on_zombie_spawned)
