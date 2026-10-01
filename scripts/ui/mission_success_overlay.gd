@@ -25,10 +25,13 @@ func _display_stats(gold_amount: int) -> void:
 		%.2f Health Remaining"""
 
 func _on_next_mission_pressed() -> void:
+	Audio.play("click")
 	next_mission_requested.emit()
 
 func _on_return_to_hub_pressed() -> void:
+	Audio.play("click")
 	return_home_requested.emit()
 
 func _on_restart_pressed() -> void:
+	Audio.play("click")
 	replay_requested.emit()

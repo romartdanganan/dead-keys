@@ -340,12 +340,14 @@ func _build_mission_config() -> MissionConfigDef:
 	# per #33's upcoming playtest, not tuned solo off one person's speed
 	var wave_1 := WaveEntry.new()
 	wave_1.enemy_type = WALKER_TYPE
-	#wave_1.count = 3
-	#wave_1.spawn_interval = 3.5
-	#wave_1.start_delay = 1.0
-	wave_1.count = 1
-	wave_1.spawn_interval = 1.0
+	wave_1.count = 3
+	wave_1.spawn_interval = 3.5
 	wave_1.start_delay = 1.0
+	
+	# DEBUG PURPOSES
+	#wave_1.count = 1
+	#wave_1.spawn_interval = 1.0
+	#wave_1.start_delay = 1.0
 
 	# wave 2: introduces Runner alongside Walker. two WaveEntry rows sharing
 	# display_wave_number = 2 so the player sees one "WAVE 2" announcement
@@ -385,8 +387,9 @@ func _build_mission_config() -> MissionConfigDef:
 	var mission := MissionConfigDef.new()
 	mission.mission_id = "mission_1"
 	mission.mission_name = "Defend the Suburbs"
-	#mission.waves = [wave_1, wave_2a, wave_2b, wave_3a, wave_3b]
-	mission.waves = [wave_1]
+	mission.waves = [wave_1, wave_2a, wave_2b, wave_3a, wave_3b]
+	# DEBUG PURPOSES
+	# mission.waves = [wave_1]
 	mission.base_coin_reward = 50
 	return mission
 
@@ -466,6 +469,7 @@ func _on_all_waves_cleared() -> void:
 
 func _display_mission_success_overlay() -> void:
 	Audio.clear_music()
+	Audio.play("success")
 	mission_success_overlay = MISSION_SUCCESS_SCENE.instantiate()
 	add_child(mission_success_overlay)
 	
@@ -483,6 +487,7 @@ func _on_mission_success_replay_requested() -> void:
 	mission_success_overlay.queue_free()
 	mission_success_overlay = null
 	get_tree().reload_current_scene()
+	Audio.clear_sounds()
 	Audio.play("play_music")
 
 func _on_mission_success_next_mission_requested() -> void:

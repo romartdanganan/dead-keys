@@ -18,6 +18,7 @@ const SFX: Dictionary = {
 	"wrong_keystroke": preload("res://assets/audio/temp_sounds/freesound_community-wrong-47985.mp3"),
 	"pause": preload("res://assets/audio/temp_sounds/pause.mp3"),
 	"resume": preload("res://assets/audio/temp_sounds/resume.mp3"),
+	"success": preload("res://assets/audio/temp_sounds/victory.mp3"),
 	
 	"game_over": preload("res://assets/audio/temp_sounds/game_over_man.mp3"),
 	"play_music": preload("res://assets/audio/temp_sounds/BossSong.mp3"),
