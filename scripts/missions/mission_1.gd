@@ -480,8 +480,10 @@ func _display_mission_success_overlay() -> void:
 	mission_success_overlay.return_home_requested.connect(_on_mission_success_return_home_requested)
 
 func _on_mission_success_replay_requested() -> void:
-	#TODO: implent replay mission
-	pass
+	mission_success_overlay.queue_free()
+	mission_success_overlay = null
+	get_tree().reload_current_scene()
+	Audio.play("play_music")
 
 func _on_mission_success_next_mission_requested() -> void:
 	#TODO: link to next mission when mission 2 is built (#31)
