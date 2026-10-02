@@ -3,6 +3,10 @@ extends Node2D
 # preload rather than rely on the class_name global (needs an editor rescan
 # to register on a fresh checkout / new machine)
 const AbilityCatalog := preload("res://scripts/resources/ability_catalog.gd")
+const MissionCatalog := preload("res://scripts/resources/mission_catalog.gd")
+
+# later missions extend this script and set their own number in _init()
+var mission_number: int = 1
 
 
 @export var crosshair_texture: Texture2D
@@ -462,6 +466,8 @@ func _spend_life() -> void:
 func _on_all_waves_cleared() -> void:
 	print("Mission complete. Returning to home base.")
 	ProgressionManager.add_gold(zombie_manager.mission_config.base_coin_reward)
+	# completing a mission unlocks the next one
+	ProgressionManager.highest_unlocked = maxi(ProgressionManager.highest_unlocked, mission_number + 1)
 	ProgressionManager.save_progression()
 	
 	_display_mission_success_overlay()
@@ -483,6 +489,10 @@ func _display_mission_success_overlay() -> void:
 	mission_success_overlay.next_mission_requested.connect(_on_mission_success_next_mission_requested)
 	mission_success_overlay.return_home_requested.connect(_on_mission_success_return_home_requested)
 
+	# grey out next mission when the next one hasn't been built yet
+	var next_button: Button = mission_success_overlay.get_node("CenterContainer/MenuPanel/MenuMargin/MenuList/Next Mission")
+	next_button.disabled = not MissionCatalog.has_mission(mission_number + 1)
+
 func _on_mission_success_replay_requested() -> void:
 	mission_success_overlay.queue_free()
 	mission_success_overlay = null
@@ -491,8 +501,16 @@ func _on_mission_success_replay_requested() -> void:
 	Audio.play("play_music")
 
 func _on_mission_success_next_mission_requested() -> void:
-	#TODO: link to next mission when mission 2 is built (#31)
-	pass 
+	var next_path := MissionCatalog.get_scene_path(mission_number + 1)
+	if next_path.is_empty():
+		return
+	mission_success_overlay.queue_free()
+	mission_success_overlay = null
+	# supplies are bought per mission, so skipping home base clears them too
+	SupplyState.clear_loadout()
+	Audio.clear_music()
+	Audio.play("play_music")
+	get_tree().change_scene_to_file(next_path)
 
 func _on_mission_success_return_home_requested() -> void:
 	mission_success_overlay.queue_free()
