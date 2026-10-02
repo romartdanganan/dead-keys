@@ -44,6 +44,11 @@ const FROZEN_TINT: Color = Color(0.55, 0.8, 1.0)
 # attacking rather than always dropping back to APPROACH
 var _state_before_freeze: State = State.APPROACH
 
+# smooth knockback, velocity eases to zero over KNOCKBACK_DURATION
+const KNOCKBACK_DURATION: float = 0.3
+var _knockback_remaining: float = 0.0
+var _knockback_start_velocity: Vector2 = Vector2.ZERO
+
 func _ready() -> void:
 	attack_timer.timeout.connect(_on_attack_timer_timeout)
 	add_to_group("zombies")
@@ -59,6 +64,8 @@ func setup(type: EnemyTypeDef, wall: Node2D) -> void:
 	_time_alive = 0.0
 	_support_target = null
 	_support_log_accumulator = 0.0
+	# pooled zombies must not keep sliding from a previous life
+	_knockback_remaining = 0.0
 	velocity = Vector2.ZERO
 	visible = true
 	set_physics_process(true)
@@ -93,6 +100,11 @@ func _apply_visual_identity() -> void:
 	word_label.add_theme_stylebox_override("normal", label_style)
 
 func _physics_process(delta: float) -> void:
+	# a knockback slide overrides normal movement until it finishes
+	if _knockback_remaining > 0.0:
+		_process_knockback(delta)
+		_time_alive += delta
+		return
 	if current_state == State.APPROACH:
 		_process_approach(delta)
 	elif current_state == State.SUPPORT:
@@ -224,12 +236,23 @@ func _on_freeze_timer_timeout() -> void:
 func apply_knockback(offset: Vector2) -> void:
 	if current_state == State.DEAD:
 		return
-	global_position += offset
+	# start fast and ease to a stop, total slide distance equals offset
+	_knockback_start_velocity = offset * 2.0 / KNOCKBACK_DURATION
+	_knockback_remaining = KNOCKBACK_DURATION
 	if current_state == State.ATTACK:
 		_enter_state(State.APPROACH)
 	# a frozen attacker should approach again once the freeze ends
 	elif current_state == State.FROZEN and _state_before_freeze == State.ATTACK:
 		_state_before_freeze = State.APPROACH
+
+func _process_knockback(delta: float) -> void:
+	var step := minf(delta, _knockback_remaining)
+	# midpoint speed of this step keeps the total slide distance exact
+	velocity = _knockback_start_velocity * ((_knockback_remaining - step * 0.5) / KNOCKBACK_DURATION)
+	global_position += velocity * step
+	_knockback_remaining -= step
+	if _knockback_remaining <= 0.0:
+		velocity = Vector2.ZERO
 
 func take_damage(amount: float) -> bool:
 	if current_state == State.DEAD:

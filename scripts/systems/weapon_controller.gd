@@ -33,7 +33,8 @@ const FREEZE_ROUND_DURATION: float = 2.5
 const FREEZE_ROUND_RADIUS: float = 140.0
 
 # new ability tuning, first-pass numbers for playtesting
-const EXPLOSIVE_ROUND_RADIUS: float = 120.0
+# bigger radius since zombies spread out from 360 spawning
+const EXPLOSIVE_ROUND_RADIUS: float = 200.0
 const EXPLOSIVE_ROUND_SPLASH_MULTIPLIER: int = 2
 const HEAVY_ROUND_DAMAGE_MULTIPLIER: int = 5
 const SHOCKWAVE_ROUND_RADIUS: float = 120.0

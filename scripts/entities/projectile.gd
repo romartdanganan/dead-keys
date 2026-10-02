@@ -38,6 +38,11 @@ var shockwave_knockback: float = 0.0
 # how fast a homing shot turns towards its target
 const HOMING_TURN_RATE: float = 10.0
 
+# visual ring for explosion and shockwave radius
+const IMPACT_RING_EFFECT := preload("res://scripts/effects/impact_ring_effect.gd")
+const EXPLOSION_COLOUR: Color = Color(1.0, 0.5, 0.1)
+const SHOCKWAVE_COLOUR: Color = Color(0.5, 0.85, 1.0)
+
 
 func _ready() -> void:
 	lifetime_remaining = maximum_lifetime
@@ -141,6 +146,7 @@ func _apply_freeze_round(hit_zombie: Zombie) -> void:
 
 # damages every live zombie within explosion_radius of the impact
 func _apply_explosion() -> void:
+	_spawn_impact_ring(explosion_radius, EXPLOSION_COLOUR, true)
 	if zombie_manager == null:
 		return
 	# duplicate since a kill can change the active list mid-loop
@@ -153,6 +159,7 @@ func _apply_explosion() -> void:
 
 # pushes every live zombie in range along the shot direction
 func _apply_shockwave() -> void:
+	_spawn_impact_ring(shockwave_radius, SHOCKWAVE_COLOUR, false)
 	if zombie_manager == null:
 		return
 	var push := direction * shockwave_knockback
@@ -161,6 +168,27 @@ func _apply_shockwave() -> void:
 			continue
 		if zombie.global_position.distance_to(global_position) <= shockwave_radius:
 			zombie.apply_knockback(push)
+
+
+# effect is added to the projectile's parent since the projectile frees itself
+func _spawn_impact_ring(radius: float, colour: Color, show_sparks: bool) -> void:
+	var parent := get_parent()
+	if parent == null:
+		return
+	var effect := IMPACT_RING_EFFECT.new()
+	effect.radius = radius
+	effect.colour = colour
+	effect.show_sparks = show_sparks
+	effect.position = parent.to_local(global_position)
+	parent.add_child.call_deferred(effect)
+
+
+# true if any part of the zombie's sprite is inside the camera view
+func _is_on_screen(zombie: Zombie) -> bool:
+	var viewport := get_viewport()
+	var view_rect := viewport.get_canvas_transform().affine_inverse() * viewport.get_visible_rect()
+	var sprite_rect := zombie.sprite.global_transform * zombie.sprite.get_rect()
+	return view_rect.intersects(sprite_rect)
 
 
 # turns the shot towards the nearest unhit zombie a bit each frame
@@ -183,8 +211,10 @@ func _find_next_ricochet_target() -> Zombie:
 	var nearest_distance: float = INF
 
 	for zombie: Zombie in zombie_manager.active_zombies:
-		# skip already hit or dead zombies, shared by ricochet and homing
+		# skip already hit, dead or off-screen zombies, shared by ricochet and homing
 		if zombie in _hit_zombies or zombie.current_state == Zombie.State.DEAD:
+			continue
+		if not _is_on_screen(zombie):
 			continue
 		var distance := global_position.distance_to(zombie.global_position)
 		if distance < nearest_distance:
