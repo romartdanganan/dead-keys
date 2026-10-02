@@ -21,12 +21,32 @@ func before_each() -> void:
 	zombie.setup(WALKER_TYPE, wall)
 
 
-func test_knockback_moves_zombie_by_offset() -> void:
+func test_knockback_slides_instead_of_teleporting() -> void:
 	zombie.global_position = Vector2(500, 0)
 
 	zombie.apply_knockback(Vector2(-150, 0))
 
-	assert_eq(zombie.global_position, Vector2(350, 0))
+	# nothing moves until physics frames run the slide
+	assert_eq(zombie.global_position, Vector2(500, 0))
+
+
+func test_knockback_slides_the_full_offset() -> void:
+	# frozen so normal approach movement can't add to the distance
+	zombie.apply_freeze(2.0)
+	zombie.global_position = Vector2(500, 0)
+
+	zombie.apply_knockback(Vector2(-150, 0))
+	await wait_seconds(0.5)
+
+	assert_almost_eq(zombie.global_position.x, 350.0, 2.0)
+
+
+func test_pool_reuse_clears_a_leftover_knockback() -> void:
+	zombie.apply_knockback(Vector2(-150, 0))
+
+	zombie.setup(WALKER_TYPE, wall)
+
+	assert_eq(zombie._knockback_remaining, 0.0)
 
 
 func test_knockback_sends_attacking_zombie_back_to_approach() -> void:
