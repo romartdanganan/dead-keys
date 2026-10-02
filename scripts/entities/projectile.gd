@@ -26,6 +26,18 @@ var is_freeze_round: bool = false
 var freeze_duration: float = 0.0
 var freeze_radius: float = 0.0
 
+# new ability flags, normal shots leave these off
+var is_explosive: bool = false
+var explosion_radius: float = 0.0
+var explosion_damage: int = 0
+var is_homing: bool = false
+var is_shockwave: bool = false
+var shockwave_radius: float = 0.0
+var shockwave_knockback: float = 0.0
+
+# how fast a homing shot turns towards its target
+const HOMING_TURN_RATE: float = 10.0
+
 
 func _ready() -> void:
 	lifetime_remaining = maximum_lifetime
@@ -36,6 +48,10 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	# homing shot bends its direction before moving
+	if is_homing:
+		_steer_towards_nearest_zombie(delta)
+
 	# move projectile frame-independently using physics delta
 	global_position += direction * speed * delta
 
@@ -87,6 +103,12 @@ func _try_damage_target(target: Node) -> void:
 	if is_freeze_round and target is Zombie:
 		_apply_freeze_round(target)
 
+	# explosion and shockwave both centre on the impact point
+	if is_explosive and target is Zombie:
+		_apply_explosion()
+	if is_shockwave and target is Zombie:
+		_apply_shockwave()
+
 	if bounces_remaining > 0:
 		var next_target := _find_next_ricochet_target()
 		if next_target != null:
@@ -112,8 +134,43 @@ func _apply_freeze_round(hit_zombie: Zombie) -> void:
 	for zombie: Zombie in zombie_manager.active_zombies:
 		if zombie == hit_zombie:
 			continue
-		if zombie.global_position.distance_to(hit_zombie.global_position) <= freeze_radius:
+		# measure from the bullet, a killed pooled zombie is moved off-screen
+		if zombie.global_position.distance_to(global_position) <= freeze_radius:
 			zombie.apply_freeze(freeze_duration)
+
+
+# damages every live zombie within explosion_radius of the impact
+func _apply_explosion() -> void:
+	if zombie_manager == null:
+		return
+	# duplicate since a kill can change the active list mid-loop
+	for zombie: Zombie in zombie_manager.active_zombies.duplicate():
+		if zombie.current_state == Zombie.State.DEAD:
+			continue
+		if zombie.global_position.distance_to(global_position) <= explosion_radius:
+			zombie.take_damage(explosion_damage)
+
+
+# pushes every live zombie in range along the shot direction
+func _apply_shockwave() -> void:
+	if zombie_manager == null:
+		return
+	var push := direction * shockwave_knockback
+	for zombie: Zombie in zombie_manager.active_zombies.duplicate():
+		if zombie.current_state == Zombie.State.DEAD:
+			continue
+		if zombie.global_position.distance_to(global_position) <= shockwave_radius:
+			zombie.apply_knockback(push)
+
+
+# turns the shot towards the nearest unhit zombie a bit each frame
+func _steer_towards_nearest_zombie(delta: float) -> void:
+	var target := _find_next_ricochet_target()
+	if target == null:
+		return
+	var desired := global_position.direction_to(target.global_position)
+	direction = direction.lerp(desired, clampf(HOMING_TURN_RATE * delta, 0.0, 1.0)).normalized()
+	rotation = direction.angle()
 
 
 # nearest not-yet-hit active zombie, used by Ricochet (#36) to pick the next
@@ -126,7 +183,8 @@ func _find_next_ricochet_target() -> Zombie:
 	var nearest_distance: float = INF
 
 	for zombie: Zombie in zombie_manager.active_zombies:
-		if zombie in _hit_zombies:
+		# skip already hit or dead zombies, shared by ricochet and homing
+		if zombie in _hit_zombies or zombie.current_state == Zombie.State.DEAD:
 			continue
 		var distance := global_position.distance_to(zombie.global_position)
 		if distance < nearest_distance:

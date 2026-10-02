@@ -220,6 +220,17 @@ func _on_freeze_timer_timeout() -> void:
 	sprite.modulate = Color.WHITE
 	_enter_state(_state_before_freeze)
 
+# moves the zombie by offset, a pushed attacker goes back to approaching
+func apply_knockback(offset: Vector2) -> void:
+	if current_state == State.DEAD:
+		return
+	global_position += offset
+	if current_state == State.ATTACK:
+		_enter_state(State.APPROACH)
+	# a frozen attacker should approach again once the freeze ends
+	elif current_state == State.FROZEN and _state_before_freeze == State.ATTACK:
+		_state_before_freeze = State.APPROACH
+
 func take_damage(amount: float) -> bool:
 	if current_state == State.DEAD:
 		return false

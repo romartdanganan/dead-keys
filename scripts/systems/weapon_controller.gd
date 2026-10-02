@@ -32,6 +32,13 @@ const RICOCHET_BOUNCE_COUNT: int = 2
 const FREEZE_ROUND_DURATION: float = 2.5
 const FREEZE_ROUND_RADIUS: float = 140.0
 
+# new ability tuning, first-pass numbers for playtesting
+const EXPLOSIVE_ROUND_RADIUS: float = 120.0
+const EXPLOSIVE_ROUND_SPLASH_MULTIPLIER: int = 2
+const HEAVY_ROUND_DAMAGE_MULTIPLIER: int = 5
+const SHOCKWAVE_ROUND_RADIUS: float = 120.0
+const SHOCKWAVE_ROUND_KNOCKBACK: float = 150.0
+
 # inject dependencies from the main game scene
 func configure(
 	new_ammo_system: AmmoSystem,
@@ -101,6 +108,23 @@ func try_fire(target_position: Vector2) -> bool:
 		_fire_freeze_round(target_position)
 		AbilityState.consume_charge()
 		Audio.play("shoot")
+	# four new abilities, same charge-consume pattern as above
+	elif AbilityState.equipped_ability_id == "explosive_round" and AbilityState.is_charged:
+		_fire_explosive_round(target_position)
+		AbilityState.consume_charge()
+		Audio.play("shoot")
+	elif AbilityState.equipped_ability_id == "heavy_round" and AbilityState.is_charged:
+		_fire_heavy_round(target_position)
+		AbilityState.consume_charge()
+		Audio.play("shoot")
+	elif AbilityState.equipped_ability_id == "homing_shot" and AbilityState.is_charged:
+		_fire_homing_shot(target_position)
+		AbilityState.consume_charge()
+		Audio.play("shoot")
+	elif AbilityState.equipped_ability_id == "shockwave_round" and AbilityState.is_charged:
+		_fire_shockwave_round(target_position)
+		AbilityState.consume_charge()
+		Audio.play("shoot")
 	else:
 		_spawn_projectile(target_position)
 		Audio.play("shoot")
@@ -139,6 +163,42 @@ func _fire_freeze_round(target_position: Vector2) -> void:
 	projectile.is_freeze_round = true
 	projectile.freeze_duration = FREEZE_ROUND_DURATION
 	projectile.freeze_radius = FREEZE_ROUND_RADIUS
+
+
+func _fire_explosive_round(target_position: Vector2) -> void:
+	var projectile := _spawn_projectile(target_position)
+	if projectile == null:
+		return
+	projectile.zombie_manager = zombie_manager
+	projectile.is_explosive = true
+	projectile.explosion_radius = EXPLOSIVE_ROUND_RADIUS
+	projectile.explosion_damage = bullet_damage * EXPLOSIVE_ROUND_SPLASH_MULTIPLIER
+
+
+func _fire_heavy_round(target_position: Vector2) -> void:
+	var projectile := _spawn_projectile(target_position)
+	if projectile == null:
+		return
+	# overrides the normal damage _spawn_projectile already set
+	projectile.damage = bullet_damage * HEAVY_ROUND_DAMAGE_MULTIPLIER
+
+
+func _fire_homing_shot(target_position: Vector2) -> void:
+	var projectile := _spawn_projectile(target_position)
+	if projectile == null:
+		return
+	projectile.zombie_manager = zombie_manager
+	projectile.is_homing = true
+
+
+func _fire_shockwave_round(target_position: Vector2) -> void:
+	var projectile := _spawn_projectile(target_position)
+	if projectile == null:
+		return
+	projectile.zombie_manager = zombie_manager
+	projectile.is_shockwave = true
+	projectile.shockwave_radius = SHOCKWAVE_ROUND_RADIUS
+	projectile.shockwave_knockback = SHOCKWAVE_ROUND_KNOCKBACK
 
 
 func _spawn_projectile(target_position: Vector2) -> Projectile:
