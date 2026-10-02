@@ -30,6 +30,8 @@ var _support_log_accumulator: float = 0.0
 @onready var freeze_timer: Timer = $FreezeTimer
 @onready var sprite: Sprite2D = $ZombieSprite2D
 @onready var zombie_sprite: Sprite2D = $ZombieSprite2D
+# sprite size set in zombie.tscn, per-type silhouette scale multiplies on top
+@onready var _base_sprite_scale: Vector2 = $ZombieSprite2D.scale
 @onready var word_label: RichTextLabel = $WordLabel
 
 const WALL_CONTACT_DISTANCE: float = 8.0
@@ -81,7 +83,7 @@ func _draw() -> void:
 func _apply_visual_identity() -> void:
 	if enemy_type == null:
 		return
-	zombie_sprite.scale = enemy_type.silhouette_scale
+	zombie_sprite.scale = _base_sprite_scale * enemy_type.silhouette_scale
 	zombie_sprite.modulate = enemy_type.silhouette_modulate
 	var label_style := StyleBoxFlat.new()
 	label_style.bg_color = Color(0.02, 0.02, 0.02, 0.75)
