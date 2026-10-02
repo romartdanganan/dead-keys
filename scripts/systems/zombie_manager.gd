@@ -84,7 +84,9 @@ func _run_next_wave() -> void:
 		_spawn_zombie(wave.enemy_type)
 		if i < wave.count - 1 and wave.spawn_interval > 0.0:
 			await get_tree().create_timer(wave.spawn_interval, false).timeout
-	await _wait_for_all_zombies_to_clear()
+	# entries flagged not to wait let the next batch join this one
+	if wave.wait_for_clear:
+		await _wait_for_all_zombies_to_clear()
 	_run_next_wave()
 
 func _wait_for_all_zombies_to_clear() -> void:
