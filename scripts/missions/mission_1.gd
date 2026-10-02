@@ -51,7 +51,12 @@ var pause_menu: PauseMenu = null
 const SETTINGS_MENU_SCENE := preload("res://scenes/ui/settings_menu.tscn")
 var settings_menu: Node = null
 
+const MissionSuccess := preload("res://scripts/ui/mission_success_overlay.gd")
+const MISSION_SUCCESS_SCENE := preload("res://scenes/ui/mission_success_overlay.tscn")
+var mission_success_overlay: MissionSuccess = null
+
 var zombie_manager: ZombieManager
+var kill_count := 0
 
 # base wall HP, overridden by the Fortified Wall upgrade (#25) in _ready()
 var WALL_MAX_HEALTH: float = 100.0
@@ -338,6 +343,11 @@ func _build_mission_config() -> MissionConfigDef:
 	wave_1.count = 3
 	wave_1.spawn_interval = 3.5
 	wave_1.start_delay = 1.0
+	
+	# DEBUG PURPOSES
+	#wave_1.count = 1
+	#wave_1.spawn_interval = 1.0
+	#wave_1.start_delay = 1.0
 
 	# wave 2: introduces Runner alongside Walker. two WaveEntry rows sharing
 	# display_wave_number = 2 so the player sees one "WAVE 2" announcement
@@ -349,11 +359,10 @@ func _build_mission_config() -> MissionConfigDef:
 	wave_2a.count = 2
 	wave_2a.spawn_interval = 3.0
 	wave_2a.start_delay = 2.5
-	wave_2a.display_wave_number = 2
-
+	
 	var wave_2b := WaveEntry.new()
 	wave_2b.enemy_type = RUNNER_TYPE
-	wave_2b.count = 2
+	wave_2b.count = 1
 	wave_2b.spawn_interval = 2.5
 	wave_2b.start_delay = 1.5
 	wave_2b.display_wave_number = 2
@@ -379,6 +388,8 @@ func _build_mission_config() -> MissionConfigDef:
 	mission.mission_id = "mission_1"
 	mission.mission_name = "Defend the Suburbs"
 	mission.waves = [wave_1, wave_2a, wave_2b, wave_3a, wave_3b]
+	# DEBUG PURPOSES
+	# mission.waves = [wave_1]
 	mission.base_coin_reward = 50
 	return mission
 
@@ -419,6 +430,7 @@ func _on_zombie_spawned(spawned_zombie: Zombie) -> void:
 		spawned_zombie.wall_contact.connect(mistake_system.combo_reset)
 
 func _on_zombie_died(dead_zombie: Zombie) -> void:
+	kill_count += 1
 	typing_controller.unregister_target(dead_zombie)
 
 func _on_zombie_damaged(damaged_zombie: Zombie) -> void:
@@ -451,8 +463,41 @@ func _on_all_waves_cleared() -> void:
 	print("Mission complete. Returning to home base.")
 	ProgressionManager.add_gold(zombie_manager.mission_config.base_coin_reward)
 	ProgressionManager.save_progression()
-	return_to_home_base()
+	
+	_display_mission_success_overlay()
 
+
+func _display_mission_success_overlay() -> void:
+	Audio.clear_music()
+	Audio.play("success")
+	mission_success_overlay = MISSION_SUCCESS_SCENE.instantiate()
+	add_child(mission_success_overlay)
+	
+	mission_success_overlay.stats.text = """
+		+%d Gold
+		Zombies killed: %d
+		Health Remaining: %.2f
+		""" % [zombie_manager.mission_config.base_coin_reward, kill_count, wall_health_bar.value]
+	
+	mission_success_overlay.replay_requested.connect(_on_mission_success_replay_requested)
+	mission_success_overlay.next_mission_requested.connect(_on_mission_success_next_mission_requested)
+	mission_success_overlay.return_home_requested.connect(_on_mission_success_return_home_requested)
+
+func _on_mission_success_replay_requested() -> void:
+	mission_success_overlay.queue_free()
+	mission_success_overlay = null
+	get_tree().reload_current_scene()
+	Audio.clear_sounds()
+	Audio.play("play_music")
+
+func _on_mission_success_next_mission_requested() -> void:
+	#TODO: link to next mission when mission 2 is built (#31)
+	pass 
+
+func _on_mission_success_return_home_requested() -> void:
+	mission_success_overlay.queue_free()
+	mission_success_overlay = null
+	return_to_home_base()
 
 
 func _on_pause_menu_return_home_requested() -> void:
@@ -462,7 +507,7 @@ func _on_pause_menu_return_home_requested() -> void:
 	return_to_home_base()
 
 func _open_pause_menu() -> void:
-	if pause_menu != null:
+	if pause_menu or mission_success_overlay != null:
 		return
 
 	Audio.play("pause")
