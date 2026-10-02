@@ -1,37 +1,18 @@
 extends GutTest
 
 # checks gold and mission unlocks survive a save and reload, like closing the game
-# backs up the real save file first so running tests never wipes progress
 
-var _had_save: bool = false
-var _save_backup: PackedByteArray
-var _state_backup: Dictionary
+const ProgressionBackup := preload("res://tests/helpers/progression_backup.gd")
+
+var _backup := ProgressionBackup.new()
 
 
 func before_each() -> void:
-	_had_save = FileAccess.file_exists(ProgressionManager.SAVE_PATH)
-	if _had_save:
-		_save_backup = FileAccess.get_file_as_bytes(ProgressionManager.SAVE_PATH)
-	_state_backup = {
-		"gold": ProgressionManager.gold,
-		"highest_unlocked": ProgressionManager.highest_unlocked,
-		"upgrade_levels": ProgressionManager.upgrade_levels.duplicate(),
-		"owned_abilities": ProgressionManager.owned_abilities.duplicate(),
-	}
+	_backup.backup()
 
 
 func after_each() -> void:
-	# put the player's real save and in-memory state back
-	if _had_save:
-		var file := FileAccess.open(ProgressionManager.SAVE_PATH, FileAccess.WRITE)
-		file.store_buffer(_save_backup)
-		file.close()
-	elif FileAccess.file_exists(ProgressionManager.SAVE_PATH):
-		DirAccess.remove_absolute(ProjectSettings.globalize_path(ProgressionManager.SAVE_PATH))
-	ProgressionManager.gold = _state_backup.gold
-	ProgressionManager.highest_unlocked = _state_backup.highest_unlocked
-	ProgressionManager.upgrade_levels = _state_backup.upgrade_levels
-	ProgressionManager.owned_abilities = _state_backup.owned_abilities
+	_backup.restore()
 
 
 func test_unlocked_mission_survives_save_and_reload() -> void:
@@ -53,3 +34,16 @@ func test_gold_survives_save_and_reload() -> void:
 	ProgressionManager.load_progression()
 
 	assert_eq(ProgressionManager.gold, 125)
+
+
+func test_owned_abilities_and_upgrades_survive_save_and_reload() -> void:
+	ProgressionManager.owned_abilities = {"spread_shot": true, "ricochet": true}
+	ProgressionManager.upgrade_levels = {"fire_rate": 2}
+	ProgressionManager.save_progression()
+
+	ProgressionManager.owned_abilities = {"spread_shot": true}
+	ProgressionManager.upgrade_levels = {}
+	ProgressionManager.load_progression()
+
+	assert_true(ProgressionManager.is_ability_owned("ricochet"))
+	assert_eq(ProgressionManager.get_upgrade_level("fire_rate"), 2)
