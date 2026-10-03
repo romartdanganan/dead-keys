@@ -139,16 +139,16 @@ ability_id = "freeze_round"
 ability_id = "piercing_shot"
 
 [node name="AbilityRow5" parent="MainMargin/MainLayout/GridArea/RowsContainer" unique_id=678928303 instance=ExtResource("2_row")]
-ability_id = "ability_5"
+ability_id = "explosive_round"
 
 [node name="AbilityRow6" parent="MainMargin/MainLayout/GridArea/RowsContainer" unique_id=188292557 instance=ExtResource("2_row")]
-ability_id = "ability_6"
+ability_id = "heavy_round"
 
 [node name="AbilityRow7" parent="MainMargin/MainLayout/GridArea/RowsContainer" unique_id=1110831331 instance=ExtResource("2_row")]
-ability_id = "ability_7"
+ability_id = "homing_shot"
 
 [node name="AbilityRow8" parent="MainMargin/MainLayout/GridArea/RowsContainer" unique_id=1429888782 instance=ExtResource("2_row")]
-ability_id = "ability_8"
+ability_id = "shockwave_round"
 
 [node name="FooterLabel" type="Label" parent="MainMargin/MainLayout" unique_id=1098776656]
 layout_mode = 2

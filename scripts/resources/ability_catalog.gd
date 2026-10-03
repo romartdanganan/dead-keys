@@ -33,10 +33,35 @@ const ABILITIES: Array[Dictionary] = [
 		"implemented": true,
 		"cost": 200,
 	},
-	{"id": "ability_5", "display_name": "LOCKED", "description": "Coming in a future sprint.", "implemented": false, "cost": 0},
-	{"id": "ability_6", "display_name": "LOCKED", "description": "Coming in a future sprint.", "implemented": false, "cost": 0},
-	{"id": "ability_7", "display_name": "LOCKED", "description": "Coming in a future sprint.", "implemented": false, "cost": 0},
-	{"id": "ability_8", "display_name": "LOCKED", "description": "Coming in a future sprint.", "implemented": false, "cost": 0},
+	# replaces the four locked placeholder slots
+	{
+		"id": "explosive_round",
+		"display_name": "Explosive Round",
+		"description": "Next shot after Combo charges explodes on impact, damaging every zombie in a small radius.",
+		"implemented": true,
+		"cost": 200,
+	},
+	{
+		"id": "heavy_round",
+		"display_name": "Heavy Round",
+		"description": "Next shot after Combo charges deals 5x damage to the zombie it hits.",
+		"implemented": true,
+		"cost": 200,
+	},
+	{
+		"id": "homing_shot",
+		"display_name": "Homing Shot",
+		"description": "Next shot after Combo charges curves towards the nearest zombie.",
+		"implemented": true,
+		"cost": 200,
+	},
+	{
+		"id": "shockwave_round",
+		"display_name": "Shockwave Round",
+		"description": "Next shot after Combo charges knocks the hit zombie and nearby zombies back.",
+		"implemented": true,
+		"cost": 200,
+	},
 ]
 
 
