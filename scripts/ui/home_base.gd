@@ -23,15 +23,10 @@ extends Control
 	/MissionDetailsMargin/MissionDetails/BestMedalLabel
 )
 
-@onready var mission_grid: GridContainer = (
+@onready var mission_1_card: MissionCard = (
 	$MainMargin/MainLayout/HubContent/MissionArea
-	/MissionTable/MissionGrid
+	/MissionTable/MissionGrid/Mission1Card
 )
-
-const MissionCatalog := preload("res://scripts/resources/mission_catalog.gd")
-
-var mission_cards: Array[MissionCard] = []
-var selected_card: MissionCard = null
 
 const SETTINGS_MENU_SCENE := preload("res://scenes/ui/settings_menu.tscn")
 var settings_menu: Node = null
@@ -46,7 +41,7 @@ func _ready() -> void:
 		Audio.play("main_music")
 	else:
 		Audio.play("main_music")
-	_setup_mission_cards()
+	_show_mission_details(mission_1_card)
 	ProgressionManager.gold_changed.connect(_on_gold_changed)
 	_on_gold_changed(ProgressionManager.get_gold())
 
@@ -76,25 +71,11 @@ func _on_settings_menu_closed() -> void:
 	settings_menu = null
 
 
-# unlocks every built mission the player has reached, then selects the latest
-func _setup_mission_cards() -> void:
-	for child in mission_grid.get_children():
-		if child is MissionCard:
-			mission_cards.append(child)
-			var unlocked: bool = child.mission_id <= ProgressionManager.highest_unlocked and MissionCatalog.has_mission(child.mission_id)
-			child.locked = not unlocked
-			child._update_card()
-			child.pressed.connect(_show_mission_details.bind(child))
-
-	var latest_card: MissionCard = mission_cards[0]
-	for card in mission_cards:
-		if not card.locked and card.mission_id > latest_card.mission_id:
-			latest_card = card
-	_show_mission_details(latest_card)
+func _on_mission_1_card_pressed() -> void:
+	_show_mission_details(mission_1_card)
 
 
 func _show_mission_details(card: MissionCard) -> void:
-	selected_card = card
 	mission_title_label.text = "%d. %s" % [
 		card.mission_id,
 		card.mission_name
@@ -110,8 +91,7 @@ func _show_mission_details(card: MissionCard) -> void:
 func _on_launch_mission_button_pressed() -> void:
 	Audio.clear_music()
 	Audio.play("play_music")
-	# launches whichever unlocked mission card is selected
-	get_tree().change_scene_to_file(MissionCatalog.get_scene_path(selected_card.mission_id))
+	get_tree().change_scene_to_file("res://scenes/missions/mission_1.tscn")
 
 
 func _on_upgrades_button_pressed() -> void:

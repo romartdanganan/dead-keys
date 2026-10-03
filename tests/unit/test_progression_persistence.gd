@@ -1,6 +1,6 @@
 extends GutTest
 
-# checks gold and mission unlocks survive a save and reload, like closing the game
+# checks gold, abilities and upgrades survive a save and reload, like closing the game
 
 const ProgressionBackup := preload("res://tests/helpers/progression_backup.gd")
 
@@ -13,17 +13,6 @@ func before_each() -> void:
 
 func after_each() -> void:
 	_backup.restore()
-
-
-func test_unlocked_mission_survives_save_and_reload() -> void:
-	ProgressionManager.highest_unlocked = 2
-	ProgressionManager.save_progression()
-
-	# simulates a fresh launch where memory starts back at the default
-	ProgressionManager.highest_unlocked = 1
-	ProgressionManager.load_progression()
-
-	assert_eq(ProgressionManager.highest_unlocked, 2)
 
 
 func test_gold_survives_save_and_reload() -> void:

@@ -466,8 +466,6 @@ func _spend_life() -> void:
 func _on_all_waves_cleared() -> void:
 	print("Mission complete. Returning to home base.")
 	ProgressionManager.add_gold(zombie_manager.mission_config.base_coin_reward)
-	# completing a mission unlocks the next one
-	ProgressionManager.highest_unlocked = maxi(ProgressionManager.highest_unlocked, mission_number + 1)
 	ProgressionManager.save_progression()
 	
 	_display_mission_success_overlay()
