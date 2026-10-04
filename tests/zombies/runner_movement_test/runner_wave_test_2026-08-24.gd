@@ -3,7 +3,6 @@ extends Node2D
 @export var walker_enemy_type: EnemyTypeDef = preload("res://resources/enemies/walker.tres")
 @export var runner_enemy_type: EnemyTypeDef = preload("res://resources/enemies/runner.tres")
 
-@onready var spawn_points: Array[Marker2D] = [$World/SpawnPointLeft, $World/SpawnPointRight]
 @onready var wall_target: Marker2D = $World/WallTarget
 @onready var status_timer: Timer = $StatusTimer
 @onready var ammo_system: AmmoSystem = $World/AmmoSystem
@@ -61,7 +60,6 @@ func _start_mission() -> void:
 	add_child(zombie_manager)
 	zombie_manager.mission_config = mission
 	zombie_manager.wall_target = wall_target
-	zombie_manager.spawn_points = spawn_points
 	zombie_manager.all_waves_cleared.connect(_on_all_waves_cleared)
 	zombie_manager.zombie_spawned.connect(_on_zombie_spawned)
 	zombie_manager.start_mission()

@@ -14,3 +14,7 @@ class_name WaveEntry
 # -1 (default) means auto: this entry gets its own announcement number,
 # unchanged from the original single-type-per-wave behaviour
 @export var display_wave_number: int = -1
+
+# false lets the next entry start once this one has finished spawning,
+# so different enemy types can be on screen together
+@export var wait_for_clear: bool = true

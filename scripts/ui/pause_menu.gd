@@ -8,6 +8,10 @@ signal resume_requested
 # and the actual scene change so this menu stays reusable across missions
 signal return_home_requested
 
+# emitted on Settings, the owning mission instances the Settings menu (#46),
+# same delegation as the two signals above
+signal settings_requested
+
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
@@ -21,3 +25,7 @@ func _on_resume_button_pressed() -> void:
 
 func _on_return_home_button_pressed() -> void:
 	return_home_requested.emit()
+
+
+func _on_settings_button_pressed() -> void:
+	settings_requested.emit()

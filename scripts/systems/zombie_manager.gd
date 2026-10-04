@@ -9,7 +9,8 @@ signal wave_started(wave_number: int, is_final_wave: bool)
 
 @export var mission_config: MissionConfigDef
 @export var wall_target: Node2D
-@export var spawn_points: Array[Marker2D] = []
+
+const SPAWN_MARGIN: float = 100.0
 
 var zombie_scene: PackedScene = preload("res://scenes/entities/zombie.tscn")
 var active_zombies: Array[Zombie] = []
@@ -83,7 +84,9 @@ func _run_next_wave() -> void:
 		_spawn_zombie(wave.enemy_type)
 		if i < wave.count - 1 and wave.spawn_interval > 0.0:
 			await get_tree().create_timer(wave.spawn_interval, false).timeout
-	await _wait_for_all_zombies_to_clear()
+	# entries flagged not to wait let the next batch join this one
+	if wave.wait_for_clear:
+		await _wait_for_all_zombies_to_clear()
 	_run_next_wave()
 
 func _wait_for_all_zombies_to_clear() -> void:
@@ -93,19 +96,25 @@ func _wait_for_all_zombies_to_clear() -> void:
 		await get_tree().process_frame
 
 func _spawn_zombie(type: EnemyTypeDef) -> void:
-	if spawn_points.is_empty():
-		push_warning("ZombieManager: no spawn points assigned")
+	if wall_target == null:
+		push_warning("ZombieManager: no wall/base target assigned")
 		return
+	
 	var zombie: Zombie = _pool.acquire()
-	var spawn_point: Marker2D = spawn_points[randi() % spawn_points.size()]
-	# small random offset so zombies reusing the same spawn point don't walk
-	# the exact same line and visually stack on top of each other, since
-	# there's no separation/flocking behaviour between zombies yet (GDD §8.1)
-	var spawn_jitter := Vector2(randf_range(-35.0, 35.0), randf_range(-15.0, 15.0))
-	zombie.global_position = spawn_point.global_position + spawn_jitter
+	
+	var viewport_size: Vector2 = get_viewport_rect().size
+	var viewport_half_size := viewport_size * 0.5
+	var spawn_radius: float = viewport_half_size.length() + SPAWN_MARGIN
+	var spawn_angle: float = randf_range(0.0, TAU)
+	var spawn_direction := Vector2.RIGHT.rotated(spawn_angle)
+	
+	zombie.global_position = ( wall_target.global_position + spawn_direction * spawn_radius)
+	
 	zombie.is_pooled = true
+	
 	if not zombie.died.is_connected(_on_zombie_died):
 		zombie.died.connect(_on_zombie_died)
+	
 	zombie.setup(type, wall_target)
 	active_zombies.append(zombie)
 	zombie_spawned.emit(zombie)

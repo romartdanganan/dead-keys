@@ -2,12 +2,12 @@
 
 | | |
 |---|---|
-| **Team** | Dead Keys (solo for Milestone 1; open to recruits from the design presentation) |
-| **Members & roles** | @danganroma (design lead · tech lead · art lead · producer) |
+| **Team** | Dead Keys (solo for Milestone 1; team of four from Milestone 2) |
+| **Members & roles** | Romart Danganan (design lead, lead programmer, producer, integration and testing); William Johnston (enemies, wave spawning, pooling); Nicole Lai (progression, gold and save, word lists); Josiah Natanielu (mistake and combo systems, audio) |
 | **Engine / platform** | Godot 4.7 / Windows, Linux (primary), macOS (secondary) |
 | **Repo** | https://gitlab.ecs.vuw.ac.nz/course-work/cgra359/2026/assignments/danganroma/dead-keys |
-| **Doc version** | v1.2 |
-| **Last updated** | 24/08/2026 |
+| **Doc version** | v1.3 |
+| **Last updated** | 26/09/2026 |
 
 ## Changelog
 
@@ -20,6 +20,7 @@
 | v1.0 | 2026-07-22 | Retouched Call Supply from RMB→Nums(1 to 3) and added enemy types to scope | Romart Danganan |
 | v1.1 | 2026-07-29 | Refined the Main Menu and Home Base design: added replaceable illustrated logo/background placeholders, gold display, upgrade/supply/ability panels, reusable illustrated mission cards, sequential mission locking, selected-mission details with best medal, and navigation back to the Main Menu. Removed XP from the hub design because XP is not part of the progression model. | Romart Danganan |
 | v1.2 | 2026-08-24 | Milestone 2/3 documentation sync (#16, overdue from Milestone 2). Updated MoSCoW table statuses and milestone references to match the actual sprint schedule (`milestone2.md`) instead of the original week numbers. Added concrete Mission Supplies crate effects (§2.2.4) now that they're implemented, including the Emergency Crate redesign from jam-clear to a wall damage reduction plus partial ammo refill (originally scoped as jam-clear in issue #29, changed after review found clearing a jam took about as long as typing the crate's own word). Documented that a Supply is consumed the moment its call is made, not only on a successful claim, an implementation decision made during #29. Filled in Magazine Capacity's per-level values (§2.6.1), left blank in the original table. Updated §10 to reflect that GUT unit testing (#34) is implemented, not just planned. | Romart Danganan |
+| v1.3 | 2026-09-26 | Sprint 5 documentation sync (#51). Header updated to list the full team. MoSCoW statuses updated to match `dev`: all four launch abilities done (#24, #36, #37, #38), gold/save and permanent upgrades done (#25, #26), Walker, Runner and Medic done (#11, #27, #39) with Brute still open (#30), Mission 1 done (#42) with Mission 2 open (#31), Mistake-system toggle built in the Settings menu (#46, in review). Added rows for the Pause menu, Settings menu and audio system. §2.8 and §7 now separate what a player can actually change in the Settings menu from options that are deferred past Milestone 3 (word-difficulty assist, typing-speed assist, colourblind palette, screen-shake/flash, subtitle size, hold-to-fire). §2.8 save model updated to match what ProgressionManager actually persists. Ammo reward now scales with word length as §2.2.1 always specified (#50), so no rule change was needed there. | Romart Danganan |
 ---
 
 # 1. Page One - The Core
@@ -87,18 +88,21 @@ Stylised, slightly cartoonish 2D top-down, closer to Plants vs. Zombies than Lef
 
 | Feature | Priority | Milestone | Owner | Status |
 |---|---|---|---|---|
-| TypingController + AmmoSystem | Must | Milestone 2 | Romart Danganan | done |
+| TypingController + AmmoSystem | Must | Milestone 2 | Romart Danganan | done (word-length ammo scaling added in #50) |
 | Manual aim/fire + mistake system | Must | Milestone 2 | Romart Danganan, Josiah Natanielu | done |
-| Home base, shop, ProgressionManager | Should | Milestone 3 | Romart Danganan, Nicole Lai | in progress (Upgrade Shop and Mission Supplies shop done, #25/#29; gold/save persistence in progress, #26) |
-| Ability loadout system (4 abilities) | Should | Milestone 3 | Romart Danganan | in progress (framework and Spread Shot done, #24; remaining 3 of 4 not started) |
+| Home base, shop, ProgressionManager | Should | Milestone 3 | Romart Danganan, Nicole Lai | done (Upgrade Shop #25, gold/save #26, Mission Supplies #29); mission unlock wiring in progress (#32) |
+| Ability loadout system (4 abilities) | Should | Milestone 3 | Romart Danganan | done (Spread Shot #24, Ricochet #36, Freeze Round #37, Piercing Shot #38) |
 | Mission Supplies system | Should | Milestone 3 | Romart Danganan | done (#29) |
-| Missions 1-3 + first boss | Should | Milestone 3 | Romart Danganan | not started |
-| First 4 enemy types (Walker, Runner, Brute, Medic) | Should | Milestone 3 | William Johnston | in progress (Walker done; Runner in review, #27; Brute and Medic not started) |
-| Mistake-system accessibility toggle | Could | Milestone 3 | Romart Danganan | not started |
-| Remaining 4 enemy types (Spitter, Exploder, Commander, Armoured) | Could | Milestone 3 | William Johnston | not started |
-| Remaining 4 abilities | Could | Milestone 3 | Romart Danganan | not started |
-| Missions 4-6 + second boss | Could | Milestone 3 | Romart Danganan | not started |
-| Mission rating / medals | Could | Milestone 3 | Romart Danganan | not started |
+| Missions 1-3 + first boss | Should | Milestone 3 | Romart Danganan | in progress (Mission 1 done #42; Mission 2 not started #31; Mission 3 and boss not started) |
+| First 4 enemy types (Walker, Runner, Brute, Medic) | Should | Milestone 3 | William Johnston | in progress (Walker #11, Runner #27, Medic #39 done; Brute not started #30) |
+| Pause menu | Should | Milestone 3 | Romart Danganan | done (#44) |
+| Settings menu (volume, display, controls) | Should | Milestone 3 | Romart Danganan, Josiah Natanielu | in review (#46) |
+| Audio / SFX and music | Should | Milestone 3 | Josiah Natanielu | in progress (#40, foundation and music merged) |
+| Mistake-system accessibility toggle | Could | Milestone 3 | Romart Danganan | in review (built as part of #46) |
+| Remaining 4 enemy types (Spitter, Exploder, Commander, Armoured) | Could | Final | William Johnston | not started (Commander scoped in #30) |
+| Remaining 4 abilities | Could | Final | Romart Danganan | not started |
+| Missions 4-6 + second boss | Could | Final | Romart Danganan | not started |
+| Mission rating / medals | Could | Final | Romart Danganan | not started (best-medal label on mission cards is a placeholder) |
 | Multiple purchasable weapons | Won't (this trimester) | - | - | deferred stretch idea |
 | Online multiplayer | Won't | - | - | non-goal |
 | Controller support | Won't | - | - | non-goal |
@@ -232,7 +236,7 @@ Missions unlock linearly: complete mission N to unlock N+1, no branching. Diffic
 
 ## 2.8 Game options, saving, replay
 
-Save model: checkpoint-based, one checkpoint per completed mission, persisting coins, unlocked equipment, and each mission's best medal. There is no mid-mission save; abandoning a mission mid-run does not bank partial coin earnings, which stays consistent with the Mission Supplies design (progress only banks on completion, never on an interrupted attempt). Options: word-difficulty assist, typing-speed assist (extends crate expiry time and the combo window), mistake-system toggle (disables bullet loss and jam on incorrect keystrokes, see §2.2.2), master/music/SFX volume sliders, colourblind-safe palette toggle, screen-shake and flash toggle. No cheats or easter eggs planned this trimester (see non-goals).
+Save model: checkpoint-based, one checkpoint per completed mission, persisting coins, purchased upgrade levels, owned abilities, and the highest unlocked mission (each mission's best medal will be added once mission ratings exist). There is no mid-mission save; abandoning a mission mid-run does not bank partial coin earnings, which stays consistent with the Mission Supplies design (progress only banks on completion, never on an interrupted attempt). Options in the Settings menu (#46): master/music/SFX volume sliders, mistake-system toggle (disables bullet loss and jam on incorrect keystrokes, see §2.2.2), windowed/fullscreen and resolution, and rebinding for Fire and the three supply slots. Settings save separately from progression. Deferred past Milestone 3 and not in the build: word-difficulty assist, typing-speed assist (would extend crate expiry time and the combo window), colourblind-safe palette toggle, screen-shake and flash toggle. These were cut from the Settings menu during #46 rather than shipped as toggles that do nothing. No cheats or easter eggs planned this trimester (see non-goals).
 
 ---
 
@@ -327,11 +331,11 @@ A "How to Play" page in the pause menu, plus the on-screen callouts already comm
 
 ## 7. Controls & Accessibility - owner: Romart Danganan
 
-- Full input remapping: **yes** for aim, fire, and the three supply-slot actions. **No** for the typing keys themselves, since they must match the displayed word exactly; this is flagged as a known accessibility limitation, mitigated by the word-difficulty, typing-speed, and mistake-system toggle assist options below rather than remapping. The default supply inputs are number keys 1-3 so they do not conflict with letter-based word typing.
-- Hold-to-toggle alternative for Fire: **yes**, once the higher fire-rate weapon upgrade is unlocked.
+- Full input remapping: **yes** for fire and the three supply-slot actions (Settings menu Controls tab, #46); aim is the mouse itself so there is nothing to remap. **No** for the typing keys themselves, since they must match the displayed word exactly; this is flagged as a known accessibility limitation, mitigated by the mistake-system toggle rather than remapping. The default supply inputs are number keys 1-3 so they do not conflict with letter-based word typing.
+- Hold-to-toggle alternative for Fire: **deferred**, not in the Milestone 3 build.
 - Colour is never the only information channel: **yes**, enemy types are differentiated by silhouette and word-label border colour together, and the palette is checked for colour-blindness.
-- Subtitle size/contrast options: **yes**, for on-screen callouts. Screen-shake and flash toggles: **yes**.
-- Difficulty options framed as player choice (assist modes), not shame: **yes**, word-difficulty assist, typing-speed assist, and the mistake-system toggle (§2.2.2, §2.8) are all named as such.
+- Subtitle size/contrast options: **deferred**. Screen-shake and flash toggles: **deferred** (the game has no screen shake or flash effects yet, so there is nothing to toggle).
+- Difficulty options framed as player choice (assist modes), not shame: **yes**, the mistake-system toggle (§2.2.2, §2.8) is named as an assist option. Word-difficulty and typing-speed assists are deferred (see §2.8).
 - Text size minimum: **16 pt at 1080p** for floating word labels, larger than typical UI text since they must be read at a glance mid-combat.
 
 ---

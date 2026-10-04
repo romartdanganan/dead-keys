@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://bqw8ofd2qlgpe"]
+
+[ext_resource type="Script" uid="uid://bcac2gjqjekpy" path="res://tests/zombies/360_directional_movement_test/directional_movement_test_28_09_2026.gd" id="1_test"]
+
+[node name="DirectionalMovementTest28092026" type="Node2D" unique_id=583704346]
+script = ExtResource("1_test")
+
+[node name="ArenaCenter" type="Marker2D" parent="." unique_id=640585499]
+position = Vector2(640, 360)

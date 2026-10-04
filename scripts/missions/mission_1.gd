@@ -3,6 +3,10 @@ extends Node2D
 # preload rather than rely on the class_name global (needs an editor rescan
 # to register on a fresh checkout / new machine)
 const AbilityCatalog := preload("res://scripts/resources/ability_catalog.gd")
+const MissionCatalog := preload("res://scripts/resources/mission_catalog.gd")
+
+# later missions extend this script and set their own number in _init()
+var mission_number: int = 1
 
 
 @export var crosshair_texture: Texture2D
@@ -27,7 +31,6 @@ const RUNNER_TYPE: EnemyTypeDef = preload("res://resources/enemies/runner.tres")
 @onready var mistake_system: MistakeSystem = $MistakeSystem
 @onready var ability_name_label: Label = $HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent/AbilitySection/AbilityNameLabel
 @onready var projectile_container: Node2D = $World/ProjectileContainer
-@onready var spawn_points: Array[Marker2D] = [$World/EnemySpawnArea/SpawnLeftBoundary, $World/EnemySpawnArea/SpawnCentreGuide, $World/EnemySpawnArea/SpawnRightBoundary]
 @onready var wall_target: Marker2D = $World/WallAttackLine
 @onready var status_timer: Timer = $StatusTimer
 @onready var supply_landing_point: Marker2D = $World/SupplyLandingPoint
@@ -47,7 +50,17 @@ const PauseMenu := preload("res://scripts/ui/pause_menu.gd")
 const PAUSE_MENU_SCENE := preload("res://scenes/ui/pause_menu.tscn")
 var pause_menu: PauseMenu = null
 
+# Settings menu (#46), instanced here rather than by PauseMenu itself so it
+# stays reusable across missions, same reasoning as PauseMenu's own signals
+const SETTINGS_MENU_SCENE := preload("res://scenes/ui/settings_menu.tscn")
+var settings_menu: Node = null
+
+const MissionSuccess := preload("res://scripts/ui/mission_success_overlay.gd")
+const MISSION_SUCCESS_SCENE := preload("res://scenes/ui/mission_success_overlay.tscn")
+var mission_success_overlay: MissionSuccess = null
+
 var zombie_manager: ZombieManager
+var kill_count := 0
 
 # base wall HP, overridden by the Fortified Wall upgrade (#25) in _ready()
 var WALL_MAX_HEALTH: float = 100.0
@@ -112,12 +125,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		_open_pause_menu()
 		return
 
-	# check for left mouse click and attempt to fire weapon toward cursor
-	if (
-		event is InputEventMouseButton
-		and event.button_index == MOUSE_BUTTON_LEFT
-		and event.pressed
-	):
+	# check for fire action (default left click, rebindable via Settings)
+	if event.is_action_pressed("fire"):
 		weapon_controller.try_fire(get_global_mouse_position())
 
 	# debug inputs to manually manipulate ammo system
@@ -306,7 +315,6 @@ func _start_mission() -> void:
 	add_child(zombie_manager)
 	zombie_manager.mission_config = mission
 	zombie_manager.wall_target = wall_target
-	zombie_manager.spawn_points = spawn_points
 	zombie_manager.all_waves_cleared.connect(_on_all_waves_cleared)
 	zombie_manager.zombie_spawned.connect(_on_zombie_spawned)
 	zombie_manager.wave_started.connect(_on_wave_started)
@@ -339,6 +347,11 @@ func _build_mission_config() -> MissionConfigDef:
 	wave_1.count = 3
 	wave_1.spawn_interval = 3.5
 	wave_1.start_delay = 1.0
+	
+	# DEBUG PURPOSES
+	#wave_1.count = 1
+	#wave_1.spawn_interval = 1.0
+	#wave_1.start_delay = 1.0
 
 	# wave 2: introduces Runner alongside Walker. two WaveEntry rows sharing
 	# display_wave_number = 2 so the player sees one "WAVE 2" announcement
@@ -350,11 +363,10 @@ func _build_mission_config() -> MissionConfigDef:
 	wave_2a.count = 2
 	wave_2a.spawn_interval = 3.0
 	wave_2a.start_delay = 2.5
-	wave_2a.display_wave_number = 2
-
+	
 	var wave_2b := WaveEntry.new()
 	wave_2b.enemy_type = RUNNER_TYPE
-	wave_2b.count = 2
+	wave_2b.count = 1
 	wave_2b.spawn_interval = 2.5
 	wave_2b.start_delay = 1.5
 	wave_2b.display_wave_number = 2
@@ -380,6 +392,8 @@ func _build_mission_config() -> MissionConfigDef:
 	mission.mission_id = "mission_1"
 	mission.mission_name = "Defend the Suburbs"
 	mission.waves = [wave_1, wave_2a, wave_2b, wave_3a, wave_3b]
+	# DEBUG PURPOSES
+	# mission.waves = [wave_1]
 	mission.base_coin_reward = 50
 	return mission
 
@@ -420,6 +434,7 @@ func _on_zombie_spawned(spawned_zombie: Zombie) -> void:
 		spawned_zombie.wall_contact.connect(mistake_system.combo_reset)
 
 func _on_zombie_died(dead_zombie: Zombie) -> void:
+	kill_count += 1
 	typing_controller.unregister_target(dead_zombie)
 
 func _on_zombie_damaged(damaged_zombie: Zombie) -> void:
@@ -452,8 +467,53 @@ func _on_all_waves_cleared() -> void:
 	print("Mission complete. Returning to home base.")
 	ProgressionManager.add_gold(zombie_manager.mission_config.base_coin_reward)
 	ProgressionManager.save_progression()
-	return_to_home_base()
+	
+	_display_mission_success_overlay()
 
+
+func _display_mission_success_overlay() -> void:
+	Audio.clear_music()
+	Audio.play("success")
+	mission_success_overlay = MISSION_SUCCESS_SCENE.instantiate()
+	add_child(mission_success_overlay)
+	
+	mission_success_overlay.stats.text = """
+		+%d Gold
+		Zombies killed: %d
+		Health Remaining: %.2f
+		""" % [zombie_manager.mission_config.base_coin_reward, kill_count, wall_health_bar.value]
+	
+	mission_success_overlay.replay_requested.connect(_on_mission_success_replay_requested)
+	mission_success_overlay.next_mission_requested.connect(_on_mission_success_next_mission_requested)
+	mission_success_overlay.return_home_requested.connect(_on_mission_success_return_home_requested)
+
+	# grey out next mission when the next one hasn't been built yet
+	var next_button: Button = mission_success_overlay.get_node("CenterContainer/MenuPanel/MenuMargin/MenuList/Next Mission")
+	next_button.disabled = not MissionCatalog.has_mission(mission_number + 1)
+
+func _on_mission_success_replay_requested() -> void:
+	mission_success_overlay.queue_free()
+	mission_success_overlay = null
+	get_tree().reload_current_scene()
+	Audio.clear_sounds()
+	Audio.play("play_music")
+
+func _on_mission_success_next_mission_requested() -> void:
+	var next_path := MissionCatalog.get_scene_path(mission_number + 1)
+	if next_path.is_empty():
+		return
+	mission_success_overlay.queue_free()
+	mission_success_overlay = null
+	# supplies are bought per mission, so skipping home base clears them too
+	SupplyState.clear_loadout()
+	Audio.clear_music()
+	Audio.play("play_music")
+	get_tree().change_scene_to_file(next_path)
+
+func _on_mission_success_return_home_requested() -> void:
+	mission_success_overlay.queue_free()
+	mission_success_overlay = null
+	return_to_home_base()
 
 
 func _on_pause_menu_return_home_requested() -> void:
@@ -463,7 +523,7 @@ func _on_pause_menu_return_home_requested() -> void:
 	return_to_home_base()
 
 func _open_pause_menu() -> void:
-	if pause_menu != null:
+	if pause_menu or mission_success_overlay != null:
 		return
 
 	Audio.play("pause")
@@ -471,6 +531,7 @@ func _open_pause_menu() -> void:
 	add_child(pause_menu)
 	pause_menu.resume_requested.connect(_on_pause_menu_resume_requested)
 	pause_menu.return_home_requested.connect(_on_pause_menu_return_home_requested)
+	pause_menu.settings_requested.connect(_on_pause_menu_settings_requested)
 	get_tree().paused = true
 
 func _on_pause_menu_resume_requested() -> void:
@@ -478,6 +539,21 @@ func _on_pause_menu_resume_requested() -> void:
 	Audio.play("resume")
 	pause_menu.queue_free()
 	pause_menu = null
+
+
+func _on_pause_menu_settings_requested() -> void:
+	# stacks on top of the still-open, still-paused PauseMenu rather than
+	# replacing it, SettingsMenu's higher layer (11 vs 10) draws it on top
+	if settings_menu != null:
+		return
+	settings_menu = SETTINGS_MENU_SCENE.instantiate()
+	add_child(settings_menu)
+	settings_menu.closed.connect(_on_settings_menu_closed)
+
+
+func _on_settings_menu_closed() -> void:
+	settings_menu.queue_free()
+	settings_menu = null
 
 func return_to_home_base() -> void:
 	# Supplies are repurchased every mission per GDD §2.6, not persistent

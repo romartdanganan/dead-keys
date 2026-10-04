@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://g6g0kt1agk30"]
+
+[ext_resource type="Script" uid="uid://bonxlfua063k0" path="res://tests/zombies/medic_healing_test/medic_healing_test_2026-09-17.gd" id="1_gpsfh"]
+[ext_resource type="Script" uid="uid://dooywlfphubj7" path="res://scripts/systems/ammo_system.gd" id="2_xq0hp"]
+[ext_resource type="Script" uid="uid://bs8sp27gkkybi" path="res://scripts/systems/weapon_controller.gd" id="3_8xgom"]
+[ext_resource type="PackedScene" uid="uid://c1vn4ejy744uy" path="res://scenes/entities/projectile.tscn" id="4_3cm48"]
+
+[node name="MedicHealingTest" type="Node2D" unique_id=167496326]
+script = ExtResource("1_gpsfh")
+
+[node name="World" type="Node2D" parent="." unique_id=1997313436]
+
+[node name="WallTarget" type="Marker2D" parent="World" unique_id=1217171047]
+position = Vector2(640, 1000)
+
+[node name="ProjectileContainer" type="Node2D" parent="World" unique_id=1542824014]
+
+[node name="AmmoSystem" type="Node" parent="World" unique_id=867206705]
+script = ExtResource("2_xq0hp")
+starting_capacity = 999
+
+[node name="WeaponController" type="Node2D" parent="World" unique_id=1560521941]
+position = Vector2(640, 620)
+script = ExtResource("3_8xgom")
+projectile_scene = ExtResource("4_3cm48")
+
+[node name="MuzzlePoint" type="Marker2D" parent="World/WeaponController" unique_id=1318974433]
+position = Vector2(0, -30)
+
+[node name="StatusTimer" type="Timer" parent="." unique_id=183518911]
+autostart = true
