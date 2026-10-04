@@ -62,6 +62,8 @@ var mission_success_overlay: MissionSuccess = null
 var zombie_manager: ZombieManager
 
 const TUTORIAL_CALLOUTS_SCRIPT := preload("res://scripts/missions/tutorial_callouts.gd")
+const COMBAT_FEEDBACK_SCRIPT := preload("res://scripts/missions/combat_feedback.gd")
+const WAVE_COUNTER_SCENE := preload("res://scenes/ui/wave_counter.tscn")
 var kill_count := 0
 
 # base wall HP, overridden by the Fortified Wall upgrade (#25) in _ready()
@@ -331,6 +333,9 @@ func _start_mission() -> void:
 
 	# hooked up before the waves start so the first wave callout isn't missed
 	_setup_tutorial_callouts()
+	_setup_combat_feedback()
+	_setup_wave_counter()
+	$HUD/HUDRoot/MissionPanel/MissionMargin/MissionNameLabel.text = "MISSION: %s" % mission.mission_name.to_upper()
 
 	status_timer.timeout.connect(_on_status_timer_timeout)
 
@@ -344,6 +349,23 @@ func _setup_tutorial_callouts() -> void:
 	var callouts := TUTORIAL_CALLOUTS_SCRIPT.new()
 	add_child(callouts)
 	callouts.setup(typing_controller, zombie_manager, weapon_controller)
+
+# hit flash, ammo popups and the out of ammo prompt live in their own script
+func _setup_combat_feedback() -> void:
+	var feedback := COMBAT_FEEDBACK_SCRIPT.new()
+	add_child(feedback)
+	feedback.setup(typing_controller, zombie_manager, weapon_controller, ammo_system, $HUD/HUDRoot/AmmoPanel)
+
+func _setup_wave_counter() -> void:
+	var wave_counter := WAVE_COUNTER_SCENE.instantiate()
+	add_child(wave_counter)
+	wave_counter.setup(zombie_manager)
+
+# pause automatically if the player alt-tabs away mid-wave. skipped inside the editor's
+# Game tab, where clicking its toolbar (like the speed setting) also takes focus away
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_APPLICATION_FOCUS_OUT and is_inside_tree() and not Engine.is_embedded_in_editor():
+		_open_pause_menu()
 
 func _on_wave_started(wave_number: int, is_final_wave: bool) -> void:
 	if is_final_wave:
