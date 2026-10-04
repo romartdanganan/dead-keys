@@ -61,10 +61,12 @@ func _on_zombie_damaged(zombie: Zombie) -> void:
 		var old_tween: Tween = zombie.get_meta("hit_flash_tween")
 		if old_tween != null and old_tween.is_valid():
 			old_tween.kill()
-	sprite.self_modulate = HIT_FLASH_COLOUR
-	var tween := create_tween()
-	tween.tween_property(sprite, "self_modulate", Color.WHITE, HIT_FLASH_SECONDS)
-	zombie.set_meta("hit_flash_tween", tween)
+	# the reduce flashing setting turns the hit flash off entirely
+	if not SettingsState.reduce_flashing:
+		sprite.self_modulate = HIT_FLASH_COLOUR
+		var tween := create_tween()
+		tween.tween_property(sprite, "self_modulate", Color.WHITE, HIT_FLASH_SECONDS)
+		zombie.set_meta("hit_flash_tween", tween)
 
 	# damaged fires before the zombie dies and is pooled off-screen, so it's still in place here
 	if zombie.health <= 0.0:
@@ -129,7 +131,7 @@ func _on_fired_without_ammo() -> void:
 		return
 	_out_of_ammo_cooldown = OUT_OF_AMMO_COOLDOWN
 	_spawn_popup("TYPE A WORD TO RELOAD", get_global_mouse_position() + Vector2(0, -30), EMPTY_COLOUR)
-	if _ammo_panel != null:
+	if _ammo_panel != null and not SettingsState.reduce_flashing:
 		_ammo_panel.modulate = EMPTY_COLOUR
 		create_tween().tween_property(_ammo_panel, "modulate", Color.WHITE, 0.5)
 

@@ -19,6 +19,8 @@ var master_volume: float = 1.0
 var music_volume: float = 1.0
 var sfx_volume: float = 1.0
 var mistake_system_enabled: bool = true
+# accessibility: swaps flashing and pulsing feedback for steady tints (GDD 2.8, 7)
+var reduce_flashing: bool = false
 var fullscreen: bool = false
 var resolution_index: int = 0
 
@@ -61,6 +63,12 @@ func set_sfx_volume(value: float) -> void:
 
 func set_mistake_system_enabled(value: bool) -> void:
 	mistake_system_enabled = value
+	save_settings()
+	settings_changed.emit()
+
+
+func set_reduce_flashing(value: bool) -> void:
+	reduce_flashing = value
 	save_settings()
 	settings_changed.emit()
 
@@ -189,6 +197,7 @@ func save_settings() -> void:
 	config.set_value("settings", "music_volume", music_volume)
 	config.set_value("settings", "sfx_volume", sfx_volume)
 	config.set_value("settings", "mistake_system_enabled", mistake_system_enabled)
+	config.set_value("settings", "reduce_flashing", reduce_flashing)
 	config.set_value("settings", "fullscreen", fullscreen)
 	config.set_value("settings", "resolution_index", resolution_index)
 	for i in 3:
@@ -217,6 +226,7 @@ func load_settings() -> void:
 	music_volume = config.get_value("settings", "music_volume", music_volume)
 	sfx_volume = config.get_value("settings", "sfx_volume", sfx_volume)
 	mistake_system_enabled = config.get_value("settings", "mistake_system_enabled", mistake_system_enabled)
+	reduce_flashing = config.get_value("settings", "reduce_flashing", reduce_flashing)
 	fullscreen = config.get_value("settings", "fullscreen", fullscreen)
 
 	var saved_index: int = config.get_value("settings", "resolution_index", resolution_index)
