@@ -1,5 +1,5 @@
 {
-  "themes": ["Zombie", "Positive", "Hospital"],
+  "themes": ["zombie", "positive", "hospital"],
   "word_count": 25,
-  "allowed_buckets": ["3-4", "5-7", "8-10"]
+  "allowed_buckets": [1,2,3]
 }
