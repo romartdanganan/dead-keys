@@ -128,9 +128,20 @@ func _unhandled_input(event: InputEvent) -> void:
 	# check for fire action (default left click, rebindable via Settings)
 	if event.is_action_pressed("fire"):
 		weapon_controller.try_fire(get_global_mouse_position())
+	elif event.is_action_pressed("call_supply_1"):
+		_call_supply(0)
+	elif event.is_action_pressed("call_supply_2"):
+		_call_supply(1)
+	elif event.is_action_pressed("call_supply_3"):
+		_call_supply(2)
+	# debug keys only work when running from the editor, never in exported builds
+	elif OS.is_debug_build():
+		_handle_debug_input(event)
 
-	# debug inputs to manually manipulate ammo system
-	elif event.is_action_pressed("debug_add_ammo"):
+
+# F1 charges the ability, F4 to F7 change ammo, for testing only
+func _handle_debug_input(event: InputEvent) -> void:
+	if event.is_action_pressed("debug_add_ammo"):
 		ammo_system.add_ammunition(1)
 	elif event.is_action_pressed("debug_use_ammo"):
 		ammo_system.consume_ammunition(1)
@@ -139,13 +150,6 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_pressed("debug_reset_ammo"):
 		ammo_system.reset_ammunition()
 		print("Ammunition reset")
-	elif event.is_action_pressed("call_supply_1"):
-		_call_supply(0)
-	elif event.is_action_pressed("call_supply_2"):
-		_call_supply(1)
-	elif event.is_action_pressed("call_supply_3"):
-		_call_supply(2)
-	# TODO: remove once #23 (Combo system) actually charges the ability
 	elif event.is_action_pressed("debug_charge_ability"):
 		AbilityState.set_charged(true)
 

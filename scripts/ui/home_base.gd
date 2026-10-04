@@ -111,6 +111,9 @@ func _on_gold_changed(new_gold: int) -> void:
 
 #Progression Manger Debug Keys
 func _unhandled_input(event: InputEvent) -> void:
+	# debug keys only work when running from the editor, never in exported builds
+	if not OS.is_debug_build():
+		return
 	#Add gold
 	if event is InputEventKey and event.pressed and event.keycode == KEY_G:
 		ProgressionManager.add_gold(50)
