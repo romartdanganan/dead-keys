@@ -120,6 +120,10 @@ func _process_approach(delta: float) -> void:
 		if _support_target != null:
 			_enter_state(State.SUPPORT)
 			return
+	if enemy_type.special_behaviour_tag == EnemyTypeDef.BEHAVIOUR_COMMANDER:
+		if _has_nearby_support_target():
+			_enter_state(State.SUPPORT)
+			return
 	var base_direction: Vector2 = (wall_target.global_position - global_position).normalized()
 	var move_direction: Vector2 = base_direction
 	
@@ -128,13 +132,18 @@ func _process_approach(delta: float) -> void:
 		var oscillation: float = sin(_time_alive * enemy_type.zigzag_frequency * TAU)
 		move_direction = (base_direction + perpendicular * oscillation * enemy_type.zigzag_amplitude).normalized()
 	
-	velocity = move_direction * enemy_type.speed
+	velocity = move_direction * get_movement_speed()
 	move_and_slide()
 	if global_position.distance_to(wall_target.global_position) <= WALL_CONTACT_DISTANCE:
 		wall_contact.emit()
 		_enter_state(State.ATTACK)
 
 func _process_support(delta: float) -> void:
+	if enemy_type != null and enemy_type.special_behaviour_tag == EnemyTypeDef.BEHAVIOUR_COMMANDER:
+		if _has_nearby_support_target():
+			return
+		_enter_state(State.APPROACH)
+		return
 	if enemy_type == null or not is_instance_valid(_support_target):
 		_enter_state(State.APPROACH)
 		return
@@ -176,6 +185,31 @@ func _find_support_target() -> Zombie:
 			nearest_distance = distance
 			nearest_target = candidate
 	return nearest_target
+
+func _has_nearby_support_target() -> bool:
+	if enemy_type == null:
+		return false
+	for node in get_tree().get_nodes_in_group("zombies"):
+		var candidate := node as Zombie
+		if candidate == null or candidate == self or candidate.current_state == State.DEAD:
+			continue
+		if global_position.distance_to(candidate.global_position) <= enemy_type.support_radius:
+			return true
+	return false
+
+func get_movement_speed() -> float:
+	if enemy_type == null:
+		return 0.0
+	var movement_speed := enemy_type.speed
+	for node in get_tree().get_nodes_in_group("zombies"):
+		var commander := node as Zombie
+		if commander == null or commander == self or commander.current_state == State.DEAD:
+			continue
+		if commander.enemy_type == null or commander.enemy_type.special_behaviour_tag != EnemyTypeDef.BEHAVIOUR_COMMANDER:
+			continue
+		if global_position.distance_to(commander.global_position) <= commander.enemy_type.support_radius:
+			movement_speed *= commander.enemy_type.speed_multiplier
+	return movement_speed
 
 func _enter_state(new_state: State) -> void:
 	current_state = new_state
