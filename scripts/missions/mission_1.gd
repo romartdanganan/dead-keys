@@ -64,6 +64,7 @@ var zombie_manager: ZombieManager
 const TUTORIAL_CALLOUTS_SCRIPT := preload("res://scripts/missions/tutorial_callouts.gd")
 const COMBAT_FEEDBACK_SCRIPT := preload("res://scripts/missions/combat_feedback.gd")
 const WAVE_COUNTER_SCENE := preload("res://scenes/ui/wave_counter.tscn")
+const HUD_WARNINGS_SCRIPT := preload("res://scripts/missions/hud_warnings.gd")
 var kill_count := 0
 
 # base wall HP, overridden by the Fortified Wall upgrade (#25) in _ready()
@@ -335,6 +336,7 @@ func _start_mission() -> void:
 	_setup_tutorial_callouts()
 	_setup_combat_feedback()
 	_setup_wave_counter()
+	_setup_hud_warnings()
 	$HUD/HUDRoot/MissionPanel/MissionMargin/MissionNameLabel.text = "MISSION: %s" % mission.mission_name.to_upper()
 
 	status_timer.timeout.connect(_on_status_timer_timeout)
@@ -355,6 +357,12 @@ func _setup_combat_feedback() -> void:
 	var feedback := COMBAT_FEEDBACK_SCRIPT.new()
 	add_child(feedback)
 	feedback.setup(typing_controller, zombie_manager, weapon_controller, ammo_system, $HUD/HUDRoot/AmmoPanel)
+
+# low wall pulse and ability ready glow live in their own script
+func _setup_hud_warnings() -> void:
+	var warnings := HUD_WARNINGS_SCRIPT.new()
+	add_child(warnings)
+	warnings.setup(wall_health_bar, $HUD/HUDRoot/WallPanelAnchor/WallPanel, $HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent/AbilitySection)
 
 func _setup_wave_counter() -> void:
 	var wave_counter := WAVE_COUNTER_SCENE.instantiate()
