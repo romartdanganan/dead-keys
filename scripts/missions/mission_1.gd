@@ -60,6 +60,8 @@ const MISSION_SUCCESS_SCENE := preload("res://scenes/ui/mission_success_overlay.
 var mission_success_overlay: MissionSuccess = null
 
 var zombie_manager: ZombieManager
+
+const TUTORIAL_CALLOUTS_SCRIPT := preload("res://scripts/missions/tutorial_callouts.gd")
 var kill_count := 0
 
 # base wall HP, overridden by the Fortified Wall upgrade (#25) in _ready()
@@ -327,12 +329,21 @@ func _start_mission() -> void:
 	# the mission actually starts, so this is set here rather than in configure()
 	weapon_controller.set_zombie_manager(zombie_manager)
 
+	# hooked up before the waves start so the first wave callout isn't missed
+	_setup_tutorial_callouts()
+
 	status_timer.timeout.connect(_on_status_timer_timeout)
 
 	zombie_manager.start_mission()
 
 	print("Mission started: ", mission.mission_name)
 	print("Type any active word shown above a zombie.")
+
+# tutorial and new enemy hints live in their own script, the mission only creates it
+func _setup_tutorial_callouts() -> void:
+	var callouts := TUTORIAL_CALLOUTS_SCRIPT.new()
+	add_child(callouts)
+	callouts.setup(typing_controller, zombie_manager, weapon_controller)
 
 func _on_wave_started(wave_number: int, is_final_wave: bool) -> void:
 	if is_final_wave:

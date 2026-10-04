@@ -128,4 +128,6 @@ func _unhandled_input(event: InputEvent) -> void:
 	#Reset save check
 	if event is InputEventKey and event.pressed and event.keycode == KEY_R:
 		ProgressionManager.reset_progression()
+		# debug reset also brings back every tutorial callout
+		TutorialState.reset()
 		print("Progression reset.")
