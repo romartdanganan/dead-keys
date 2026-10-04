@@ -13,9 +13,12 @@ var weapon: WeaponController
 var ammo: AmmoSystem
 var ammo_panel: PanelContainer
 var wall: Node2D
+var _original_reduce: bool
 
 
 func before_each() -> void:
+	_original_reduce = SettingsState.reduce_flashing
+	SettingsState.reduce_flashing = false
 	typing = TypingController.new()
 	typing.word_list_path = ""
 	add_child_autofree(typing)
@@ -36,6 +39,7 @@ func before_each() -> void:
 
 func after_each() -> void:
 	weapon.free()
+	SettingsState.reduce_flashing = _original_reduce
 
 
 func _popups() -> Array[Label]:
@@ -123,6 +127,16 @@ func test_death_burst_cleans_itself_up() -> void:
 	feedback.spawn_death_burst(Vector2.ZERO, Color.WHITE)
 	await wait_seconds(0.8)
 	assert_eq(_bursts().size(), 0)
+
+
+func test_reduce_flashing_turns_off_the_hit_flash() -> void:
+	SettingsState.reduce_flashing = true
+	var zombie := _zombie_with_word("code")
+	manager.zombie_spawned.emit(zombie)
+
+	zombie.take_damage(1.0)
+
+	assert_eq(zombie.zombie_sprite.self_modulate, Color.WHITE)
 
 
 func test_respawned_zombie_is_only_connected_once() -> void:
