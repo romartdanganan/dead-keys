@@ -26,6 +26,7 @@ SupplyState="*res://scripts/autoload/supply_state.gd"
 AbilityState="*res://scripts/autoload/ability_state.gd"
 Audio="*uid://cdsuo51pusabe"
 SettingsState="*res://scripts/autoload/settings_state.gd"
+TutorialState="*res://scripts/autoload/tutorial_state.gd"
 
 [display]
 

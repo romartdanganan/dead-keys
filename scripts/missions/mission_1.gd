@@ -60,6 +60,11 @@ const MISSION_SUCCESS_SCENE := preload("res://scenes/ui/mission_success_overlay.
 var mission_success_overlay: MissionSuccess = null
 
 var zombie_manager: ZombieManager
+
+const TUTORIAL_CALLOUTS_SCRIPT := preload("res://scripts/missions/tutorial_callouts.gd")
+const COMBAT_FEEDBACK_SCRIPT := preload("res://scripts/missions/combat_feedback.gd")
+const WAVE_COUNTER_SCENE := preload("res://scenes/ui/wave_counter.tscn")
+const HUD_WARNINGS_SCRIPT := preload("res://scripts/missions/hud_warnings.gd")
 var kill_count := 0
 
 # base wall HP, overridden by the Fortified Wall upgrade (#25) in _ready()
@@ -128,9 +133,20 @@ func _unhandled_input(event: InputEvent) -> void:
 	# check for fire action (default left click, rebindable via Settings)
 	if event.is_action_pressed("fire"):
 		weapon_controller.try_fire(get_global_mouse_position())
+	elif event.is_action_pressed("call_supply_1"):
+		_call_supply(0)
+	elif event.is_action_pressed("call_supply_2"):
+		_call_supply(1)
+	elif event.is_action_pressed("call_supply_3"):
+		_call_supply(2)
+	# debug keys only work when running from the editor, never in exported builds
+	elif OS.is_debug_build():
+		_handle_debug_input(event)
 
-	# debug inputs to manually manipulate ammo system
-	elif event.is_action_pressed("debug_add_ammo"):
+
+# F1 charges the ability, F4 to F7 change ammo, for testing only
+func _handle_debug_input(event: InputEvent) -> void:
+	if event.is_action_pressed("debug_add_ammo"):
 		ammo_system.add_ammunition(1)
 	elif event.is_action_pressed("debug_use_ammo"):
 		ammo_system.consume_ammunition(1)
@@ -139,13 +155,6 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_pressed("debug_reset_ammo"):
 		ammo_system.reset_ammunition()
 		print("Ammunition reset")
-	elif event.is_action_pressed("call_supply_1"):
-		_call_supply(0)
-	elif event.is_action_pressed("call_supply_2"):
-		_call_supply(1)
-	elif event.is_action_pressed("call_supply_3"):
-		_call_supply(2)
-	# TODO: remove once #23 (Combo system) actually charges the ability
 	elif event.is_action_pressed("debug_charge_ability"):
 		AbilityState.set_charged(true)
 
@@ -323,12 +332,48 @@ func _start_mission() -> void:
 	# the mission actually starts, so this is set here rather than in configure()
 	weapon_controller.set_zombie_manager(zombie_manager)
 
+	# hooked up before the waves start so the first wave callout isn't missed
+	_setup_tutorial_callouts()
+	_setup_combat_feedback()
+	_setup_wave_counter()
+	_setup_hud_warnings()
+	$HUD/HUDRoot/MissionPanel/MissionMargin/MissionNameLabel.text = "MISSION: %s" % mission.mission_name.to_upper()
+
 	status_timer.timeout.connect(_on_status_timer_timeout)
 
 	zombie_manager.start_mission()
 
 	print("Mission started: ", mission.mission_name)
 	print("Type any active word shown above a zombie.")
+
+# tutorial and new enemy hints live in their own script, the mission only creates it
+func _setup_tutorial_callouts() -> void:
+	var callouts := TUTORIAL_CALLOUTS_SCRIPT.new()
+	add_child(callouts)
+	callouts.setup(typing_controller, zombie_manager, weapon_controller)
+
+# hit flash, ammo popups and the out of ammo prompt live in their own script
+func _setup_combat_feedback() -> void:
+	var feedback := COMBAT_FEEDBACK_SCRIPT.new()
+	add_child(feedback)
+	feedback.setup(typing_controller, zombie_manager, weapon_controller, ammo_system, $HUD/HUDRoot/AmmoPanel)
+
+# low wall pulse and ability ready glow live in their own script
+func _setup_hud_warnings() -> void:
+	var warnings := HUD_WARNINGS_SCRIPT.new()
+	add_child(warnings)
+	warnings.setup(wall_health_bar, $HUD/HUDRoot/WallPanelAnchor/WallPanel, $HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent/AbilitySection)
+
+func _setup_wave_counter() -> void:
+	var wave_counter := WAVE_COUNTER_SCENE.instantiate()
+	add_child(wave_counter)
+	wave_counter.setup(zombie_manager)
+
+# pause automatically if the player alt-tabs away mid-wave. skipped inside the editor's
+# Game tab, where clicking its toolbar (like the speed setting) also takes focus away
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_APPLICATION_FOCUS_OUT and is_inside_tree() and not Engine.is_embedded_in_editor():
+		_open_pause_menu()
 
 func _on_wave_started(wave_number: int, is_final_wave: bool) -> void:
 	if is_final_wave:
