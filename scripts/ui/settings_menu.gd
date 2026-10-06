@@ -10,6 +10,7 @@ signal closed
 @onready var music_value_label: Label = %MusicValueLabel
 @onready var sfx_value_label: Label = %SFXValueLabel
 @onready var mistake_toggle: CheckButton = %MistakeSystemToggle
+@onready var reduce_flashing_toggle: CheckButton = %ReduceFlashingToggle
 @onready var window_mode_option: OptionButton = %WindowModeOption
 @onready var resolution_option: OptionButton = %ResolutionOption
 @onready var fire_button: Button = %FireButton
@@ -34,6 +35,7 @@ func _ready() -> void:
 	music_slider.set_value_no_signal(SettingsState.music_volume)
 	sfx_slider.set_value_no_signal(SettingsState.sfx_volume)
 	mistake_toggle.set_pressed_no_signal(SettingsState.mistake_system_enabled)
+	reduce_flashing_toggle.set_pressed_no_signal(SettingsState.reduce_flashing)
 	_update_volume_labels()
 	_populate_display_options()
 	_refresh_bind_buttons()
@@ -185,6 +187,10 @@ func _on_sfx_slider_value_changed(value: float) -> void:
 
 func _on_mistake_system_toggle_toggled(toggled_on: bool) -> void:
 	SettingsState.set_mistake_system_enabled(toggled_on)
+
+
+func _on_reduce_flashing_toggle_toggled(toggled_on: bool) -> void:
+	SettingsState.set_reduce_flashing(toggled_on)
 
 
 func _on_window_mode_option_item_selected(index: int) -> void:
