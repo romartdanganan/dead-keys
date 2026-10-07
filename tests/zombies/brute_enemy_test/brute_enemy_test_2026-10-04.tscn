@@ -1,0 +1,32 @@
+[gd_scene load_steps=5 format=3 uid="uid://d3o3k8qkxqt6k"]
+
+[ext_resource type="Script" uid="uid://b3d4fhwqhhai" path="res://tests/zombies/brute_enemy_test/brute_enemy_test_2026-10-04.gd" id="1_test"]
+[ext_resource type="Script" path="res://scripts/systems/ammo_system.gd" id="2_ammo"]
+[ext_resource type="Script" path="res://scripts/systems/weapon_controller.gd" id="3_weapon"]
+[ext_resource type="PackedScene" path="res://scenes/entities/projectile.tscn" id="4_projectile"]
+
+[node name="BruteEnemyTest" type="Node2D" unique_id=1919903771]
+script = ExtResource("1_test")
+
+[node name="WallTarget" type="Marker2D" parent="." unique_id=1884064144]
+position = Vector2(1200, 320)
+
+[node name="World" type="Node2D" parent="."]
+
+[node name="ProjectileContainer" type="Node2D" parent="World"]
+
+[node name="AmmoSystem" type="Node" parent="World"]
+script = ExtResource("2_ammo")
+starting_capacity = 999
+
+[node name="WeaponController" type="Node2D" parent="World"]
+position = Vector2(640, 620)
+script = ExtResource("3_weapon")
+projectile_scene = ExtResource("4_projectile")
+
+[node name="MuzzlePoint" type="Marker2D" parent="World/WeaponController"]
+position = Vector2(0, -30)
+
+[node name="StatusTimer" type="Timer" parent="." unique_id=1727252817]
+wait_time = 2.0
+autostart = true
