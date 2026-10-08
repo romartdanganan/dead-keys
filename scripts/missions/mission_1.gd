@@ -55,6 +55,11 @@ var pause_menu: PauseMenu = null
 const SETTINGS_MENU_SCENE := preload("res://scenes/ui/settings_menu.tscn")
 var settings_menu: Node = null
 
+# How To Play overlay (#58) instancedhere rather than PauseMenu itseld so it
+# stays reusable across missions, same reasoning as PauseMenu's own siggnals
+const HOW_TO_PLAY_SCENE := preload("res://scenes/ui/how_to_play.tscn")
+var how_to_play_overlay: Node = null
+
 const MissionSuccess := preload("res://scripts/ui/mission_success_overlay.gd")
 const MISSION_SUCCESS_SCENE := preload("res://scenes/ui/mission_success_overlay.tscn")
 var mission_success_overlay: MissionSuccess = null
@@ -612,6 +617,7 @@ func _open_pause_menu() -> void:
 	pause_menu.resume_requested.connect(_on_pause_menu_resume_requested)
 	pause_menu.return_home_requested.connect(_on_pause_menu_return_home_requested)
 	pause_menu.settings_requested.connect(_on_pause_menu_settings_requested)
+	pause_menu.how_to_play_requested.connect(_on_pause_how_to_play_overlay_requested)
 	get_tree().paused = true
 
 func _on_pause_menu_resume_requested() -> void:
@@ -630,10 +636,22 @@ func _on_pause_menu_settings_requested() -> void:
 	add_child(settings_menu)
 	settings_menu.closed.connect(_on_settings_menu_closed)
 
-
 func _on_settings_menu_closed() -> void:
 	settings_menu.queue_free()
 	settings_menu = null
+
+
+func _on_pause_how_to_play_overlay_requested() -> void:
+	if how_to_play_overlay != null:
+		return
+	how_to_play_overlay = HOW_TO_PLAY_SCENE.instantiate()
+	pause_menu.add_child(how_to_play_overlay)
+	how_to_play_overlay.closed.connect(_on_how_to_play_closed)
+
+func _on_how_to_play_closed() -> void:
+	print("signal closed")
+	how_to_play_overlay.queue_free()
+	how_to_play_overlay = null
 
 func return_to_home_base() -> void:
 	# Supplies are repurchased every mission per GDD §2.6, not persistent
