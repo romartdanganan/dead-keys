@@ -24,6 +24,8 @@ const BEHAVIOUR_COMMANDER: String = "commander"
 
 # Only for support behaviours
 @export var heal_per_second: float = 10.0
+# seconds a zombie must go unhit before a medic starts healing it
+@export var heal_delay: float = 2.0
 @export var support_radius: float = 180.0
 @export var speed_multiplier: float = 1.2
 

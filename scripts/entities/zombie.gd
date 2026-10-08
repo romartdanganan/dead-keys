@@ -49,6 +49,9 @@ const KNOCKBACK_DURATION: float = 0.3
 var _knockback_remaining: float = 0.0
 var _knockback_start_velocity: Vector2 = Vector2.ZERO
 
+# medics wait until a zombie hasn't been hit for heal_delay seconds before healing it
+var seconds_since_damaged: float = INF
+
 func _ready() -> void:
 	attack_timer.timeout.connect(_on_attack_timer_timeout)
 	add_to_group("zombies")
@@ -64,6 +67,7 @@ func setup(type: EnemyTypeDef, wall: Node2D) -> void:
 	_time_alive = 0.0
 	_support_target = null
 	_support_log_accumulator = 0.0
+	seconds_since_damaged = INF
 	# pooled zombies must not keep sliding from a previous life
 	_knockback_remaining = 0.0
 	velocity = Vector2.ZERO
@@ -100,6 +104,7 @@ func _apply_visual_identity() -> void:
 	word_label.add_theme_stylebox_override("normal", label_style)
 
 func _physics_process(delta: float) -> void:
+	seconds_since_damaged += delta
 	# a knockback slide overrides normal movement until it finishes
 	if _knockback_remaining > 0.0:
 		_process_knockback(delta)
@@ -152,6 +157,10 @@ func _process_support(delta: float) -> void:
 		return
 	if global_position.distance_to(_support_target.global_position) > enemy_type.support_radius:
 		_enter_state(State.APPROACH)
+		return
+	# a quick burst of shots should finish a zombie before the medic can undo it,
+	# so freshly hit zombies are only healed once the player stops hitting them
+	if _support_target.seconds_since_damaged < enemy_type.heal_delay:
 		return
 	var healed_amount := _support_target.heal(enemy_type.heal_per_second * delta)
 	_support_log_accumulator += healed_amount
@@ -292,6 +301,7 @@ func take_damage(amount: float) -> bool:
 	if current_state == State.DEAD:
 		return false
 	health -= amount
+	seconds_since_damaged = 0.0
 	damaged.emit(self)
 	if health <= 0.0:
 		_enter_state(State.DEAD)

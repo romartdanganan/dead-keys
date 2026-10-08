@@ -11,6 +11,8 @@ signal wave_started(wave_number: int, is_final_wave: bool)
 @export var wall_target: Node2D
 
 const SPAWN_MARGIN: float = 100.0
+# side only spawns stay within 45 degrees of horizontal, which still covers the corners
+const SIDE_SPAWN_SPREAD: float = PI / 4.0
 
 var zombie_scene: PackedScene = preload("res://scenes/entities/zombie.tscn")
 var active_zombies: Array[Zombie] = []
@@ -81,7 +83,7 @@ func _run_next_wave() -> void:
 	for i in wave.count:
 		if not _running:
 			return
-		_spawn_zombie(wave.enemy_type)
+		_spawn_zombie(wave.enemy_type, wave.side_spawn_only)
 		if i < wave.count - 1 and wave.spawn_interval > 0.0:
 			await get_tree().create_timer(wave.spawn_interval, false).timeout
 	# entries flagged not to wait let the next batch join this one
@@ -95,20 +97,18 @@ func _wait_for_all_zombies_to_clear() -> void:
 	while _running and is_inside_tree() and not active_zombies.is_empty():
 		await get_tree().process_frame
 
-func _spawn_zombie(type: EnemyTypeDef) -> void:
+func _spawn_zombie(type: EnemyTypeDef, side_only: bool = false) -> void:
 	if wall_target == null:
 		push_warning("ZombieManager: no wall/base target assigned")
 		return
 	
 	var zombie: Zombie = _pool.acquire()
 	
-	var viewport_size: Vector2 = get_viewport_rect().size
-	var viewport_half_size := viewport_size * 0.5
-	var spawn_radius: float = viewport_half_size.length() + SPAWN_MARGIN
-	var spawn_angle: float = randf_range(0.0, TAU)
-	var spawn_direction := Vector2.RIGHT.rotated(spawn_angle)
-	
-	zombie.global_position = ( wall_target.global_position + spawn_direction * spawn_radius)
+	# spawns just past the screen edge instead of on a circle around the corners,
+	# so top and bottom zombies no longer walk ~15s off screen before showing up
+	var viewport_half_size: Vector2 = get_viewport_rect().size * 0.5
+	var spawn_angle := pick_spawn_angle(side_only)
+	zombie.global_position = spawn_position(wall_target.global_position, viewport_half_size, spawn_angle, SPAWN_MARGIN)
 	
 	zombie.is_pooled = true
 	
@@ -118,6 +118,20 @@ func _spawn_zombie(type: EnemyTypeDef) -> void:
 	zombie.setup(type, wall_target)
 	active_zombies.append(zombie)
 	zombie_spawned.emit(zombie)
+
+static func pick_spawn_angle(side_only: bool) -> float:
+	if not side_only:
+		return randf_range(0.0, TAU)
+	var side_angle: float = 0.0 if randf() < 0.5 else PI
+	return side_angle + randf_range(-SIDE_SPAWN_SPREAD, SIDE_SPAWN_SPREAD)
+
+
+# distance to the screen edge along the spawn direction, plus a margin to stay hidden
+static func spawn_position(centre: Vector2, half_size: Vector2, angle: float, margin: float) -> Vector2:
+	var direction := Vector2.RIGHT.rotated(angle)
+	var to_edge_x: float = half_size.x / absf(direction.x) if not is_zero_approx(direction.x) else INF
+	var to_edge_y: float = half_size.y / absf(direction.y) if not is_zero_approx(direction.y) else INF
+	return centre + direction * (minf(to_edge_x, to_edge_y) + margin)
 
 func _on_zombie_died(zombie: Zombie) -> void:
 	active_zombies.erase(zombie)
