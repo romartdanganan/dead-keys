@@ -55,8 +55,8 @@ var pause_menu: PauseMenu = null
 const SETTINGS_MENU_SCENE := preload("res://scenes/ui/settings_menu.tscn")
 var settings_menu: Node = null
 
-# How To Play overlay (#58) instancedhere rather than PauseMenu itseld so it
-# stays reusable across missions, same reasoning as PauseMenu's own siggnals
+# How To Play overlay, instanced here rather than by PauseMenu itself so it
+# stays reusable across missions, same reasoning as PauseMenu's own signals
 const HOW_TO_PLAY_SCENE := preload("res://scenes/ui/how_to_play.tscn")
 var how_to_play_overlay: Node = null
 
@@ -74,6 +74,7 @@ const TUTORIAL_CALLOUTS_SCRIPT := preload("res://scripts/missions/tutorial_callo
 const COMBAT_FEEDBACK_SCRIPT := preload("res://scripts/missions/combat_feedback.gd")
 const WAVE_COUNTER_SCENE := preload("res://scenes/ui/wave_counter.tscn")
 const HUD_WARNINGS_SCRIPT := preload("res://scripts/missions/hud_warnings.gd")
+const BOSS_HEALTH_BAR_SCENE := preload("res://scenes/ui/boss_health_bar.tscn")
 var kill_count := 0
 
 # base wall HP, overridden by the Fortified Wall upgrade (#25) in _ready()
@@ -346,6 +347,7 @@ func _start_mission() -> void:
 	_setup_combat_feedback()
 	_setup_wave_counter()
 	_setup_hud_warnings()
+	_setup_boss_health_bar()
 	$HUD/HUDRoot/MissionPanel/MissionMargin/MissionNameLabel.text = "MISSION: %s" % mission.mission_name.to_upper()
 
 	status_timer.timeout.connect(_on_status_timer_timeout)
@@ -372,6 +374,12 @@ func _setup_hud_warnings() -> void:
 	var warnings := HUD_WARNINGS_SCRIPT.new()
 	add_child(warnings)
 	warnings.setup(wall_health_bar, $HUD/HUDRoot/WallPanelAnchor/WallPanel, $HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent/AbilitySection)
+
+# boss bar stays hidden until a boss type spawns, so missions without one are unaffected
+func _setup_boss_health_bar() -> void:
+	var boss_bar := BOSS_HEALTH_BAR_SCENE.instantiate()
+	add_child(boss_bar)
+	boss_bar.setup(zombie_manager)
 
 func _setup_wave_counter() -> void:
 	var wave_counter := WAVE_COUNTER_SCENE.instantiate()
@@ -649,7 +657,6 @@ func _on_pause_how_to_play_overlay_requested() -> void:
 	how_to_play_overlay.closed.connect(_on_how_to_play_closed)
 
 func _on_how_to_play_closed() -> void:
-	print("signal closed")
 	how_to_play_overlay.queue_free()
 	how_to_play_overlay = null
 

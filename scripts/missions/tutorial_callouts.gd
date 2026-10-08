@@ -11,6 +11,8 @@ const ENEMY_CALLOUTS: Dictionary = {
 	"medic": "NEW ENEMY: Medic. Heals nearby zombies, take it out first",
 	"brute": "NEW ENEMY: Brute. Slow and tough, with long words",
 	"commander": "NEW ENEMY: Commander. Speeds up the zombies around it",
+	# boss callout uses BOSS instead of NEW ENEMY so it stands out
+	"tank": "BOSS: Tank. Huge health and long words, keep firing",
 }
 
 var _banner: CanvasLayer
