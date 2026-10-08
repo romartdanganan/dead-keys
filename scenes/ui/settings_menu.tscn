@@ -315,21 +315,21 @@ theme_override_font_sizes/font_size = 20
 text = "When on, every wrong key costs 1 ammo and 3 wrong keys in a row jam your weapon. Turn off to type without penalties."
 autowrap_mode = 3
 
-[node name="ReduceFlashingRow" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/GAMEPLAY"]
+[node name="ReduceFlashingRow" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/GAMEPLAY" unique_id=261762114]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="ReduceFlashingLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/GAMEPLAY/ReduceFlashingRow"]
+[node name="ReduceFlashingLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/GAMEPLAY/ReduceFlashingRow" unique_id=116730377]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
 text = "REDUCE FLASHING"
 
-[node name="ReduceFlashingToggle" type="CheckButton" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/GAMEPLAY/ReduceFlashingRow"]
+[node name="ReduceFlashingToggle" type="CheckButton" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/GAMEPLAY/ReduceFlashingRow" unique_id=1911711702]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="ReduceFlashingHintLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/GAMEPLAY"]
+[node name="ReduceFlashingHintLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/GAMEPLAY" unique_id=1914606594]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 0.75)
 theme_override_font_sizes/font_size = 20

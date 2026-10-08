@@ -1,0 +1,226 @@
+[gd_scene format=3 uid="uid://dybpcwhqie8qd"]
+
+[ext_resource type="Script" uid="uid://c0ox4nk0ugrkh" path="res://scripts/ui/how_to_play.gd" id="1_o8b4v"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4n0sl"]
+bg_color = Color(0.5803922, 0.4, 0.23921569, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.32156864, 0.2, 0.10980392, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rx6sf"]
+content_margin_left = 14.0
+content_margin_top = 4.0
+content_margin_right = 14.0
+content_margin_bottom = 4.0
+bg_color = Color(0.4, 0.27, 0.15, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.22, 0.13, 0.06, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jxo8x"]
+content_margin_left = 14.0
+content_margin_top = 4.0
+content_margin_right = 14.0
+content_margin_bottom = 4.0
+bg_color = Color(0.4, 0.27, 0.15, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.22, 0.13, 0.06, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o8b4v"]
+content_margin_left = 14.0
+content_margin_top = 4.0
+content_margin_right = 14.0
+content_margin_bottom = 4.0
+bg_color = Color(0.48, 0.33, 0.19, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.22, 0.13, 0.06, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[node name="HowToPlay" type="CanvasLayer" unique_id=962716650]
+script = ExtResource("1_o8b4v")
+
+[node name="DimBackground" type="ColorRect" parent="." unique_id=440343269]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.6)
+
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=305331025]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="MenuPanel" type="PanelContainer" parent="CenterContainer" unique_id=213158838]
+custom_minimum_size = Vector2(660, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_4n0sl")
+
+[node name="MenuMargin" type="MarginContainer" parent="CenterContainer/MenuPanel" unique_id=305695188]
+layout_mode = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 24
+
+[node name="MenuList" type="VBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin" unique_id=1687660248]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Heading" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList" unique_id=1122122881]
+layout_mode = 2
+theme_override_font_sizes/font_size = 38
+text = "HOW TO PLAY"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MenuPanel2" type="PanelContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList" unique_id=538750583]
+custom_minimum_size = Vector2(660, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_rx6sf")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/MenuPanel2" unique_id=916127835]
+custom_minimum_size = Vector2(700, 350)
+custom_maximum_size = Vector2(-1, 500)
+layout_mode = 2
+scroll_vertical = 175
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/MenuPanel2/ScrollContainer" unique_id=1506110084]
+layout_mode = 2
+
+[node name="TypeToLoad" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/MenuPanel2/ScrollContainer/VBoxContainer" unique_id=1260938888]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9490196, 0.9019608, 0.8, 1)
+theme_override_font_sizes/font_size = 26
+text = "TYPE TO LOAD"
+vertical_alignment = 1
+
+[node name="Content" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/MenuPanel2/ScrollContainer/VBoxContainer" unique_id=116507054]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9490196, 0.9019608, 0.8, 0.7490196)
+theme_override_font_sizes/font_size = 20
+text = "Zombies have words above their heads. Type the word to load ammunition into your weapon. 
+Longer words give you more bullets.
+"
+vertical_alignment = 1
+
+[node name="Aim&Shoot" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/MenuPanel2/ScrollContainer/VBoxContainer" unique_id=1615590456]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9490196, 0.9019608, 0.8, 1)
+theme_override_font_sizes/font_size = 26
+text = "AIM & SHOOT"
+vertical_alignment = 1
+
+[node name="Content2" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/MenuPanel2/ScrollContainer/VBoxContainer" unique_id=686522578]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9490196, 0.9019608, 0.8, 0.7490196)
+theme_override_font_sizes/font_size = 20
+text = "Use your mouse to aim. Press %s to Fire. You must aim and shoot the zombies.
+"
+vertical_alignment = 1
+
+[node name="WatchMistakes" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/MenuPanel2/ScrollContainer/VBoxContainer" unique_id=1622320111]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9490196, 0.9019608, 0.8, 1)
+theme_override_font_sizes/font_size = 26
+text = "WATCH YOUR MISTAKES"
+vertical_alignment = 1
+
+[node name="Content3" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/MenuPanel2/ScrollContainer/VBoxContainer" unique_id=1894881981]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9490196, 0.9019608, 0.8, 0.7490196)
+theme_override_font_sizes/font_size = 20
+text = "Making a typing mistake costs 1 bullet. Three mistakes in a row will jam your weapon for 2 seconds.
+Your Combo resets when you make a mistake or when a zombie reaches the wall. (Typing mistakes
+can be turned of under the Gameplay tab in Settings).
+"
+vertical_alignment = 1
+
+[node name="UseSupplies" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/MenuPanel2/ScrollContainer/VBoxContainer" unique_id=31176912]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9490196, 0.9019608, 0.8, 1)
+theme_override_font_sizes/font_size = 26
+text = "USE SUPPLIES"
+vertical_alignment = 1
+
+[node name="Content4" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/MenuPanel2/ScrollContainer/VBoxContainer" unique_id=1948827862]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9490196, 0.9019608, 0.8, 0.7490196)
+theme_override_font_sizes/font_size = 20
+text = "You can bring up to 3 supplies into a mission. Press %s, %s or %s to call the corresponding supply. After
+the crate lands, type its word before the timer runs out to activate it.
+"
+vertical_alignment = 1
+
+[node name="UseAbility" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/MenuPanel2/ScrollContainer/VBoxContainer" unique_id=541266752]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9490196, 0.9019608, 0.8, 1)
+theme_override_font_sizes/font_size = 26
+text = "USE YOUR ABILITY"
+vertical_alignment = 1
+
+[node name="Content5" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/MenuPanel2/ScrollContainer/VBoxContainer" unique_id=28361672]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9490196, 0.9019608, 0.8, 0.7490196)
+theme_override_font_sizes/font_size = 20
+text = "Get 5 kills in a row without making a mistake to charge your ability. Your ability activates 
+automatically on your next shot.
+"
+vertical_alignment = 1
+
+[node name="ProtectWall" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/MenuPanel2/ScrollContainer/VBoxContainer" unique_id=636235906]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9490196, 0.9019608, 0.8, 1)
+theme_override_font_sizes/font_size = 26
+text = "PROTECT THE WALL"
+vertical_alignment = 1
+
+[node name="Content6" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/MenuPanel2/ScrollContainer/VBoxContainer" unique_id=2086409659]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9490196, 0.9019608, 0.8, 0.7490196)
+theme_override_font_sizes/font_size = 20
+text = "Don't let the zombies reach the wall.
+If the wall loses all its health, you lose a life.
+Survive the mission and earn coins to buy upgrades and supplies.
+"
+vertical_alignment = 1
+
+[node name="BackButton" type="Button" parent="CenterContainer/MenuPanel/MenuMargin/MenuList" unique_id=309492421]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 26
+theme_override_styles/normal = SubResource("StyleBoxFlat_jxo8x")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_jxo8x")
+theme_override_styles/hover = SubResource("StyleBoxFlat_o8b4v")
+text = "BACK"
