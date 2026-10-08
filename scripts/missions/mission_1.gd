@@ -143,6 +143,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	# check for fire action (default left click, rebindable via Settings)
 	if event.is_action_pressed("fire"):
 		weapon_controller.try_fire(get_global_mouse_position())
+	# the charged ability waits for its own input instead of firing on the next shot
+	elif event.is_action_pressed("use_ability"):
+		weapon_controller.try_fire_ability(get_global_mouse_position())
 	elif event.is_action_pressed("call_supply_1"):
 		_call_supply(0)
 	elif event.is_action_pressed("call_supply_2"):

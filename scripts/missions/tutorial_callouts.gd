@@ -60,7 +60,7 @@ func _on_charged_changed(is_charged: bool) -> void:
 	if not is_charged:
 		return
 	var ability := AbilityCatalogScript.get_ability(AbilityState.equipped_ability_id)
-	_try_show("ability_charged", "5 kills in a row! Your next shot fires %s" % ability.get("display_name", "your ability"))
+	_try_show("ability_charged", "5 words in a row! Press %s to fire %s" % [SettingsState.get_ability_label(), ability.get("display_name", "your ability")])
 
 
 func _on_zombie_spawned(zombie: Zombie) -> void:

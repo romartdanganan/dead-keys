@@ -79,6 +79,7 @@ Main Menu
 | Keyboard letters | Type the words above zombies and supply crates |
 | Mouse movement | Aim the crosshair |
 | Left mouse button | Fire toward the cursor (rebindable in Settings) |
+| Right mouse button | Fire your charged ability toward the cursor (rebindable in Settings) |
 | 1, 2, 3 | Call in the supply in that slot (rebindable in Settings) |
 | Escape | Pause |
 

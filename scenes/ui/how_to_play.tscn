@@ -196,8 +196,8 @@ vertical_alignment = 1
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9490196, 0.9019608, 0.8, 0.7490196)
 theme_override_font_sizes/font_size = 20
-text = "Get 5 kills in a row without making a mistake to charge your ability. Your ability activates 
-automatically on your next shot.
+text = "Type 5 words in a row without making a mistake to charge your ability. Your ability waits until you
+press %s to fire it, so you choose the moment.
 "
 vertical_alignment = 1
 
