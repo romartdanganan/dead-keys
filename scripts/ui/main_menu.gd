@@ -3,6 +3,9 @@ extends Control
 const SETTINGS_MENU_SCENE := preload("res://scenes/ui/settings_menu.tscn")
 var settings_menu: Node = null
 
+const HOW_TO_PLAY_SCENE := preload("res://scenes/ui/how_to_play.tscn")
+var how_to_play_overlay: Node = null
+
 func _ready() -> void:
 	Audio.play("main_music")
 
@@ -34,3 +37,15 @@ func _on_settings_button_pressed() -> void:
 func _on_settings_menu_closed() -> void:
 	settings_menu.queue_free()
 	settings_menu = null
+
+
+func _on_how_to_play_pressed() -> void:
+	if how_to_play_overlay != null:
+		return
+	how_to_play_overlay = HOW_TO_PLAY_SCENE.instantiate()
+	add_child(how_to_play_overlay)
+	how_to_play_overlay.closed.connect(_on_how_to_play_overlay_closed)
+
+func _on_how_to_play_overlay_closed() -> void:
+	how_to_play_overlay.queue_free()
+	how_to_play_overlay = null
