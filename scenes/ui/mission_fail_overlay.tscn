@@ -38,10 +38,10 @@ theme_override_constants/margin_bottom = 24
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="Mission Success" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList" unique_id=2062771061]
+[node name="Mission Fail" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList" unique_id=2062771061]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
-text = "MISSION COMPLETE!!!"
+text = "MISSION FAILED"
 horizontal_alignment = 1
 
 [node name="Stats" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList" unique_id=238503722]
@@ -51,10 +51,12 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Restart" type="Button" parent="CenterContainer/MenuPanel/MenuMargin/MenuList" unique_id=1996530699]
+custom_minimum_size = Vector2(0, 56)
 layout_mode = 2
 text = "RETRY"
 
 [node name="ReturnToHub" type="Button" parent="CenterContainer/MenuPanel/MenuMargin/MenuList" unique_id=176246772]
+custom_minimum_size = Vector2(0, 56)
 layout_mode = 2
 text = "RETURN TO BASE"
 
