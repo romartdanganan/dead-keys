@@ -59,6 +59,10 @@ const MissionSuccess := preload("res://scripts/ui/mission_success_overlay.gd")
 const MISSION_SUCCESS_SCENE := preload("res://scenes/ui/mission_success_overlay.tscn")
 var mission_success_overlay: MissionSuccess = null
 
+const MissionFail := preload("res://scripts/ui/mission_fail_overlay.gd")
+const MISSION_FAIL_SCENE := preload("res://scenes/ui/mission_fail_overlay.tscn")
+var mission_fail_overlay: MissionFail = null
+
 var zombie_manager: ZombieManager
 
 const TUTORIAL_CALLOUTS_SCRIPT := preload("res://scripts/missions/tutorial_callouts.gd")
@@ -505,8 +509,7 @@ func _spend_life() -> void:
 		_update_wall_hud()
 	else:
 		print("Wall destroyed. No lives remaining. Returning to home base.")
-		Audio.play("game_over")
-		return_to_home_base()
+		_display_mission_fail_overlay()
 
 func _on_all_waves_cleared() -> void:
 	print("Mission complete. Returning to home base.")
@@ -514,6 +517,38 @@ func _on_all_waves_cleared() -> void:
 	ProgressionManager.save_progression()
 	
 	_display_mission_success_overlay()
+
+func _display_mission_fail_overlay() -> void:
+	if zombie_manager:
+		zombie_manager.stop_mission()
+	
+	Audio.clear_music()
+	Audio.play("game_over")
+	mission_fail_overlay = MISSION_FAIL_SCENE.instantiate()
+	add_child(mission_fail_overlay)
+	
+	mission_fail_overlay.stats.text = """
+		Zombies killed: %d
+		Reached %s
+		""" % [kill_count, wave_announcement.wave_label.text]
+	
+	mission_fail_overlay.replay_requested.connect(_on_mission_fail_replay_requested)
+	mission_fail_overlay.return_home_requested.connect(_on_mission_fail_return_home_requested)
+	get_tree().paused = true
+
+func _on_mission_fail_replay_requested() -> void:
+	get_tree().paused = false
+	mission_fail_overlay.queue_free()
+	mission_fail_overlay = null
+	get_tree().reload_current_scene()
+	Audio.clear_sounds()
+	Audio.play("play_music")
+
+func _on_mission_fail_return_home_requested() -> void:
+	get_tree().paused = false
+	mission_fail_overlay.queue_free()
+	mission_fail_overlay = null
+	return_to_home_base()
 
 
 func _display_mission_success_overlay() -> void:
@@ -568,7 +603,7 @@ func _on_pause_menu_return_home_requested() -> void:
 	return_to_home_base()
 
 func _open_pause_menu() -> void:
-	if pause_menu or mission_success_overlay != null:
+	if pause_menu or mission_success_overlay or mission_fail_overlay != null:
 		return
 
 	Audio.play("pause")
