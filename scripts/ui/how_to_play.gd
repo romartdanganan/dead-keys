@@ -4,6 +4,7 @@ signal closed
 
 @onready var content_2: Label = $CenterContainer/MenuPanel/MenuMargin/MenuList/MenuPanel2/ScrollContainer/VBoxContainer/Content2
 @onready var content_4: Label = $CenterContainer/MenuPanel/MenuMargin/MenuList/MenuPanel2/ScrollContainer/VBoxContainer/Content4
+@onready var content_5: Label = $CenterContainer/MenuPanel/MenuMargin/MenuList/MenuPanel2/ScrollContainer/VBoxContainer/Content5
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
@@ -25,6 +26,8 @@ func _ready() -> void:
 	
 	content_2.text = "Use your mouse to aim. Press %s to Fire. You must aim and shoot the zombies.\n" % [shoot_key]
 	content_4.text = "You can bring up to 3 supplies into a mission. Press %s, %s or %s to call the corresponding supply. After the crate lands, type its word before the timer runs out to activate it.\n" % [supply_1, supply_2, supply_3]
+	# ability key read from Settings like fire and supply keys, so rebinds show here too
+	content_5.text = "Type 5 words in a row without making a mistake to charge your ability. Your ability waits until you press %s to fire it, so you choose the moment.\n" % [SettingsState.get_ability_label()]
 
 func _on_back_button_pressed() -> void:
 	Audio.play("click")

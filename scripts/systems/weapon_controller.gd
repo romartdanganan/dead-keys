@@ -63,8 +63,50 @@ func _process(delta: float) -> void:
 
 	look_at(get_global_mouse_position())
 
-# validate state, consume ammo, and spawn projectile toward target
+# normal shot, never uses the ability charge
 func try_fire(target_position: Vector2) -> bool:
+	if not _take_shot():
+		return false
+	_spawn_projectile(target_position)
+	Audio.play("shoot")
+	return true
+
+
+# the charged ability now fires only on its own input so the player picks the moment,
+# it costs one bullet like a normal shot and uses up the charge
+func try_fire_ability(target_position: Vector2) -> bool:
+	if not AbilityState.is_charged:
+		return false
+	if not _take_shot():
+		return false
+
+	match AbilityState.equipped_ability_id:
+		"spread_shot":
+			_fire_spread_shot(target_position)
+		"ricochet":
+			_fire_ricochet_shot(target_position)
+		"piercing_shot":
+			_fire_piercing_shot(target_position)
+		"freeze_round":
+			_fire_freeze_round(target_position)
+		"explosive_round":
+			_fire_explosive_round(target_position)
+		"heavy_round":
+			_fire_heavy_round(target_position)
+		"homing_shot":
+			_fire_homing_shot(target_position)
+		"shockwave_round":
+			_fire_shockwave_round(target_position)
+		_:
+			_spawn_projectile(target_position)
+
+	Audio.play("spread_shot" if AbilityState.equipped_ability_id == "spread_shot" else "shoot")
+	AbilityState.consume_charge()
+	return true
+
+
+# shared checks for both shot types: set up, not jammed, off cooldown, has ammo
+func _take_shot() -> bool:
 	if projectile_scene == null:
 		push_warning("WeaponController has no projectile scene.")
 		return false
@@ -78,7 +120,7 @@ func try_fire(target_position: Vector2) -> bool:
 			"WeaponController has no projectile container."
 		)
 		return false
-	
+
 	if set_jammed == true:
 		Audio.play("jammed")
 		return false
@@ -90,45 +132,6 @@ func try_fire(target_position: Vector2) -> bool:
 		Audio.play("no_ammo")
 		attempted_fire_without_ammunition.emit()
 		return false
-
-	# Spread Shot (#24), Ricochet (#36) and Piercing Shot (#38): consume the
-	# ability charge, not extra ammo
-	if AbilityState.equipped_ability_id == "spread_shot" and AbilityState.is_charged:
-		_fire_spread_shot(target_position)
-		AbilityState.consume_charge()
-		Audio.play("spread_shot")
-	elif AbilityState.equipped_ability_id == "ricochet" and AbilityState.is_charged:
-		_fire_ricochet_shot(target_position)
-		AbilityState.consume_charge()
-		Audio.play("shoot")
-	elif AbilityState.equipped_ability_id == "piercing_shot" and AbilityState.is_charged:
-		_fire_piercing_shot(target_position)
-		AbilityState.consume_charge()
-		Audio.play("shoot")
-	elif AbilityState.equipped_ability_id == "freeze_round" and AbilityState.is_charged:
-		_fire_freeze_round(target_position)
-		AbilityState.consume_charge()
-		Audio.play("shoot")
-	# four new abilities, same charge-consume pattern as above
-	elif AbilityState.equipped_ability_id == "explosive_round" and AbilityState.is_charged:
-		_fire_explosive_round(target_position)
-		AbilityState.consume_charge()
-		Audio.play("shoot")
-	elif AbilityState.equipped_ability_id == "heavy_round" and AbilityState.is_charged:
-		_fire_heavy_round(target_position)
-		AbilityState.consume_charge()
-		Audio.play("shoot")
-	elif AbilityState.equipped_ability_id == "homing_shot" and AbilityState.is_charged:
-		_fire_homing_shot(target_position)
-		AbilityState.consume_charge()
-		Audio.play("shoot")
-	elif AbilityState.equipped_ability_id == "shockwave_round" and AbilityState.is_charged:
-		_fire_shockwave_round(target_position)
-		AbilityState.consume_charge()
-		Audio.play("shoot")
-	else:
-		_spawn_projectile(target_position)
-		Audio.play("shoot")
 
 	cooldown_remaining = fire_cooldown
 	return true

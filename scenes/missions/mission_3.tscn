@@ -1,0 +1,13 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" uid="uid://bfhjsurifryia" path="res://scenes/missions/mission_1.tscn" id="1_base"]
+[ext_resource type="Script" path="res://scripts/missions/mission_3.gd" id="2_script"]
+
+[node name="Mission3" instance=ExtResource("1_base")]
+script = ExtResource("2_script")
+
+[node name="BackgroundColour" parent="."]
+color = Color(0.42, 0.36, 0.3, 1)
+
+[node name="TypingController" parent="."]
+word_list_path = "res://resources/word_lists/mission_3_words_PLACEHOLDER.json"

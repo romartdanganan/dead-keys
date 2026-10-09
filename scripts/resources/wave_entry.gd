@@ -18,3 +18,7 @@ class_name WaveEntry
 # false lets the next entry start once this one has finished spawning,
 # so different enemy types can be on screen together
 @export var wait_for_clear: bool = true
+
+# true keeps spawns to the left and right sides (corners included), which gives
+# slow tough enemies like the tank the widest part of the screen to cross
+@export var side_spawn_only: bool = false

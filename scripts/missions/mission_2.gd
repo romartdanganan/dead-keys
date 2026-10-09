@@ -2,6 +2,7 @@ extends "res://scripts/missions/mission_1.gd"
 
 # hold the hospital: same gameplay as mission 1, only the waves change
 const MEDIC_TYPE: EnemyTypeDef = preload("res://resources/enemies/medic.tres")
+const BRUTE_TYPE: EnemyTypeDef = preload("res://resources/enemies/brute.tres")
 
 
 func _init() -> void:
@@ -14,11 +15,13 @@ func _build_mission_config() -> MissionConfigDef:
 	wave_1a.wait_for_clear = false
 	var wave_1b := _make_wave(MEDIC_TYPE, 1, 0.0, 2.0, 1)
 
-	# wave 2: runners rush in, then walkers backed by a medic
+	# wave 2: runners rush in, then walkers backed by a medic and the first brute (GDD 5.2)
 	var wave_2a := _make_wave(RUNNER_TYPE, 3, 2.0, 2.5, 2)
 	var wave_2b := _make_wave(WALKER_TYPE, 3, 2.5, 1.5, 2)
 	wave_2b.wait_for_clear = false
 	var wave_2c := _make_wave(MEDIC_TYPE, 1, 0.0, 2.0, 2)
+	wave_2c.wait_for_clear = false
+	var wave_2d := _make_wave(BRUTE_TYPE, 1, 0.0, 2.0, 2)
 
 	# wave 3 (final): walkers and runners together with two medics
 	var wave_3a := _make_wave(WALKER_TYPE, 4, 2.5, 2.5, 3)
@@ -30,7 +33,7 @@ func _build_mission_config() -> MissionConfigDef:
 	var mission := MissionConfigDef.new()
 	mission.mission_id = "mission_2"
 	mission.mission_name = "Hold the Hospital"
-	mission.waves = [wave_1a, wave_1b, wave_2a, wave_2b, wave_2c, wave_3a, wave_3b, wave_3c]
+	mission.waves = [wave_1a, wave_1b, wave_2a, wave_2b, wave_2c, wave_2d, wave_3a, wave_3b, wave_3c]
 	mission.base_coin_reward = 75
 	return mission
 

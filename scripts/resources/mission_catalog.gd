@@ -4,6 +4,7 @@ extends RefCounted
 const MISSION_SCENES: Dictionary = {
 	1: "res://scenes/missions/mission_1.tscn",
 	2: "res://scenes/missions/mission_2.tscn",
+	3: "res://scenes/missions/mission_3.tscn",
 }
 
 

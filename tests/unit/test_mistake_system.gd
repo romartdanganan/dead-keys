@@ -14,6 +14,7 @@ var weapon_controller: WeaponController
 
 # restored after each test so the real saved setting isn't left changed
 var _saved_mistake_setting: bool = true
+var _saved_charged: bool = false
 
 
 # builds a minimal node tree matching MistakeSystem's expected sibling
@@ -100,10 +101,61 @@ func before_each() -> void:
 	# set directly rather than via the setter so nothing gets saved
 	_saved_mistake_setting = SettingsState.mistake_system_enabled
 	SettingsState.mistake_system_enabled = true
+	_saved_charged = AbilityState.is_charged
+	AbilityState.is_charged = false
 
 
 func after_each() -> void:
 	SettingsState.mistake_system_enabled = _saved_mistake_setting
+	AbilityState.is_charged = _saved_charged
+
+
+func _type_words(count: int) -> void:
+	for i in count:
+		typing_controller.word_completed.emit("word", 1)
+
+
+func test_five_typed_words_charge_the_ability() -> void:
+	_type_words(4)
+	assert_false(AbilityState.is_charged)
+	_type_words(1)
+	assert_true(AbilityState.is_charged)
+
+
+func test_supply_crate_words_count_towards_the_combo() -> void:
+	_type_words(4)
+	typing_controller.supply_word_completed.emit(autofree(Node.new()), "crate")
+	assert_true(AbilityState.is_charged)
+
+
+# kills alone no longer build the combo
+func test_kills_without_typing_do_not_charge_the_ability() -> void:
+	for i in 5:
+		typing_controller.target_unregistered.emit()
+	assert_eq(mistake_system.combo, 0)
+	assert_false(AbilityState.is_charged)
+
+
+func test_a_mistake_resets_the_word_streak() -> void:
+	ammo_system.add_ammunition(8)
+	_type_words(4)
+	typing_controller.typing_mistake.emit()
+	_type_words(4)
+	assert_false(AbilityState.is_charged)
+
+
+# a stored charge doesn't stack, the streak waits until the ability is used
+func test_streak_pauses_while_the_ability_is_ready() -> void:
+	_type_words(5)
+	_type_words(3)
+	assert_eq(mistake_system.combo, 0)
+	assert_eq(mistake_system.ability_status_label.text, "READY: " + SettingsState.get_ability_label().to_upper())
+
+
+func test_using_the_ability_restarts_the_combo_display() -> void:
+	_type_words(5)
+	AbilityState.consume_charge()
+	assert_eq(mistake_system.ability_status_label.text, "COMBO: 0 / 5")
 
 
 # three typing_mistake signals in a row should flip the weapon jammed,

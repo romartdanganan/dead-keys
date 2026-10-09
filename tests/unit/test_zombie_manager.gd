@@ -56,6 +56,35 @@ func test_spawned_zombie_emits_zombie_spawned() -> void:
 	assert_signal_emitted(manager, "zombie_spawned")
 
 
+# every direction should start just past the screen edge, not far off on a circle
+func test_spawn_position_is_just_past_the_screen_edge() -> void:
+	var centre := Vector2(640, 360)
+	var half := Vector2(640, 360)
+	assert_almost_eq(ZombieManager.spawn_position(centre, half, 0.0, 100.0), Vector2(1380, 360), Vector2(0.01, 0.01))
+	assert_almost_eq(ZombieManager.spawn_position(centre, half, PI, 100.0), Vector2(-100, 360), Vector2(0.01, 0.01))
+	assert_almost_eq(ZombieManager.spawn_position(centre, half, -PI / 2.0, 100.0), Vector2(640, -100), Vector2(0.01, 0.01))
+	assert_almost_eq(ZombieManager.spawn_position(centre, half, PI / 2.0, 100.0), Vector2(640, 820), Vector2(0.01, 0.01))
+
+
+func test_spawn_position_is_always_off_screen() -> void:
+	var centre := Vector2(640, 360)
+	var half := Vector2(640, 360)
+	var screen := Rect2(Vector2.ZERO, half * 2.0)
+	for step in 36:
+		var spawn_point := ZombieManager.spawn_position(centre, half, step * TAU / 36.0, 100.0)
+		assert_false(screen.has_point(spawn_point), "spawned on screen at %s" % spawn_point)
+
+
+func test_side_only_spawns_never_come_from_top_or_bottom() -> void:
+	for i in 200:
+		var direction := Vector2.RIGHT.rotated(ZombieManager.pick_spawn_angle(true))
+		assert_true(absf(direction.x) >= cos(ZombieManager.SIDE_SPAWN_SPREAD) - 0.001, "angle too steep: %s" % direction)
+
+
+func test_wave_entry_spawns_anywhere_by_default() -> void:
+	assert_false(WaveEntry.new().side_spawn_only)
+
+
 func test_grouped_entries_count_as_one_displayed_wave() -> void:
 	var a := WaveEntry.new()
 	a.display_wave_number = 1

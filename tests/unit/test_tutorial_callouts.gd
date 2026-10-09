@@ -82,6 +82,6 @@ func test_walker_gets_no_enemy_callout() -> void:
 
 
 func test_every_planned_enemy_has_callout_text() -> void:
-	for enemy_id in ["runner", "medic", "brute", "commander"]:
+	for enemy_id in ["runner", "medic", "brute", "commander", "tank"]:
 		assert_ne(TutorialCalloutsScript.enemy_callout_text(enemy_id), "", enemy_id)
 	assert_eq(TutorialCalloutsScript.enemy_callout_text("walker"), "")
