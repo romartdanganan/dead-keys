@@ -6,6 +6,7 @@ class_name EnemyTypeDef
 # Special behaviour tag values
 const BEHAVIOUR_ZIGZAG: String = "zigzag"
 const BEHAVIOUR_MEDIC: String = "medic"
+const BEHAVIOUR_COMMANDER: String = "commander"
 
 @export var enemy_id: String = ""
 @export var display_name: String = ""
@@ -21,9 +22,12 @@ const BEHAVIOUR_MEDIC: String = "medic"
 @export var silhouette_modulate: Color = Color.WHITE
 @export var word_label_border_color: Color = Color.WHITE
 
-# Only for Medic behaviour
+# Only for support behaviours
 @export var heal_per_second: float = 10.0
+# seconds a zombie must go unhit before a medic starts healing it
+@export var heal_delay: float = 2.0
 @export var support_radius: float = 180.0
+@export var speed_multiplier: float = 1.2
 
 # Only for zigzag behaviour
 @export var zigzag_amplitude: float = 0.0

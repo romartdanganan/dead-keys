@@ -25,6 +25,16 @@ func _list_files() -> PackedStringArray:
 func test_every_built_mission_has_a_word_list() -> void:
 	assert_true("mission_1_words_PLACEHOLDER.json" in _list_files())
 	assert_true("mission_2_words_PLACEHOLDER.json" in _list_files())
+	assert_true("mission_3_words_PLACEHOLDER.json" in _list_files())
+
+
+# the tank only uses long words, so the boss mission needs plenty of them
+func test_mission_3_has_enough_long_words_for_the_boss() -> void:
+	var long_words := 0
+	for word in _load_words("mission_3_words_PLACEHOLDER.json"):
+		if String(word).length() >= 9:
+			long_words += 1
+	assert_gte(long_words, 15)
 
 
 func test_every_word_list_parses_with_enough_words() -> void:

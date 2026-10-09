@@ -55,11 +55,26 @@ var pause_menu: PauseMenu = null
 const SETTINGS_MENU_SCENE := preload("res://scenes/ui/settings_menu.tscn")
 var settings_menu: Node = null
 
+# How To Play overlay, instanced here rather than by PauseMenu itself so it
+# stays reusable across missions, same reasoning as PauseMenu's own signals
+const HOW_TO_PLAY_SCENE := preload("res://scenes/ui/how_to_play.tscn")
+var how_to_play_overlay: Node = null
+
 const MissionSuccess := preload("res://scripts/ui/mission_success_overlay.gd")
 const MISSION_SUCCESS_SCENE := preload("res://scenes/ui/mission_success_overlay.tscn")
 var mission_success_overlay: MissionSuccess = null
 
+const MissionFail := preload("res://scripts/ui/mission_fail_overlay.gd")
+const MISSION_FAIL_SCENE := preload("res://scenes/ui/mission_fail_overlay.tscn")
+var mission_fail_overlay: MissionFail = null
+
 var zombie_manager: ZombieManager
+
+const TUTORIAL_CALLOUTS_SCRIPT := preload("res://scripts/missions/tutorial_callouts.gd")
+const COMBAT_FEEDBACK_SCRIPT := preload("res://scripts/missions/combat_feedback.gd")
+const WAVE_COUNTER_SCENE := preload("res://scenes/ui/wave_counter.tscn")
+const HUD_WARNINGS_SCRIPT := preload("res://scripts/missions/hud_warnings.gd")
+const BOSS_HEALTH_BAR_SCENE := preload("res://scenes/ui/boss_health_bar.tscn")
 var kill_count := 0
 
 # base wall HP, overridden by the Fortified Wall upgrade (#25) in _ready()
@@ -128,9 +143,23 @@ func _unhandled_input(event: InputEvent) -> void:
 	# check for fire action (default left click, rebindable via Settings)
 	if event.is_action_pressed("fire"):
 		weapon_controller.try_fire(get_global_mouse_position())
+	# the charged ability waits for its own input instead of firing on the next shot
+	elif event.is_action_pressed("use_ability"):
+		weapon_controller.try_fire_ability(get_global_mouse_position())
+	elif event.is_action_pressed("call_supply_1"):
+		_call_supply(0)
+	elif event.is_action_pressed("call_supply_2"):
+		_call_supply(1)
+	elif event.is_action_pressed("call_supply_3"):
+		_call_supply(2)
+	# debug keys only work when running from the editor, never in exported builds
+	elif OS.is_debug_build():
+		_handle_debug_input(event)
 
-	# debug inputs to manually manipulate ammo system
-	elif event.is_action_pressed("debug_add_ammo"):
+
+# F1 charges the ability, F4 to F7 change ammo, for testing only
+func _handle_debug_input(event: InputEvent) -> void:
+	if event.is_action_pressed("debug_add_ammo"):
 		ammo_system.add_ammunition(1)
 	elif event.is_action_pressed("debug_use_ammo"):
 		ammo_system.consume_ammunition(1)
@@ -139,13 +168,6 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_pressed("debug_reset_ammo"):
 		ammo_system.reset_ammunition()
 		print("Ammunition reset")
-	elif event.is_action_pressed("call_supply_1"):
-		_call_supply(0)
-	elif event.is_action_pressed("call_supply_2"):
-		_call_supply(1)
-	elif event.is_action_pressed("call_supply_3"):
-		_call_supply(2)
-	# TODO: remove once #23 (Combo system) actually charges the ability
 	elif event.is_action_pressed("debug_charge_ability"):
 		AbilityState.set_charged(true)
 
@@ -323,12 +345,55 @@ func _start_mission() -> void:
 	# the mission actually starts, so this is set here rather than in configure()
 	weapon_controller.set_zombie_manager(zombie_manager)
 
+	# hooked up before the waves start so the first wave callout isn't missed
+	_setup_tutorial_callouts()
+	_setup_combat_feedback()
+	_setup_wave_counter()
+	_setup_hud_warnings()
+	_setup_boss_health_bar()
+	$HUD/HUDRoot/MissionPanel/MissionMargin/MissionNameLabel.text = "MISSION: %s" % mission.mission_name.to_upper()
+
 	status_timer.timeout.connect(_on_status_timer_timeout)
 
 	zombie_manager.start_mission()
 
 	print("Mission started: ", mission.mission_name)
 	print("Type any active word shown above a zombie.")
+
+# tutorial and new enemy hints live in their own script, the mission only creates it
+func _setup_tutorial_callouts() -> void:
+	var callouts := TUTORIAL_CALLOUTS_SCRIPT.new()
+	add_child(callouts)
+	callouts.setup(typing_controller, zombie_manager, weapon_controller)
+
+# hit flash, ammo popups and the out of ammo prompt live in their own script
+func _setup_combat_feedback() -> void:
+	var feedback := COMBAT_FEEDBACK_SCRIPT.new()
+	add_child(feedback)
+	feedback.setup(typing_controller, zombie_manager, weapon_controller, ammo_system, $HUD/HUDRoot/AmmoPanel)
+
+# low wall pulse and ability ready glow live in their own script
+func _setup_hud_warnings() -> void:
+	var warnings := HUD_WARNINGS_SCRIPT.new()
+	add_child(warnings)
+	warnings.setup(wall_health_bar, $HUD/HUDRoot/WallPanelAnchor/WallPanel, $HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent/AbilitySection)
+
+# boss bar stays hidden until a boss type spawns, so missions without one are unaffected
+func _setup_boss_health_bar() -> void:
+	var boss_bar := BOSS_HEALTH_BAR_SCENE.instantiate()
+	add_child(boss_bar)
+	boss_bar.setup(zombie_manager)
+
+func _setup_wave_counter() -> void:
+	var wave_counter := WAVE_COUNTER_SCENE.instantiate()
+	add_child(wave_counter)
+	wave_counter.setup(zombie_manager)
+
+# pause automatically if the player alt-tabs away mid-wave. skipped inside the editor's
+# Game tab, where clicking its toolbar (like the speed setting) also takes focus away
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_APPLICATION_FOCUS_OUT and is_inside_tree() and not Engine.is_embedded_in_editor():
+		_open_pause_menu()
 
 func _on_wave_started(wave_number: int, is_final_wave: bool) -> void:
 	if is_final_wave:
@@ -460,8 +525,7 @@ func _spend_life() -> void:
 		_update_wall_hud()
 	else:
 		print("Wall destroyed. No lives remaining. Returning to home base.")
-		Audio.play("game_over")
-		return_to_home_base()
+		_display_mission_fail_overlay()
 
 func _on_all_waves_cleared() -> void:
 	print("Mission complete. Returning to home base.")
@@ -469,6 +533,38 @@ func _on_all_waves_cleared() -> void:
 	ProgressionManager.save_progression()
 	
 	_display_mission_success_overlay()
+
+func _display_mission_fail_overlay() -> void:
+	if zombie_manager:
+		zombie_manager.stop_mission()
+	
+	Audio.clear_music()
+	Audio.play("game_over")
+	mission_fail_overlay = MISSION_FAIL_SCENE.instantiate()
+	add_child(mission_fail_overlay)
+	
+	mission_fail_overlay.stats.text = """
+		Zombies killed: %d
+		Reached %s
+		""" % [kill_count, wave_announcement.wave_label.text]
+	
+	mission_fail_overlay.replay_requested.connect(_on_mission_fail_replay_requested)
+	mission_fail_overlay.return_home_requested.connect(_on_mission_fail_return_home_requested)
+	get_tree().paused = true
+
+func _on_mission_fail_replay_requested() -> void:
+	get_tree().paused = false
+	mission_fail_overlay.queue_free()
+	mission_fail_overlay = null
+	get_tree().reload_current_scene()
+	Audio.clear_sounds()
+	Audio.play("play_music")
+
+func _on_mission_fail_return_home_requested() -> void:
+	get_tree().paused = false
+	mission_fail_overlay.queue_free()
+	mission_fail_overlay = null
+	return_to_home_base()
 
 
 func _display_mission_success_overlay() -> void:
@@ -523,7 +619,7 @@ func _on_pause_menu_return_home_requested() -> void:
 	return_to_home_base()
 
 func _open_pause_menu() -> void:
-	if pause_menu or mission_success_overlay != null:
+	if pause_menu or mission_success_overlay or mission_fail_overlay != null:
 		return
 
 	Audio.play("pause")
@@ -532,6 +628,7 @@ func _open_pause_menu() -> void:
 	pause_menu.resume_requested.connect(_on_pause_menu_resume_requested)
 	pause_menu.return_home_requested.connect(_on_pause_menu_return_home_requested)
 	pause_menu.settings_requested.connect(_on_pause_menu_settings_requested)
+	pause_menu.how_to_play_requested.connect(_on_pause_how_to_play_overlay_requested)
 	get_tree().paused = true
 
 func _on_pause_menu_resume_requested() -> void:
@@ -550,10 +647,21 @@ func _on_pause_menu_settings_requested() -> void:
 	add_child(settings_menu)
 	settings_menu.closed.connect(_on_settings_menu_closed)
 
-
 func _on_settings_menu_closed() -> void:
 	settings_menu.queue_free()
 	settings_menu = null
+
+
+func _on_pause_how_to_play_overlay_requested() -> void:
+	if how_to_play_overlay != null:
+		return
+	how_to_play_overlay = HOW_TO_PLAY_SCENE.instantiate()
+	pause_menu.add_child(how_to_play_overlay)
+	how_to_play_overlay.closed.connect(_on_how_to_play_closed)
+
+func _on_how_to_play_closed() -> void:
+	how_to_play_overlay.queue_free()
+	how_to_play_overlay = null
 
 func return_to_home_base() -> void:
 	# Supplies are repurchased every mission per GDD §2.6, not persistent

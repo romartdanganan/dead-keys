@@ -315,6 +315,27 @@ theme_override_font_sizes/font_size = 20
 text = "When on, every wrong key costs 1 ammo and 3 wrong keys in a row jam your weapon. Turn off to type without penalties."
 autowrap_mode = 3
 
+[node name="ReduceFlashingRow" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/GAMEPLAY" unique_id=261762114]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="ReduceFlashingLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/GAMEPLAY/ReduceFlashingRow" unique_id=116730377]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
+text = "REDUCE FLASHING"
+
+[node name="ReduceFlashingToggle" type="CheckButton" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/GAMEPLAY/ReduceFlashingRow" unique_id=1911711702]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="ReduceFlashingHintLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/GAMEPLAY" unique_id=1914606594]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 0.75)
+theme_override_font_sizes/font_size = 20
+text = "When on, hit flashes are turned off and warnings use a steady colour instead of pulsing."
+autowrap_mode = 3
+
 [node name="DISPLAY" type="VBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs" unique_id=612116458]
 visible = false
 layout_mode = 2
@@ -401,6 +422,26 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_dark_normal")
 theme_override_styles/hover = SubResource("StyleBoxFlat_dark_hover")
 text = "Left Click"
 
+[node name="AbilityRow" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/CONTROLS"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="AbilityLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/CONTROLS/AbilityRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
+text = "USE ABILITY"
+
+[node name="AbilityButton" type="Button" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/CONTROLS/AbilityRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(230, 48)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_dark_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_dark_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_dark_hover")
+text = "Right Click"
+
 [node name="Supply1Row" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/CONTROLS" unique_id=577505934]
 layout_mode = 2
 theme_override_constants/separation = 16
@@ -465,7 +506,7 @@ text = "3"
 layout_mode = 2
 theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 0.75)
 theme_override_font_sizes/font_size = 20
-text = "Click a binding then press any key or mouse button (not A-Z). Supply keys accept keyboard only. Duplicate bindings are rejected."
+text = "Click a binding then press any key or mouse button (not A-Z). Fire and ability accept a key or mouse button, supply keys accept keyboard only. Duplicate bindings are rejected."
 autowrap_mode = 3
 
 [node name="BackButton" type="Button" parent="CenterContainer/MenuPanel/MenuMargin/MenuList" unique_id=1657156015]
@@ -482,9 +523,11 @@ text = "BACK"
 [connection signal="value_changed" from="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/AUDIO/MusicRow/MusicSlider" to="." method="_on_music_slider_value_changed"]
 [connection signal="value_changed" from="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/AUDIO/SFXRow/SFXSlider" to="." method="_on_sfx_slider_value_changed"]
 [connection signal="toggled" from="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/GAMEPLAY/MistakeSystemRow/MistakeSystemToggle" to="." method="_on_mistake_system_toggle_toggled"]
+[connection signal="toggled" from="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/GAMEPLAY/ReduceFlashingRow/ReduceFlashingToggle" to="." method="_on_reduce_flashing_toggle_toggled"]
 [connection signal="item_selected" from="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/DISPLAY/WindowModeRow/WindowModeOption" to="." method="_on_window_mode_option_item_selected"]
 [connection signal="item_selected" from="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/DISPLAY/ResolutionRow/ResolutionOption" to="." method="_on_resolution_option_item_selected"]
 [connection signal="pressed" from="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/CONTROLS/FireRow/FireButton" to="." method="_on_fire_bind_pressed"]
+[connection signal="pressed" from="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/CONTROLS/AbilityRow/AbilityButton" to="." method="_on_ability_bind_pressed"]
 [connection signal="pressed" from="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/CONTROLS/Supply1Row/Supply1Button" to="." method="_on_supply_bind_pressed" binds= [0]]
 [connection signal="pressed" from="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/CONTROLS/Supply2Row/Supply2Button" to="." method="_on_supply_bind_pressed" binds= [1]]
 [connection signal="pressed" from="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/CONTROLS/Supply3Row/Supply3Button" to="." method="_on_supply_bind_pressed" binds= [2]]

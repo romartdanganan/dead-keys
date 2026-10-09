@@ -10,15 +10,19 @@ signal closed
 @onready var music_value_label: Label = %MusicValueLabel
 @onready var sfx_value_label: Label = %SFXValueLabel
 @onready var mistake_toggle: CheckButton = %MistakeSystemToggle
+@onready var reduce_flashing_toggle: CheckButton = %ReduceFlashingToggle
 @onready var window_mode_option: OptionButton = %WindowModeOption
 @onready var resolution_option: OptionButton = %ResolutionOption
 @onready var fire_button: Button = %FireButton
+@onready var ability_button: Button = %AbilityButton
 @onready var supply_button_1: Button = %Supply1Button
 @onready var supply_button_2: Button = %Supply2Button
 @onready var supply_button_3: Button = %Supply3Button
 
-# -1 = not listening. 10 = fire slot, 0/1/2 = supply slots
+# -1 = not listening. 10 = fire slot, 11 = ability slot, 0/1/2 = supply slots
 var _listening_slot: int = -1
+const FIRE_SLOT := 10
+const ABILITY_SLOT := 11
 
 const BLOCKED_UNICODE_START := 97
 const BLOCKED_UNICODE_END   := 122
@@ -29,11 +33,12 @@ var supply_buttons: Array[Button]
 
 func _ready() -> void:
 	supply_buttons = [supply_button_1, supply_button_2, supply_button_3]
-	_all_bind_buttons = [fire_button, supply_button_1, supply_button_2, supply_button_3]
+	_all_bind_buttons = [fire_button, ability_button, supply_button_1, supply_button_2, supply_button_3]
 	master_slider.set_value_no_signal(SettingsState.master_volume)
 	music_slider.set_value_no_signal(SettingsState.music_volume)
 	sfx_slider.set_value_no_signal(SettingsState.sfx_volume)
 	mistake_toggle.set_pressed_no_signal(SettingsState.mistake_system_enabled)
+	reduce_flashing_toggle.set_pressed_no_signal(SettingsState.reduce_flashing)
 	_update_volume_labels()
 	_populate_display_options()
 	_refresh_bind_buttons()
@@ -84,6 +89,7 @@ func _populate_display_options() -> void:
 
 func _refresh_bind_buttons() -> void:
 	fire_button.text = SettingsState.get_fire_label()
+	ability_button.text = SettingsState.get_ability_label()
 	for i in supply_buttons.size():
 		var keycode := SettingsState.get_supply_key(i)
 		supply_buttons[i].text = OS.get_keycode_string(keycode)
@@ -96,7 +102,11 @@ func _update_volume_labels() -> void:
 
 
 func _on_fire_bind_pressed() -> void:
-	_start_listen(10)
+	_start_listen(FIRE_SLOT)
+
+
+func _on_ability_bind_pressed() -> void:
+	_start_listen(ABILITY_SLOT)
 
 
 func _on_supply_bind_pressed(slot_index: int) -> void:
@@ -111,15 +121,23 @@ func _start_listen(slot: int) -> void:
 	for btn in _all_bind_buttons:
 		btn.disabled = true
 		btn.focus_mode = Control.FOCUS_NONE
-	var active_btn := fire_button if slot == 10 else supply_buttons[slot]
+	var active_btn := _button_for_slot(slot)
 	active_btn.text = "PRESS A KEY..."
 	# use modulate for the amber tint since disabled overrides style overrides
 	active_btn.modulate = Color(1.4, 1.1, 0.4, 1.0)
 	active_btn.release_focus()
 
 
+func _button_for_slot(slot: int) -> Button:
+	if slot == FIRE_SLOT:
+		return fire_button
+	if slot == ABILITY_SLOT:
+		return ability_button
+	return supply_buttons[slot]
+
+
 func _try_apply_binding(event: InputEvent) -> void:
-	var active_btn := fire_button if _listening_slot == 10 else supply_buttons[_listening_slot]
+	var active_btn := _button_for_slot(_listening_slot)
 
 	if event is InputEventKey:
 		var unicode: int = event.unicode
@@ -130,8 +148,10 @@ func _try_apply_binding(event: InputEvent) -> void:
 
 		var keycode: int = event.physical_keycode
 		var ok := false
-		if _listening_slot == 10:
+		if _listening_slot == FIRE_SLOT:
 			ok = SettingsState.set_fire_key(keycode)
+		elif _listening_slot == ABILITY_SLOT:
+			ok = SettingsState.set_ability_key(keycode)
 		else:
 			ok = SettingsState.set_supply_key(_listening_slot, keycode)
 
@@ -140,11 +160,18 @@ func _try_apply_binding(event: InputEvent) -> void:
 			return
 
 	elif event is InputEventMouseButton:
-		# mouse buttons only valid for fire, not supply (supply needs keyboard)
-		if _listening_slot != 10:
+		# mouse buttons only valid for fire and the ability, supply needs keyboard
+		var mouse_ok := false
+		if _listening_slot == FIRE_SLOT:
+			mouse_ok = SettingsState.set_fire_mouse_button(event.button_index)
+		elif _listening_slot == ABILITY_SLOT:
+			mouse_ok = SettingsState.set_ability_mouse_button(event.button_index)
+		else:
 			_flash_error(active_btn, "KEYS ONLY")
 			return
-		SettingsState.set_fire_mouse_button(event.button_index)
+		if not mouse_ok:
+			_flash_error(active_btn, "ALREADY USED")
+			return
 
 	_cancel_listen()
 	_refresh_bind_buttons()
@@ -185,6 +212,10 @@ func _on_sfx_slider_value_changed(value: float) -> void:
 
 func _on_mistake_system_toggle_toggled(toggled_on: bool) -> void:
 	SettingsState.set_mistake_system_enabled(toggled_on)
+
+
+func _on_reduce_flashing_toggle_toggled(toggled_on: bool) -> void:
+	SettingsState.set_reduce_flashing(toggled_on)
 
 
 func _on_window_mode_option_item_selected(index: int) -> void:

@@ -97,11 +97,36 @@ func test_medic_heals_a_damaged_zombie_nearby() -> void:
 	var walker := _spawn(WALKER_TYPE, Vector2(60, 0))
 	_spawn(MEDIC_TYPE, Vector2.ZERO)
 	walker.take_damage(20.0)
+	# skip the heal delay so the test doesn't wait two real seconds
+	walker.seconds_since_damaged = MEDIC_TYPE.heal_delay
 	var damaged_health := walker.health
 
 	await wait_seconds(0.5)
 
 	assert_gt(walker.health, damaged_health)
+
+
+func test_medic_waits_before_healing_a_freshly_hit_zombie() -> void:
+	var walker := _spawn(WALKER_TYPE, Vector2(60, 0))
+	_spawn(MEDIC_TYPE, Vector2.ZERO)
+	walker.take_damage(20.0)
+	var damaged_health := walker.health
+
+	await wait_seconds(0.5)
+
+	assert_eq(walker.health, damaged_health)
+
+
+# three shots at the base fire rate take 1s, the medic must not heal in between
+func test_heal_delay_is_longer_than_a_three_shot_burst() -> void:
+	assert_gt(MEDIC_TYPE.heal_delay, 1.0)
+
+
+func test_damage_resets_the_heal_timer() -> void:
+	var walker := _spawn(WALKER_TYPE, Vector2.ZERO)
+	assert_eq(walker.seconds_since_damaged, INF)
+	walker.take_damage(5.0)
+	assert_eq(walker.seconds_since_damaged, 0.0)
 
 
 func test_medic_ignores_zombies_outside_its_radius() -> void:

@@ -51,14 +51,17 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Restart" type="Button" parent="CenterContainer/MenuPanel/MenuMargin/MenuList" unique_id=1996530699]
+custom_minimum_size = Vector2(0, 56)
 layout_mode = 2
 text = "REPLAY"
 
 [node name="Next Mission" type="Button" parent="CenterContainer/MenuPanel/MenuMargin/MenuList" unique_id=1510285321]
+custom_minimum_size = Vector2(0, 56)
 layout_mode = 2
 text = "NEXT MISSION"
 
 [node name="ReturnToHub" type="Button" parent="CenterContainer/MenuPanel/MenuMargin/MenuList" unique_id=176246772]
+custom_minimum_size = Vector2(0, 56)
 layout_mode = 2
 text = "RETURN TO BASE"
 

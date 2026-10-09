@@ -49,6 +49,9 @@ const KNOCKBACK_DURATION: float = 0.3
 var _knockback_remaining: float = 0.0
 var _knockback_start_velocity: Vector2 = Vector2.ZERO
 
+# medics wait until a zombie hasn't been hit for heal_delay seconds before healing it
+var seconds_since_damaged: float = INF
+
 func _ready() -> void:
 	attack_timer.timeout.connect(_on_attack_timer_timeout)
 	add_to_group("zombies")
@@ -64,6 +67,7 @@ func setup(type: EnemyTypeDef, wall: Node2D) -> void:
 	_time_alive = 0.0
 	_support_target = null
 	_support_log_accumulator = 0.0
+	seconds_since_damaged = INF
 	# pooled zombies must not keep sliding from a previous life
 	_knockback_remaining = 0.0
 	velocity = Vector2.ZERO
@@ -100,6 +104,7 @@ func _apply_visual_identity() -> void:
 	word_label.add_theme_stylebox_override("normal", label_style)
 
 func _physics_process(delta: float) -> void:
+	seconds_since_damaged += delta
 	# a knockback slide overrides normal movement until it finishes
 	if _knockback_remaining > 0.0:
 		_process_knockback(delta)
@@ -120,6 +125,10 @@ func _process_approach(delta: float) -> void:
 		if _support_target != null:
 			_enter_state(State.SUPPORT)
 			return
+	if enemy_type.special_behaviour_tag == EnemyTypeDef.BEHAVIOUR_COMMANDER:
+		if _has_nearby_support_target():
+			_enter_state(State.SUPPORT)
+			return
 	var base_direction: Vector2 = (wall_target.global_position - global_position).normalized()
 	var move_direction: Vector2 = base_direction
 	
@@ -128,13 +137,18 @@ func _process_approach(delta: float) -> void:
 		var oscillation: float = sin(_time_alive * enemy_type.zigzag_frequency * TAU)
 		move_direction = (base_direction + perpendicular * oscillation * enemy_type.zigzag_amplitude).normalized()
 	
-	velocity = move_direction * enemy_type.speed
+	velocity = move_direction * get_movement_speed()
 	move_and_slide()
 	if global_position.distance_to(wall_target.global_position) <= WALL_CONTACT_DISTANCE:
 		wall_contact.emit()
 		_enter_state(State.ATTACK)
 
 func _process_support(delta: float) -> void:
+	if enemy_type != null and enemy_type.special_behaviour_tag == EnemyTypeDef.BEHAVIOUR_COMMANDER:
+		if _has_nearby_support_target():
+			return
+		_enter_state(State.APPROACH)
+		return
 	if enemy_type == null or not is_instance_valid(_support_target):
 		_enter_state(State.APPROACH)
 		return
@@ -143,6 +157,10 @@ func _process_support(delta: float) -> void:
 		return
 	if global_position.distance_to(_support_target.global_position) > enemy_type.support_radius:
 		_enter_state(State.APPROACH)
+		return
+	# a quick burst of shots should finish a zombie before the medic can undo it,
+	# so freshly hit zombies are only healed once the player stops hitting them
+	if _support_target.seconds_since_damaged < enemy_type.heal_delay:
 		return
 	var healed_amount := _support_target.heal(enemy_type.heal_per_second * delta)
 	_support_log_accumulator += healed_amount
@@ -176,6 +194,31 @@ func _find_support_target() -> Zombie:
 			nearest_distance = distance
 			nearest_target = candidate
 	return nearest_target
+
+func _has_nearby_support_target() -> bool:
+	if enemy_type == null:
+		return false
+	for node in get_tree().get_nodes_in_group("zombies"):
+		var candidate := node as Zombie
+		if candidate == null or candidate == self or candidate.current_state == State.DEAD:
+			continue
+		if global_position.distance_to(candidate.global_position) <= enemy_type.support_radius:
+			return true
+	return false
+
+func get_movement_speed() -> float:
+	if enemy_type == null:
+		return 0.0
+	var movement_speed := enemy_type.speed
+	for node in get_tree().get_nodes_in_group("zombies"):
+		var commander := node as Zombie
+		if commander == null or commander == self or commander.current_state == State.DEAD:
+			continue
+		if commander.enemy_type == null or commander.enemy_type.special_behaviour_tag != EnemyTypeDef.BEHAVIOUR_COMMANDER:
+			continue
+		if global_position.distance_to(commander.global_position) <= commander.enemy_type.support_radius:
+			movement_speed *= commander.enemy_type.speed_multiplier
+	return movement_speed
 
 func _enter_state(new_state: State) -> void:
 	current_state = new_state
@@ -258,6 +301,7 @@ func take_damage(amount: float) -> bool:
 	if current_state == State.DEAD:
 		return false
 	health -= amount
+	seconds_since_damaged = 0.0
 	damaged.emit(self)
 	if health <= 0.0:
 		_enter_state(State.DEAD)
