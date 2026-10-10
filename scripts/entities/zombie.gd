@@ -62,6 +62,7 @@ func _ready() -> void:
 	attack_timer.timeout.connect(_on_attack_timer_timeout)
 	add_to_group("zombies")
 	freeze_timer.timeout.connect(_on_freeze_timer_timeout)
+	# hides or frees the zombie once its death animation ends
 	animation_player.animation_finished.connect(_on_animation_finished)
 	if enemy_type:
 		health = enemy_type.health
@@ -88,7 +89,7 @@ func setup(type: EnemyTypeDef, wall: Node2D) -> void:
 	sprite.modulate = Color.WHITE
 	# a reused zombie may have died mid animation, so bring back its label and walk
 	word_label.visible = true
-	animation_player.play("walk")
+	_play_art_animation("walk")
 	_update_facing()
 	_apply_visual_identity()
 	queue_redraw()
@@ -102,11 +103,23 @@ func _draw() -> void:
 	draw_circle(Vector2.ZERO, enemy_type.support_radius, Color(0.2, 0.95, 0.75, 0.12))
 	draw_arc(Vector2.ZERO, enemy_type.support_radius, 0.0, TAU, 96, Color(0.2, 0.95, 0.75, 0.9), 2.0)
 
-# the cat art faces left, so zombies on the left of the wall flip to face right
+# flips the art so it always faces the wall, cat art faces left and dog art faces right
 func _update_facing() -> void:
 	if wall_target == null:
 		return
-	zombie_sprite.flip_h = global_position.x < wall_target.global_position.x
+	var left_of_wall := global_position.x < wall_target.global_position.x
+	var faces_right := enemy_type != null and enemy_type.art_faces_right
+	zombie_sprite.flip_h = left_of_wall != faces_right
+
+
+# plays this type's art set, e.g. "walk" becomes "dog_walk" for the runner
+func _play_art_animation(anim_name: String) -> void:
+	var prefix := enemy_type.animation_prefix if enemy_type != null else ""
+	# frame 0 exists on every sheet, so swapping sheets never lands on a missing frame
+	zombie_sprite.frame = 0
+	animation_player.play(prefix + anim_name)
+	# applies the sheet straight away so a reused zombie never shows the old art for a frame
+	animation_player.advance(0)
 
 func _apply_visual_identity() -> void:
 	if enemy_type == null:
@@ -122,6 +135,7 @@ func _apply_visual_identity() -> void:
 
 func _physics_process(delta: float) -> void:
 	seconds_since_damaged += delta
+	# flips the sprite to face the wall from whichever side the zombie is on
 	_update_facing()
 	# a knockback slide overrides normal movement until it finishes
 	if _knockback_remaining > 0.0:
@@ -269,11 +283,12 @@ func _start_death_animation() -> void:
 	if collision_shape:
 		collision_shape.disabled = true
 	word_label.visible = false
-	animation_player.play("death")
+	_play_art_animation("death")
 
 
+# tells the pool and the poof effect the corpse is done, then hides or frees it
 func _on_animation_finished(anim_name: StringName) -> void:
-	if anim_name != &"death" or current_state != State.DEAD:
+	if not String(anim_name).ends_with("death") or current_state != State.DEAD:
 		return
 	death_finished.emit(self)
 	if is_pooled:

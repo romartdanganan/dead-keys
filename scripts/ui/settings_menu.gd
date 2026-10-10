@@ -96,6 +96,7 @@ func _populate_display_options() -> void:
 		%DisplayHintLabel.text = "Display options are not available inside the editor. Run the game in a separate window or export a build to use these settings."
 
 
+# fills the zombie speed dropdown from SettingsState so the two lists can't drift apart
 func _populate_zombie_speed_options() -> void:
 	zombie_speed_option.clear()
 	for multiplier in SettingsState.ZOMBIE_SPEED_MULTIPLIERS:
@@ -235,6 +236,7 @@ func _on_reduce_flashing_toggle_toggled(toggled_on: bool) -> void:
 	SettingsState.set_reduce_flashing(toggled_on)
 
 
+# accessibility tab handlers, SettingsState saves each change
 func _on_zombie_speed_option_item_selected(index: int) -> void:
 	SettingsState.set_zombie_speed_index(index)
 

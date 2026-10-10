@@ -11,5 +11,4 @@ speed = 12.0
 wall_damage = 20.0
 word_pool_tag = "long"
 silhouette_scale = Vector2(2, 2)
-silhouette_modulate = Color(0.45, 0.55, 0.4, 1)
 word_label_border_color = Color(0.95, 0.15, 0.15, 1)

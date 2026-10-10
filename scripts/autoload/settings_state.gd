@@ -94,12 +94,14 @@ func set_reduce_flashing(value: bool) -> void:
 	settings_changed.emit()
 
 
+# each accessibility setter saves straight away and tells open menus to refresh
 func set_zombie_speed_index(index: int) -> void:
 	zombie_speed_index = clampi(index, 0, ZOMBIE_SPEED_MULTIPLIERS.size() - 1)
 	save_settings()
 	settings_changed.emit()
 
 
+# zombie.gd multiplies its movement speed by this every frame
 func get_zombie_speed_multiplier() -> float:
 	return ZOMBIE_SPEED_MULTIPLIERS[clampi(zombie_speed_index, 0, ZOMBIE_SPEED_MULTIPLIERS.size() - 1)]
 
@@ -110,6 +112,7 @@ func set_longer_crate_timer(value: bool) -> void:
 	settings_changed.emit()
 
 
+# supply crates multiply their 8 second timer by this when they land
 func get_crate_timer_multiplier() -> float:
 	return CRATE_TIMER_MULTIPLIER if longer_crate_timer else 1.0
 
@@ -120,10 +123,12 @@ func set_large_word_text(value: bool) -> void:
 	settings_changed.emit()
 
 
+# font size for the words above zombies and crates
 func get_word_font_size() -> int:
 	return LARGE_WORD_FONT_SIZE if large_word_text else WORD_FONT_SIZE
 
 
+# mission_1.gd keeps firing while the fire button is held when this is on
 func set_hold_to_fire(value: bool) -> void:
 	hold_to_fire = value
 	save_settings()
@@ -289,6 +294,7 @@ func save_settings() -> void:
 	config.set_value("settings", "reduce_flashing", reduce_flashing)
 	config.set_value("settings", "fullscreen", fullscreen)
 	config.set_value("settings", "resolution_index", resolution_index)
+	# accessibility tab options
 	config.set_value("settings", "zombie_speed_index", zombie_speed_index)
 	config.set_value("settings", "longer_crate_timer", longer_crate_timer)
 	config.set_value("settings", "large_word_text", large_word_text)
@@ -342,6 +348,7 @@ func load_settings() -> void:
 	var saved_index: int = config.get_value("settings", "resolution_index", resolution_index)
 	resolution_index = clampi(saved_index, 0, RESOLUTIONS.size() - 1)
 
+	# accessibility tab options, the speed index is clamped in case the list changes
 	var saved_speed: int = config.get_value("settings", "zombie_speed_index", zombie_speed_index)
 	zombie_speed_index = clampi(saved_speed, 0, ZOMBIE_SPEED_MULTIPLIERS.size() - 1)
 	longer_crate_timer = config.get_value("settings", "longer_crate_timer", longer_crate_timer)

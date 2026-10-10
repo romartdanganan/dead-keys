@@ -5,6 +5,8 @@ extends GutTest
 const ZombieScene := preload("res://scenes/entities/zombie.tscn")
 const WALKER_TYPE: EnemyTypeDef = preload("res://resources/enemies/walker.tres")
 const MEDIC_TYPE: EnemyTypeDef = preload("res://resources/enemies/medic.tres")
+const RUNNER_TYPE: EnemyTypeDef = preload("res://resources/enemies/runner.tres")
+const TANK_TYPE: EnemyTypeDef = preload("res://resources/enemies/tank.tres")
 
 var wall: Node2D
 
@@ -135,6 +137,53 @@ func test_zombie_right_of_the_wall_faces_left() -> void:
 	var zombie := _spawn(WALKER_TYPE, Vector2(6000, 0))
 	await wait_physics_frames(1)
 	assert_false(zombie.zombie_sprite.flip_h)
+
+
+func test_runner_uses_the_dog_art() -> void:
+	var zombie := _spawn(RUNNER_TYPE, Vector2.ZERO)
+	assert_eq(zombie.animation_player.current_animation, "dog_walk")
+	assert_true(zombie.zombie_sprite.texture.resource_path.ends_with("zombie_dog_sheet.png"))
+	assert_eq(zombie.zombie_sprite.hframes, 11)
+
+
+# the dog art faces right, so it only flips when walking in from the right
+func test_dog_left_of_the_wall_faces_right_without_flipping() -> void:
+	var zombie := _spawn(RUNNER_TYPE, Vector2.ZERO)
+	await wait_physics_frames(1)
+	assert_false(zombie.zombie_sprite.flip_h)
+
+
+func test_dog_right_of_the_wall_flips_to_face_left() -> void:
+	var zombie := _spawn(RUNNER_TYPE, Vector2(6000, 0))
+	await wait_physics_frames(1)
+	assert_true(zombie.zombie_sprite.flip_h)
+
+
+# pooled zombies are shared by every type, a dog reused as a walker must become a cat
+func test_reused_dog_switches_back_to_the_cat_art() -> void:
+	var zombie := _spawn(RUNNER_TYPE, Vector2.ZERO)
+	zombie.setup(WALKER_TYPE, wall)
+	assert_eq(zombie.animation_player.current_animation, "walk")
+	assert_true(zombie.zombie_sprite.texture.resource_path.ends_with("zombie_cat_sheet.png"))
+	assert_eq(zombie.zombie_sprite.hframes, 16)
+
+
+func test_dog_plays_its_own_death_and_finishes() -> void:
+	var zombie := _spawn(RUNNER_TYPE, Vector2.ZERO)
+	watch_signals(zombie)
+	zombie.take_damage(9999.0)
+	assert_eq(zombie.animation_player.current_animation, "dog_death")
+
+	await wait_for_signal(zombie.death_finished, 2.0)
+	assert_signal_emitted(zombie, "death_finished")
+
+
+# the boss is the normal cat, just twice as big and untinted
+func test_tank_is_a_bigger_plain_cat() -> void:
+	var zombie := _spawn(TANK_TYPE, Vector2.ZERO)
+	assert_eq(zombie.animation_player.current_animation, "walk")
+	assert_eq(zombie.zombie_sprite.scale, Vector2(4, 4))
+	assert_eq(zombie.zombie_sprite.modulate, Color.WHITE)
 
 
 # cat sprite is set to double size in zombie.tscn and must survive setup()

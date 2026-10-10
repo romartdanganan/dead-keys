@@ -52,6 +52,7 @@ func _process(delta: float) -> void:
 func _on_zombie_spawned(zombie: Zombie) -> void:
 	if not zombie.damaged.is_connected(_on_zombie_damaged):
 		zombie.damaged.connect(_on_zombie_damaged)
+	# the poof waits for the death animation to finish
 	if not zombie.death_finished.is_connected(_on_zombie_death_finished):
 		zombie.death_finished.connect(_on_zombie_death_finished)
 

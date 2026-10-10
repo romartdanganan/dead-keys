@@ -1,6 +1,7 @@
 extends Node
 const UpgradeCatalog := preload("res://scripts/resources/upgrade_catalog.gd")
 const AbilityCatalog := preload("res://scripts/resources/ability_catalog.gd")
+const MissionRating := preload("res://scripts/missions/mission_rating.gd")
 signal gold_changed(new_gold: int)
 signal upgrade_purchased(track_id: String, new_level: int)
 signal ability_unlocked(ability_id: String)
@@ -11,6 +12,8 @@ const SAVE_PATH = "user://progression.cfg"
 # ability ownership: player starts with Spread Shot only, the rest are
 # bought on the Ability Select screen. ability_id (String) -> owned (bool)
 var owned_abilities: Dictionary = {"spread_shot": true}
+# best medal won on each mission, mission number (int) -> medal name
+var best_medals: Dictionary = {}
 
 func _ready() -> void:
 	load_progression()
@@ -81,6 +84,7 @@ func save_progression() -> void:
 	config.set_value("progression", "upgrade_levels", upgrade_levels)
 	config.set_value("progression", "highest_unlocked", highest_unlocked)
 	config.set_value("progression", "owned_abilities", owned_abilities)
+	config.set_value("progression", "best_medals", best_medals)
 	config.save(SAVE_PATH)
 
 
@@ -94,6 +98,7 @@ func load_progression() -> void:
 	upgrade_levels = config.get_value("progression", "upgrade_levels",{})
 	highest_unlocked = config.get_value("progression", "highest_unlocked", 1)
 	owned_abilities = config.get_value("progression", "owned_abilities", owned_abilities)
+	best_medals = config.get_value("progression", "best_medals", {})
 	gold_changed.emit(gold)
 	
 #DEV/DEBUG ONLY. wiped all of progression with no comfirmation.
@@ -103,8 +108,22 @@ func reset_progression() -> void:
 	upgrade_levels = {}
 	highest_unlocked = 1
 	owned_abilities = {"spread_shot": true}
+	best_medals = {}
 	save_progression()
 	gold_changed.emit(gold)
+
+#Medal functions:
+# NONE until the mission has been won at least once
+func get_best_medal(mission_id: int) -> String:
+	return best_medals.get(mission_id, MissionRating.NONE)
+
+
+# only replaces the saved medal when the new one is better, returns true if it did
+func set_best_medal(mission_id: int, medal: String) -> bool:
+	if not MissionRating.is_better(medal, get_best_medal(mission_id)):
+		return false
+	best_medals[mission_id] = medal
+	return true
 
 #Abilites functiions:
 func is_ability_owned(ability_id: String) -> bool:

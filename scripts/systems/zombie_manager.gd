@@ -115,6 +115,7 @@ func _spawn_zombie(type: EnemyTypeDef, side_only: bool = false, allowed_buckets:
 	
 	if not zombie.died.is_connected(_on_zombie_died):
 		zombie.died.connect(_on_zombie_died)
+	# dead zombies go back to the pool after their death animation, not straight away
 	if not zombie.death_finished.is_connected(_on_zombie_death_finished):
 		zombie.death_finished.connect(_on_zombie_death_finished)
 	

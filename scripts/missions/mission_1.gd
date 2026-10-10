@@ -76,7 +76,11 @@ const WAVE_COUNTER_SCENE := preload("res://scenes/ui/wave_counter.tscn")
 const HUD_WARNINGS_SCRIPT := preload("res://scripts/missions/hud_warnings.gd")
 const BOSS_HEALTH_BAR_SCENE := preload("res://scenes/ui/boss_health_bar.tscn")
 const WordLabelStyle := preload("res://scripts/ui/word_label_style.gd")
+const MissionRating := preload("res://scripts/missions/mission_rating.gd")
 var kill_count := 0
+var mission_rating: MissionRating
+# filled in when the mission is won, read by the success overlay
+var _result: Dictionary = {}
 
 # base wall HP, overridden by the Fortified Wall upgrade (#25) in _ready()
 var WALL_MAX_HEALTH: float = 100.0
@@ -118,6 +122,7 @@ func _ready() -> void:
 	_setup_lives_hud()
 	_setup_weapon()
 	_setup_typing()
+	_setup_rating()
 	_setup_ability_hud()
 	_setup_supplies()
 	_start_mission()
@@ -132,6 +137,7 @@ func _apply_upgrades() -> void:
 	wall_health = WALL_MAX_HEALTH
 	lives_remaining = ProgressionManager.get_upgrade_value("extra_life")
 
+# only used for the hold to fire accessibility option for now
 func _process(_delta: float) -> void:
 	_process_hold_to_fire()
 
@@ -225,6 +231,11 @@ func _setup_typing() -> void:
 	typing_controller.word_completed.connect(_on_typing_word_completed)
 	typing_controller.supply_word_completed.connect(_on_supply_word_completed)
 
+# counts keystrokes and lost lives for the end of mission medal
+func _setup_rating() -> void:
+	mission_rating = MissionRating.new()
+	mission_rating.setup(typing_controller)
+
 func _setup_supplies() -> void:
 	for i in supply_slot_icons.size():
 		var supply_id := SupplyState.get_slot(i)
@@ -290,6 +301,7 @@ func _spawn_supply_crate(supply_id: String) -> void:
 	crate.expired.connect(_on_crate_expired)
 
 	var word_label: RichTextLabel = crate.get_node("WordLabel")
+	# bigger word text if the large word text setting is on
 	WordLabelStyle.apply(word_label)
 	typing_controller.register_target(crate, word_label, "supply")
 
@@ -506,6 +518,7 @@ func _on_status_timer_timeout() -> void:
 
 func _on_zombie_spawned(spawned_zombie: Zombie) -> void:
 	var word_label: RichTextLabel = spawned_zombie.get_node("WordLabel")
+	# restyled on every spawn since pooled zombies reuse their label
 	WordLabelStyle.apply(word_label)
 	typing_controller.register_target(spawned_zombie, word_label, "zombie", spawned_zombie.allowed_buckets)
 	# guarded connections since pooled zombies are reused nodes, an unguarded
@@ -538,6 +551,8 @@ func _on_wall_hit(damage: float) -> void:
 
 func _spend_life() -> void:
 	Audio.play("life_lost")
+	# losing a life rules out a gold medal
+	mission_rating.record_life_lost()
 	lives_remaining -= 1
 	_update_lives_hud()
 
@@ -551,10 +566,28 @@ func _spend_life() -> void:
 
 func _on_all_waves_cleared() -> void:
 	print("Mission complete. Returning to home base.")
-	ProgressionManager.add_gold(zombie_manager.mission_config.base_coin_reward)
+	# pays the base reward plus medal and perfect accuracy bonuses, keeps the best medal
+	_result = _rate_mission()
+	ProgressionManager.add_gold(_result.total_gold)
+	ProgressionManager.set_best_medal(mission_number, _result.medal)
 	ProgressionManager.save_progression()
 	
 	_display_mission_success_overlay()
+
+# medal, bonus gold and accuracy for the success screen
+func _rate_mission() -> Dictionary:
+	var base_reward: int = zombie_manager.mission_config.base_coin_reward
+	var medal := mission_rating.get_medal(wall_health / WALL_MAX_HEALTH)
+	var medal_bonus := MissionRating.get_medal_bonus(medal)
+	var accuracy_bonus := mission_rating.get_perfect_accuracy_bonus(base_reward)
+	return {
+		"medal": medal,
+		"accuracy": mission_rating.get_accuracy(),
+		"base_gold": base_reward,
+		"medal_bonus": medal_bonus,
+		"accuracy_bonus": accuracy_bonus,
+		"total_gold": base_reward + medal_bonus + accuracy_bonus,
+	}
 
 func _display_mission_fail_overlay() -> void:
 	if zombie_manager:
@@ -595,11 +628,13 @@ func _display_mission_success_overlay() -> void:
 	mission_success_overlay = MISSION_SUCCESS_SCENE.instantiate()
 	add_child(mission_success_overlay)
 	
-	mission_success_overlay.stats.text = """
-		+%d Gold
-		Zombies killed: %d
-		Health Remaining: %.2f
-		""" % [zombie_manager.mission_config.base_coin_reward, kill_count, wall_health_bar.value]
+	mission_success_overlay.stats.text = _success_stats_text()
+	# medal sprite above the stats, added in code so the overlay scene stays as it is
+	var medal_icon := MissionRating.make_medal_icon(_result.medal, 96)
+	medal_icon.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	var stats_list := mission_success_overlay.stats.get_parent()
+	stats_list.add_child(medal_icon)
+	stats_list.move_child(medal_icon, mission_success_overlay.stats.get_index())
 	
 	mission_success_overlay.replay_requested.connect(_on_mission_success_replay_requested)
 	mission_success_overlay.next_mission_requested.connect(_on_mission_success_next_mission_requested)
@@ -608,6 +643,21 @@ func _display_mission_success_overlay() -> void:
 	# grey out next mission when the next one hasn't been built yet
 	var next_button: Button = mission_success_overlay.get_node("CenterContainer/MenuPanel/MenuMargin/MenuList/Next Mission")
 	next_button.disabled = not MissionCatalog.has_mission(mission_number + 1)
+
+# medal and gold breakdown on top of the kills and health stats from before
+func _success_stats_text() -> String:
+	var lines: Array[String] = [
+		"%s MEDAL" % _result.medal,
+		"+%d Gold" % _result.total_gold,
+		"Mission reward: %d" % _result.base_gold,
+		"Medal bonus: +%d" % _result.medal_bonus,
+	]
+	if _result.accuracy_bonus > 0:
+		lines.append("Perfect accuracy bonus: +%d" % _result.accuracy_bonus)
+	lines.append("Typing accuracy: %d%%" % floori(_result.accuracy * 100))
+	lines.append("Zombies killed: %d" % kill_count)
+	lines.append("Health Remaining: %.2f" % wall_health_bar.value)
+	return "\n".join(lines)
 
 func _on_mission_success_replay_requested() -> void:
 	mission_success_overlay.queue_free()
