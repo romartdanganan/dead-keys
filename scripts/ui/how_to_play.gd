@@ -30,5 +30,4 @@ func _ready() -> void:
 	content_5.text = "Type 5 words in a row without making a mistake to charge your ability. Your ability waits until you press %s to fire it, so you choose the moment.\n" % [SettingsState.get_ability_label()]
 
 func _on_back_button_pressed() -> void:
-	Audio.play("click")
 	closed.emit()

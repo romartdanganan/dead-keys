@@ -91,7 +91,7 @@ func try_fire_ability(target_position: Vector2) -> bool:
 			Audio.play("piercing_shot")
 			_fire_piercing_shot(target_position)
 		"freeze_round":
-			Audio.play("shoot")
+			Audio.play("freeze_round")
 			_fire_freeze_round(target_position)
 		"explosive_round":
 			Audio.play("explosive_round")
@@ -100,6 +100,7 @@ func try_fire_ability(target_position: Vector2) -> bool:
 			Audio.play("heavy_round")
 			_fire_heavy_round(target_position)
 		"homing_shot":
+			Audio.play("homing_shot")
 			_fire_homing_shot(target_position)
 		"shockwave_round":
 			Audio.play("shockwave_round")

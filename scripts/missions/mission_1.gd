@@ -238,6 +238,7 @@ func _call_supply(slot_index: int) -> void:
 
 	_update_supply_call_label()
 	print("Supply called: ", supply_id, " (slot ", slot_index + 1, ")")
+	Audio.play("supply_call")
 
 	var countdown_timer := Timer.new()
 	countdown_timer.wait_time = 1.0
@@ -283,11 +284,13 @@ func _on_supply_word_completed(crate: Node, _word: String) -> void:
 		crate.claim()
 
 func _on_crate_claimed(crate: SupplyCrate) -> void:
+	Audio.play("supply_claim")
 	active_crate = null
 	_apply_supply_effect(crate.supply_type)
 	print("Supply claimed: ", crate.supply_type)
 
 func _on_crate_expired(crate: SupplyCrate) -> void:
+	Audio.play("supply_expired")
 	active_crate = null
 	typing_controller.unregister_target(crate)
 	print("Supply crate expired unclaimed: ", crate.supply_type)
@@ -515,6 +518,7 @@ func _on_wall_hit(damage: float) -> void:
 	Audio.play("wall_damage")
 
 func _spend_life() -> void:
+	Audio.play("life_lost")
 	lives_remaining -= 1
 	_update_lives_hud()
 

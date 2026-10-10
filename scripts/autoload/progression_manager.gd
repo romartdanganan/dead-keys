@@ -129,4 +129,5 @@ func purchase_ability(ability_id: String) -> bool:
 	owned_abilities[ability_id] = true
 	ability_unlocked.emit(ability_id)
 	save_progression()
+	Audio.play("purchase")
 	return true

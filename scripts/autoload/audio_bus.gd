@@ -4,6 +4,11 @@ extends Node
 const SFX: Dictionary = {
 	"click": preload("res://assets/audio/temp_sounds/click.mp3"),
 	"thud": preload("res://assets/audio/temp_sounds/thud.mp3"),
+	"purchase": preload("res://assets/audio/temp_sounds/cha-ching-money.mp3"),
+	"supply_call": preload("res://assets/audio/temp_sounds/supply-drop.MP3"),
+	"supply_claim": preload("res://assets/audio/temp_sounds/supply-claim.mp3"),
+	"supply_expired": preload("res://assets/audio/temp_sounds/floraphonic-classic-game-action-negative-18-224576.mp3"),
+	
 	"shoot": preload("res://assets/audio/temp_sounds/eaglaxle-gun-shot-2-530789.mp3"),
 	"hit_zombie": preload("res://assets/audio/temp_sounds/Zombie_hurt1.ogg"),
 	"kill_zombie": preload("res://assets/audio/temp_sounds/zombie-death.mp3"),
@@ -13,24 +18,26 @@ const SFX: Dictionary = {
 	"ability_unlock": preload("res://assets/audio/temp_sounds/heal.mp3"),
 	"spread_shot": preload("res://assets/audio/temp_sounds/shotgun-read-the-description.mp3"),
 	"ricochet": preload("res://assets/audio/temp_sounds/ricochet.MP3"),
-	"freeze_round": preload("res://assets/audio/temp_sounds/power_up.wav"), ###
+	"freeze_round": preload("res://assets/audio/temp_sounds/freeze_round.MP3"), ###
+	"freeze": preload("res://assets/audio/temp_sounds/freeze(1).MP3"), ###
 	"piercing_shot": preload("res://assets/audio/temp_sounds/heavy-sniper-shot.mp3"),
 	"explosive_round": preload("res://assets/audio/temp_sounds/explosive-round.MP3"),
 	"explosion": preload("res://assets/audio/temp_sounds/explosion.MP3"),
 	"heavy_round": preload("res://assets/audio/temp_sounds/heavy_round.mp3"),
+	"homing_shot": preload("res://assets/audio/temp_sounds/freesound_community-laser-gun-81720.mp3"),
 	"shockwave_round": preload("res://assets/audio/temp_sounds/shockwave-round.MP3"),
 	"shockwave": preload("res://assets/audio/temp_sounds/shockwave.MP3"),
 	
 	"wall_damage": preload("res://assets/audio/temp_sounds/hurt.wav"), 
+	"life_lost": preload("res://assets/audio/temp_sounds/life_lost.mp3"), 
 	"correct_keystroke": preload("res://assets/audio/temp_sounds/coin.wav"),
 	"wrong_keystroke": preload("res://assets/audio/temp_sounds/freesound_community-wrong-47985.mp3"),
 	"pause": preload("res://assets/audio/temp_sounds/pause.mp3"),
 	"resume": preload("res://assets/audio/temp_sounds/resume.mp3"),
 	"success": preload("res://assets/audio/temp_sounds/victory.mp3"),
-	
 	"game_over": preload("res://assets/audio/temp_sounds/game_over_man.mp3"),
 	"play_music": preload("res://assets/audio/temp_sounds/BossSong.mp3"),
-	"main_music": preload("res://assets/audio/temp_sounds/grimsong.mp3")
+	"main_music": preload("res://assets/audio/temp_sounds/grimsong2.mp3")
 }
 
 var _active: Array[AudioStreamPlayer] = []
@@ -113,12 +120,15 @@ func play(audio_name: String, volume: float = 0.0) -> void:
 	# effect on the 8 names listed below, only on anything not in this list
 	if (audio_name == "spread_shot"
 	or audio_name == "piercing_shot"
+	or audio_name == "life_lost"
 	or audio_name == "correct_keystroke"):
 		player.volume_db = -15.0
 	
 	if (audio_name == "thud" 
+	or audio_name == "supply_call" 
 	or audio_name == "no_ammo" 
 	or audio_name == "kill_zombie"
+	or audio_name == "freeze"
 	or audio_name == "heavy_round"
 	or audio_name == "shockwave"
 	or audio_name == "wrong_keystroke"):
@@ -129,8 +139,7 @@ func play(audio_name: String, volume: float = 0.0) -> void:
 	or audio_name == "wall_damage"):
 		player.volume_db = -5.0
 	
-	if (audio_name == "add_ammo"
-	or audio_name == "freeze"):
+	if (audio_name == "add_ammo"):
 		player.volume_db = 10.0
 	
 	add_child(player)
