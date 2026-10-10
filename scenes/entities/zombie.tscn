@@ -2,11 +2,52 @@
 
 [ext_resource type="Script" uid="uid://bcsok2e0cyji2" path="res://scripts/entities/zombie.gd" id="1_frpv3"]
 [ext_resource type="Script" uid="uid://sylq37045jm3" path="res://scripts/resources/enemy_type_def.gd" id="2_47c00"]
-[ext_resource type="Texture2D" uid="uid://bgmlfxoymbhlh" path="res://icon.svg" id="2_asks5"]
+[ext_resource type="Texture2D" path="res://assets/sprites/zombie_cat_sheet.png" id="3_catsheet"]
 
 [sub_resource type="Resource" id="Resource_qgoda"]
 script = ExtResource("2_47c00")
 metadata/_custom_type_script = "uid://sylq37045jm3"
+
+[sub_resource type="Animation" id="Animation_walk"]
+resource_name = "walk"
+length = 0.6
+loop_mode = 1
+step = 0.15
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("ZombieSprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.15, 0.3, 0.45),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [160, 161, 162, 163]
+}
+
+[sub_resource type="Animation" id="Animation_death"]
+resource_name = "death"
+length = 0.66
+step = 0.06
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("ZombieSprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.06, 0.12, 0.18, 0.24, 0.3, 0.36, 0.42, 0.48, 0.54, 0.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_zombie"]
+_data = {
+&"death": SubResource("Animation_death"),
+&"walk": SubResource("Animation_walk")
+}
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(64, 64)
@@ -19,8 +60,18 @@ enemy_type = SubResource("Resource_qgoda")
 debug_show_support_radius = true
 
 [node name="ZombieSprite2D" type="Sprite2D" parent="." unique_id=1622588626]
-scale = Vector2(0.5, 0.5)
-texture = ExtResource("2_asks5")
+texture_filter = 1
+scale = Vector2(2, 2)
+texture = ExtResource("3_catsheet")
+hframes = 16
+vframes = 13
+frame = 160
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_zombie")
+}
+autoplay = &"walk"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1329297047]
 shape = SubResource("RectangleShape2D_1")

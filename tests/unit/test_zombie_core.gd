@@ -87,10 +87,60 @@ func test_pool_reuse_restores_health_and_state() -> void:
 	assert_true(zombie.visible)
 
 
-# placeholder sprite is set to half size in zombie.tscn and must survive setup()
+func test_dead_zombie_stays_in_place_while_the_death_animation_plays() -> void:
+	var zombie := _spawn(WALKER_TYPE, Vector2(100, 50))
+	zombie.take_damage(9999.0)
+
+	assert_true(zombie.visible)
+	assert_eq(zombie.global_position, Vector2(100, 50))
+	assert_eq(zombie.animation_player.current_animation, "death")
+	assert_false(zombie.word_label.visible)
+	assert_true(zombie.collision_shape.disabled)
+
+
+func test_death_animation_ends_by_hiding_the_pooled_zombie() -> void:
+	var zombie := _spawn(WALKER_TYPE, Vector2(100, 50))
+	watch_signals(zombie)
+	zombie.take_damage(9999.0)
+
+	await wait_for_signal(zombie.death_finished, 2.0)
+
+	assert_signal_emitted(zombie, "death_finished")
+	assert_false(zombie.visible)
+
+
+# a zombie reused mid death must walk again and never finish the old death
+func test_reused_zombie_walks_again_and_skips_the_old_death() -> void:
+	var zombie := _spawn(WALKER_TYPE, Vector2.ZERO)
+	watch_signals(zombie)
+	zombie.take_damage(9999.0)
+
+	zombie.setup(WALKER_TYPE, wall)
+	assert_eq(zombie.animation_player.current_animation, "walk")
+	assert_true(zombie.word_label.visible)
+
+	await wait_seconds(0.8)
+	assert_signal_not_emitted(zombie, "death_finished")
+	assert_true(zombie.visible)
+
+
+# the cat art faces left, so it flips when walking in from the left of the wall
+func test_zombie_left_of_the_wall_faces_right() -> void:
+	var zombie := _spawn(WALKER_TYPE, Vector2.ZERO)
+	await wait_physics_frames(1)
+	assert_true(zombie.zombie_sprite.flip_h)
+
+
+func test_zombie_right_of_the_wall_faces_left() -> void:
+	var zombie := _spawn(WALKER_TYPE, Vector2(6000, 0))
+	await wait_physics_frames(1)
+	assert_false(zombie.zombie_sprite.flip_h)
+
+
+# cat sprite is set to double size in zombie.tscn and must survive setup()
 func test_sprite_keeps_scene_scale_times_silhouette_scale() -> void:
 	var zombie := _spawn(WALKER_TYPE, Vector2.ZERO)
-	assert_eq(zombie.zombie_sprite.scale, Vector2(0.5, 0.5) * WALKER_TYPE.silhouette_scale)
+	assert_eq(zombie.zombie_sprite.scale, Vector2(2, 2) * WALKER_TYPE.silhouette_scale)
 
 
 func test_medic_heals_a_damaged_zombie_nearby() -> void:

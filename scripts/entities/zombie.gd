@@ -6,6 +6,8 @@ class_name Zombie
 signal wall_hit(damage: float)
 signal wall_contact()
 signal died(zombie: Zombie)
+# emitted once the death animation ends, right before the zombie is hidden or freed
+signal death_finished(zombie: Zombie)
 signal damaged(zombie: Zombie)
 
 enum State { SPAWN, APPROACH, SUPPORT, ATTACK, DEAD, FROZEN }
@@ -36,6 +38,7 @@ var allowed_buckets: Array[int] = [] #words handling
 # sprite size set in zombie.tscn, per-type silhouette scale multiplies on top
 @onready var _base_sprite_scale: Vector2 = $ZombieSprite2D.scale
 @onready var word_label: RichTextLabel = $WordLabel
+@onready var animation_player: AnimationPlayer = $AnimationPlayer
 
 const WALL_CONTACT_DISTANCE: float = 8.0
 
@@ -59,6 +62,7 @@ func _ready() -> void:
 	attack_timer.timeout.connect(_on_attack_timer_timeout)
 	add_to_group("zombies")
 	freeze_timer.timeout.connect(_on_freeze_timer_timeout)
+	animation_player.animation_finished.connect(_on_animation_finished)
 	if enemy_type:
 		health = enemy_type.health
 
@@ -82,6 +86,10 @@ func setup(type: EnemyTypeDef, wall: Node2D) -> void:
 	# not linger into the new one
 	freeze_timer.stop()
 	sprite.modulate = Color.WHITE
+	# a reused zombie may have died mid animation, so bring back its label and walk
+	word_label.visible = true
+	animation_player.play("walk")
+	_update_facing()
 	_apply_visual_identity()
 	queue_redraw()
 	_enter_state(State.APPROACH)
@@ -93,6 +101,12 @@ func _draw() -> void:
 		return
 	draw_circle(Vector2.ZERO, enemy_type.support_radius, Color(0.2, 0.95, 0.75, 0.12))
 	draw_arc(Vector2.ZERO, enemy_type.support_radius, 0.0, TAU, 96, Color(0.2, 0.95, 0.75, 0.9), 2.0)
+
+# the cat art faces left, so zombies on the left of the wall flip to face right
+func _update_facing() -> void:
+	if wall_target == null:
+		return
+	zombie_sprite.flip_h = global_position.x < wall_target.global_position.x
 
 func _apply_visual_identity() -> void:
 	if enemy_type == null:
@@ -108,6 +122,7 @@ func _apply_visual_identity() -> void:
 
 func _physics_process(delta: float) -> void:
 	seconds_since_damaged += delta
+	_update_facing()
 	# a knockback slide overrides normal movement until it finishes
 	if _knockback_remaining > 0.0:
 		_process_knockback(delta)
@@ -242,12 +257,28 @@ func _enter_state(new_state: State) -> void:
 			attack_timer.stop()
 			freeze_timer.stop()
 			velocity = Vector2.ZERO
-			if is_pooled:
-				_deactivate()
-			else:
-				queue_free()
+			_start_death_animation()
 			Audio.play("kill_zombie")
 			died.emit(self) # TODO: Despawning for now alter for next milestone
+
+# the corpse stays in place and can't be hit or moved while the death animation plays
+func _start_death_animation() -> void:
+	set_physics_process(false)
+	_knockback_remaining = 0.0
+	if collision_shape:
+		collision_shape.disabled = true
+	word_label.visible = false
+	animation_player.play("death")
+
+
+func _on_animation_finished(anim_name: StringName) -> void:
+	if anim_name != &"death" or current_state != State.DEAD:
+		return
+	death_finished.emit(self)
+	if is_pooled:
+		_deactivate()
+	else:
+		queue_free()
 
 func _deactivate() -> void:
 	visible = false

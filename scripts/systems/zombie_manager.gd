@@ -115,6 +115,8 @@ func _spawn_zombie(type: EnemyTypeDef, side_only: bool = false, allowed_buckets:
 	
 	if not zombie.died.is_connected(_on_zombie_died):
 		zombie.died.connect(_on_zombie_died)
+	if not zombie.death_finished.is_connected(_on_zombie_death_finished):
+		zombie.death_finished.connect(_on_zombie_death_finished)
 	
 	zombie.setup(type, wall_target)
 	zombie.allowed_buckets = allowed_buckets
@@ -137,6 +139,10 @@ static func spawn_position(centre: Vector2, half_size: Vector2, angle: float, ma
 
 func _on_zombie_died(zombie: Zombie) -> void:
 	active_zombies.erase(zombie)
+
+
+# only reusable once the death animation is over, or a new spawn could grab the corpse
+func _on_zombie_death_finished(zombie: Zombie) -> void:
 	_pool.release(zombie)
  
 func stop_mission() -> void:
