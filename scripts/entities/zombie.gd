@@ -236,7 +236,8 @@ func get_movement_speed() -> float:
 			continue
 		if global_position.distance_to(commander.global_position) <= commander.enemy_type.support_radius:
 			movement_speed *= commander.enemy_type.speed_multiplier
-	return movement_speed
+	# zombie speed accessibility setting, 1.0 unless the player slows zombies down
+	return movement_speed * SettingsState.get_zombie_speed_multiplier()
 
 func _enter_state(new_state: State) -> void:
 	current_state = new_state

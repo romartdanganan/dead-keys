@@ -218,6 +218,22 @@ Survive the mission and earn coins to buy upgrades and supplies.
 "
 vertical_alignment = 1
 
+[node name="NeedMoreTime" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/MenuPanel2/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9490196, 0.9019608, 0.8, 1)
+theme_override_font_sizes/font_size = 26
+text = "NEED MORE TIME?"
+vertical_alignment = 1
+
+[node name="Content7" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/MenuPanel2/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9490196, 0.9019608, 0.8, 0.7490196)
+theme_override_font_sizes/font_size = 20
+text = "The Accessibility tab in Settings can slow the zombies down, keep supply crates around for longer,
+make the words bigger and let you hold the fire button to keep shooting.
+"
+vertical_alignment = 1
+
 [node name="BackButton" type="Button" parent="CenterContainer/MenuPanel/MenuMargin/MenuList" unique_id=309492421]
 custom_minimum_size = Vector2(0, 60)
 layout_mode = 2

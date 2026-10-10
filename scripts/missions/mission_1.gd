@@ -75,6 +75,7 @@ const COMBAT_FEEDBACK_SCRIPT := preload("res://scripts/missions/combat_feedback.
 const WAVE_COUNTER_SCENE := preload("res://scenes/ui/wave_counter.tscn")
 const HUD_WARNINGS_SCRIPT := preload("res://scripts/missions/hud_warnings.gd")
 const BOSS_HEALTH_BAR_SCENE := preload("res://scenes/ui/boss_health_bar.tscn")
+const WordLabelStyle := preload("res://scripts/ui/word_label_style.gd")
 var kill_count := 0
 
 # base wall HP, overridden by the Fortified Wall upgrade (#25) in _ready()
@@ -130,6 +131,21 @@ func _apply_upgrades() -> void:
 	WALL_MAX_HEALTH = ProgressionManager.get_upgrade_value("fortified_wall")
 	wall_health = WALL_MAX_HEALTH
 	lives_remaining = ProgressionManager.get_upgrade_value("extra_life")
+
+func _process(_delta: float) -> void:
+	_process_hold_to_fire()
+
+
+# hold to fire accessibility setting keeps shooting at the weapon's fire rate
+func _process_hold_to_fire() -> void:
+	if not SettingsState.hold_to_fire or not Input.is_action_pressed("fire"):
+		return
+	# overlays don't pause the tree, and empty or jammed shots would spam their sounds
+	if mission_success_overlay or mission_fail_overlay or pause_menu:
+		return
+	if ammo_system.current_ammo <= 0 or weapon_controller.set_jammed:
+		return
+	weapon_controller.try_fire(get_global_mouse_position())
 
 func _exit_tree() -> void:
 	# reset custom cursor back to system default on scene exit
@@ -274,6 +290,7 @@ func _spawn_supply_crate(supply_id: String) -> void:
 	crate.expired.connect(_on_crate_expired)
 
 	var word_label: RichTextLabel = crate.get_node("WordLabel")
+	WordLabelStyle.apply(word_label)
 	typing_controller.register_target(crate, word_label, "supply")
 
 	active_crate = crate
@@ -489,6 +506,7 @@ func _on_status_timer_timeout() -> void:
 
 func _on_zombie_spawned(spawned_zombie: Zombie) -> void:
 	var word_label: RichTextLabel = spawned_zombie.get_node("WordLabel")
+	WordLabelStyle.apply(word_label)
 	typing_controller.register_target(spawned_zombie, word_label, "zombie", spawned_zombie.allowed_buckets)
 	# guarded connections since pooled zombies are reused nodes, an unguarded
 	# connect (especially an anonymous lambda) would stack a duplicate

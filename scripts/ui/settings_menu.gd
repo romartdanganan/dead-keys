@@ -11,6 +11,10 @@ signal closed
 @onready var sfx_value_label: Label = %SFXValueLabel
 @onready var mistake_toggle: CheckButton = %MistakeSystemToggle
 @onready var reduce_flashing_toggle: CheckButton = %ReduceFlashingToggle
+@onready var zombie_speed_option: OptionButton = %ZombieSpeedOption
+@onready var longer_crate_timer_toggle: CheckButton = %LongerCrateTimerToggle
+@onready var large_word_text_toggle: CheckButton = %LargeWordTextToggle
+@onready var hold_to_fire_toggle: CheckButton = %HoldToFireToggle
 @onready var window_mode_option: OptionButton = %WindowModeOption
 @onready var resolution_option: OptionButton = %ResolutionOption
 @onready var fire_button: Button = %FireButton
@@ -39,8 +43,12 @@ func _ready() -> void:
 	sfx_slider.set_value_no_signal(SettingsState.sfx_volume)
 	mistake_toggle.set_pressed_no_signal(SettingsState.mistake_system_enabled)
 	reduce_flashing_toggle.set_pressed_no_signal(SettingsState.reduce_flashing)
+	longer_crate_timer_toggle.set_pressed_no_signal(SettingsState.longer_crate_timer)
+	large_word_text_toggle.set_pressed_no_signal(SettingsState.large_word_text)
+	hold_to_fire_toggle.set_pressed_no_signal(SettingsState.hold_to_fire)
 	_update_volume_labels()
 	_populate_display_options()
+	_populate_zombie_speed_options()
 	_refresh_bind_buttons()
 
 
@@ -86,6 +94,14 @@ func _populate_display_options() -> void:
 		window_mode_option.disabled = true
 		resolution_option.disabled = true
 		%DisplayHintLabel.text = "Display options are not available inside the editor. Run the game in a separate window or export a build to use these settings."
+
+
+func _populate_zombie_speed_options() -> void:
+	zombie_speed_option.clear()
+	for multiplier in SettingsState.ZOMBIE_SPEED_MULTIPLIERS:
+		var percent := roundi(multiplier * 100)
+		zombie_speed_option.add_item("NORMAL" if percent == 100 else "%d%%" % percent)
+	zombie_speed_option.select(SettingsState.zombie_speed_index)
 
 
 func _refresh_bind_buttons() -> void:
@@ -217,6 +233,22 @@ func _on_mistake_system_toggle_toggled(toggled_on: bool) -> void:
 
 func _on_reduce_flashing_toggle_toggled(toggled_on: bool) -> void:
 	SettingsState.set_reduce_flashing(toggled_on)
+
+
+func _on_zombie_speed_option_item_selected(index: int) -> void:
+	SettingsState.set_zombie_speed_index(index)
+
+
+func _on_longer_crate_timer_toggle_toggled(toggled_on: bool) -> void:
+	SettingsState.set_longer_crate_timer(toggled_on)
+
+
+func _on_large_word_text_toggle_toggled(toggled_on: bool) -> void:
+	SettingsState.set_large_word_text(toggled_on)
+
+
+func _on_hold_to_fire_toggle_toggled(toggled_on: bool) -> void:
+	SettingsState.set_hold_to_fire(toggled_on)
 
 
 func _on_window_mode_option_item_selected(index: int) -> void:
