@@ -503,7 +503,6 @@ func _on_zombie_died(dead_zombie: Zombie) -> void:
 	typing_controller.unregister_target(dead_zombie)
 
 func _on_zombie_damaged(damaged_zombie: Zombie) -> void:
-	Audio.play("hit_zombie")
 	print("Zombie health now: ", damaged_zombie.health)
 
 func _on_wall_hit(damage: float) -> void:

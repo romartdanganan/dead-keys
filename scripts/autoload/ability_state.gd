@@ -11,7 +11,7 @@ const AbilityCatalog := preload("res://scripts/resources/ability_catalog.gd")
 
 signal charged_changed(is_charged: bool)
 
-var equipped_ability_id: String = "spread_shot"
+var equipped_ability_id: String = "homing_shot"
 var is_charged: bool = false
 
 

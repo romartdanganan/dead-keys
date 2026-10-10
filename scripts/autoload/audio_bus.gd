@@ -6,13 +6,21 @@ const SFX: Dictionary = {
 	"thud": preload("res://assets/audio/temp_sounds/thud.mp3"),
 	"shoot": preload("res://assets/audio/temp_sounds/eaglaxle-gun-shot-2-530789.mp3"),
 	"hit_zombie": preload("res://assets/audio/temp_sounds/Zombie_hurt1.ogg"),
+	"kill_zombie": preload("res://assets/audio/temp_sounds/zombie-death.mp3"),
 	"no_ammo": preload("res://assets/audio/temp_sounds/out-of-ammo-sfx.mp3"),
 	"add_ammo": preload("res://assets/audio/temp_sounds/reload.MP3"),
 	"jammed": preload("res://assets/audio/temp_sounds/gunjam.MP3"),
 	"ability_unlock": preload("res://assets/audio/temp_sounds/heal.mp3"),
 	"spread_shot": preload("res://assets/audio/temp_sounds/shotgun-read-the-description.mp3"),
 	"ricochet": preload("res://assets/audio/temp_sounds/ricochet.MP3"),
-	"freeze": preload("res://assets/audio/temp_sounds/power_up.wav"),
+	"freeze_round": preload("res://assets/audio/temp_sounds/power_up.wav"), ###
+	"piercing_shot": preload("res://assets/audio/temp_sounds/heavy-sniper-shot.mp3"),
+	"explosive_round": preload("res://assets/audio/temp_sounds/explosive-round.MP3"),
+	"explosion": preload("res://assets/audio/temp_sounds/explosion.MP3"),
+	"heavy_round": preload("res://assets/audio/temp_sounds/heavy_round.mp3"),
+	"shockwave_round": preload("res://assets/audio/temp_sounds/shockwave-round.MP3"),
+	"shockwave": preload("res://assets/audio/temp_sounds/shockwave.MP3"),
+	
 	"wall_damage": preload("res://assets/audio/temp_sounds/hurt.wav"), 
 	"correct_keystroke": preload("res://assets/audio/temp_sounds/coin.wav"),
 	"wrong_keystroke": preload("res://assets/audio/temp_sounds/freesound_community-wrong-47985.mp3"),
@@ -104,20 +112,25 @@ func play(audio_name: String, volume: float = 0.0) -> void:
 	# passed in for these specific sounds — the volume parameter has no
 	# effect on the 8 names listed below, only on anything not in this list
 	if (audio_name == "spread_shot"
+	or audio_name == "piercing_shot"
 	or audio_name == "correct_keystroke"):
 		player.volume_db = -15.0
 	
 	if (audio_name == "thud" 
 	or audio_name == "no_ammo" 
-	or audio_name == "hit_zombie"
+	or audio_name == "kill_zombie"
+	or audio_name == "heavy_round"
+	or audio_name == "shockwave"
 	or audio_name == "wrong_keystroke"):
 		player.volume_db = -10.0
 	
 	if (audio_name == "click" 
+	or audio_name == "hit_zombie"
 	or audio_name == "wall_damage"):
 		player.volume_db = -5.0
 	
-	if (audio_name == "add_ammo"):
+	if (audio_name == "add_ammo"
+	or audio_name == "freeze"):
 		player.volume_db = 10.0
 	
 	add_child(player)
