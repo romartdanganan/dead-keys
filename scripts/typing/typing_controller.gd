@@ -14,7 +14,7 @@ signal target_unregistered()
 const LETTERS := "abcdefghijklmnopqrstuvwxyz"
 
 #default using Mission 1 word list preload in 
-@export var word_list_path: String = "res://resources/word_lists/missons_words/mission1_words.json"
+@export var word_list_path: String = "res://resources/word_lists/missions_words/mission1_words.json"
 
 # fallback used if word_list_path is empty or fails to load
 var test_words: Array[String] = [

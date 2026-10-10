@@ -10,4 +10,4 @@ script = ExtResource("2_script")
 color = Color(0.32, 0.42, 0.45, 1)
 
 [node name="TypingController" parent="." index="5" unique_id=1294852722]
-word_list_path = "res://resources/word_lists/missons_words/mission2_words.json"
+word_list_path = "res://resources/word_lists/missions_words/mission2_words.json"
