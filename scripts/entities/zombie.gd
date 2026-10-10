@@ -24,6 +24,9 @@ var is_pooled: bool = false
 var _time_alive: float = 0.0
 var _support_target: Zombie = null
 var _support_log_accumulator: float = 0.0
+var allowed_buckets: Array[int] = [] #words handling
+
+
 
 @onready var attack_timer: Timer = $AttackTimer
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
