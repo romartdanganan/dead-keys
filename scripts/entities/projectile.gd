@@ -146,6 +146,7 @@ func _apply_freeze_round(hit_zombie: Zombie) -> void:
 
 # damages every live zombie within explosion_radius of the impact
 func _apply_explosion() -> void:
+	Audio.play("explosion")
 	_spawn_impact_ring(explosion_radius, EXPLOSION_COLOUR, true)
 	if zombie_manager == null:
 		return
@@ -159,6 +160,7 @@ func _apply_explosion() -> void:
 
 # pushes every live zombie in range along the shot direction
 func _apply_shockwave() -> void:
+	Audio.play("shockwave")
 	_spawn_impact_ring(shockwave_radius, SHOCKWAVE_COLOUR, false)
 	if zombie_manager == null:
 		return

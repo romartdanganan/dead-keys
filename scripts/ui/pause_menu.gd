@@ -16,6 +16,13 @@ signal settings_requested
 # same delegation as the two signals above
 signal how_to_play_requested
 
+func _input(event):
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+			if get_viewport().gui_get_hovered_control() is Button:
+				Audio.play("click")
+			else:
+				Audio.play("thud")
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):

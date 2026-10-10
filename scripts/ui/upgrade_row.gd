@@ -50,4 +50,5 @@ func refresh() -> void:
 
 
 func _on_buy_button_pressed() -> void:
+	Audio.play("purchase")
 	buy_pressed.emit(track_id)
