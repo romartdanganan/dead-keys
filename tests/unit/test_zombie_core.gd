@@ -92,6 +92,8 @@ func test_pool_reuse_restores_health_and_state() -> void:
 func test_dead_zombie_stays_in_place_while_the_death_animation_plays() -> void:
 	var zombie := _spawn(WALKER_TYPE, Vector2(100, 50))
 	zombie.take_damage(9999.0)
+	# the hitbox turns off at the end of the frame
+	await wait_physics_frames(2)
 
 	assert_true(zombie.visible)
 	assert_eq(zombie.global_position, Vector2(100, 50))

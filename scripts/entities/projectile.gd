@@ -98,6 +98,9 @@ func _try_damage_target(target: Node) -> void:
 	# zombie more than once, matters most for Piercing Shot (#38)
 	if target is Zombie and target in _hit_zombies:
 		return
+	# a dying zombie is just a corpse, the bullet keeps flying to whatever is behind it
+	if target is Zombie and target.current_state == Zombie.State.DEAD:
+		return
 
 	target.take_damage(damage)
 

@@ -77,6 +77,13 @@ const HUD_WARNINGS_SCRIPT := preload("res://scripts/missions/hud_warnings.gd")
 const BOSS_HEALTH_BAR_SCENE := preload("res://scenes/ui/boss_health_bar.tscn")
 const WordLabelStyle := preload("res://scripts/ui/word_label_style.gd")
 const MissionRating := preload("res://scripts/missions/mission_rating.gd")
+const SCREEN_SHAKE_SCRIPT := preload("res://scripts/missions/screen_shake.gd")
+const BOSS_FIGHT_SCRIPT := preload("res://scripts/missions/boss_fight.gd")
+# shake strengths, trauma from 0 to 1
+const WALL_HIT_SHAKE: float = 0.18
+const LIFE_LOST_SHAKE: float = 0.7
+var camera: Camera2D
+var boss_fight: Node
 var kill_count := 0
 var mission_rating: MissionRating
 # filled in when the mission is won, read by the success overlay
@@ -125,6 +132,7 @@ func _ready() -> void:
 	_setup_rating()
 	_setup_ability_hud()
 	_setup_supplies()
+	_setup_camera()
 	_start_mission()
 
 
@@ -235,6 +243,13 @@ func _setup_typing() -> void:
 func _setup_rating() -> void:
 	mission_rating = MissionRating.new()
 	mission_rating.setup(typing_controller)
+
+# camera at the screen centre so the view is unchanged until something shakes it
+func _setup_camera() -> void:
+	SCREEN_SHAKE_SCRIPT.bleed_background($BackgroundColour)
+	SCREEN_SHAKE_SCRIPT.bleed_background($Background)
+	camera = SCREEN_SHAKE_SCRIPT.new()
+	add_child(camera)
 
 func _setup_supplies() -> void:
 	for i in supply_slot_icons.size():
@@ -383,6 +398,7 @@ func _start_mission() -> void:
 	_setup_wave_counter()
 	_setup_hud_warnings()
 	_setup_boss_health_bar()
+	_setup_boss_fight()
 	$HUD/HUDRoot/MissionPanel/MissionMargin/MissionNameLabel.text = "MISSION: %s" % mission.mission_name.to_upper()
 
 	status_timer.timeout.connect(_on_status_timer_timeout)
@@ -415,6 +431,14 @@ func _setup_boss_health_bar() -> void:
 	var boss_bar := BOSS_HEALTH_BAR_SCENE.instantiate()
 	add_child(boss_bar)
 	boss_bar.setup(zombie_manager)
+
+# entrance, phases and finale for any boss, idle in missions without one
+func _setup_boss_fight() -> void:
+	boss_fight = BOSS_FIGHT_SCRIPT.new()
+	add_child(boss_fight)
+	boss_fight.setup(zombie_manager, camera, wave_announcement)
+	# killing the boss ends the mission once its cinematic is over
+	boss_fight.finale_finished.connect(_on_all_waves_cleared)
 
 func _setup_wave_counter() -> void:
 	var wave_counter := WAVE_COUNTER_SCENE.instantiate()
@@ -541,18 +565,24 @@ func _on_zombie_damaged(damaged_zombie: Zombie) -> void:
 	print("Zombie health now: ", damaged_zombie.health)
 
 func _on_wall_hit(damage: float) -> void:
+	# the boss is already beaten, nothing can cost the player during the cinematic
+	if boss_fight != null and boss_fight.finale_playing:
+		return
 	var effective_damage := damage * EMERGENCY_WALL_REDUCTION_FACTOR if wall_damage_reduction_active else damage
 	wall_health = max(wall_health - effective_damage, 0.0)
 	_update_wall_hud()
 	print("Wall hit for ", effective_damage, " damage. Wall health: ", wall_health)
 	if wall_health <= 0.0:
 		_spend_life()
+	else:
+		camera.add_trauma(WALL_HIT_SHAKE)
 	Audio.play("wall_damage")
 
 func _spend_life() -> void:
 	Audio.play("life_lost")
 	# losing a life rules out a gold medal
 	mission_rating.record_life_lost()
+	camera.add_trauma(LIFE_LOST_SHAKE)
 	lives_remaining -= 1
 	_update_lives_hud()
 

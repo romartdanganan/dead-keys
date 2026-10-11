@@ -81,8 +81,9 @@ func setup(type: EnemyTypeDef, wall: Node2D) -> void:
 	velocity = Vector2.ZERO
 	visible = true
 	set_physics_process(true)
+	# deferred since a spawn can happen inside a bullet hit, where physics refuses changes
 	if collision_shape:
-		collision_shape.disabled = false
+		collision_shape.set_deferred("disabled", false)
 	# pooled zombies reuse this node, a freeze from a previous life must
 	# not linger into the new one
 	freeze_timer.stop()
@@ -280,8 +281,9 @@ func _enter_state(new_state: State) -> void:
 func _start_death_animation() -> void:
 	set_physics_process(false)
 	_knockback_remaining = 0.0
+	# deferred so the hitbox really turns off when a bullet kills it, letting shots pass the corpse
 	if collision_shape:
-		collision_shape.disabled = true
+		collision_shape.set_deferred("disabled", true)
 	word_label.visible = false
 	_play_art_animation("death")
 
@@ -300,7 +302,7 @@ func _deactivate() -> void:
 	visible = false
 	set_physics_process(false)
 	if collision_shape:
-		collision_shape.disabled = true
+		collision_shape.set_deferred("disabled", true)
 	global_position = Vector2(-10000, -10000)
 
 

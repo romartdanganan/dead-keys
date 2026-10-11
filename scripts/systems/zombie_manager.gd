@@ -124,6 +124,15 @@ func _spawn_zombie(type: EnemyTypeDef, side_only: bool = false, allowed_buckets:
 	active_zombies.append(zombie)
 	zombie_spawned.emit(zombie)
 
+# spawns one zombie outside the wave list at a set spot, e.g. a boss calling in helpers
+func spawn_extra(type: EnemyTypeDef, at: Vector2, allowed_buckets: Array[int] = []) -> Zombie:
+	_spawn_zombie(type, false, allowed_buckets)
+	if active_zombies.is_empty():
+		return null
+	var zombie: Zombie = active_zombies.back()
+	zombie.global_position = at
+	return zombie
+
 static func pick_spawn_angle(side_only: bool) -> float:
 	if not side_only:
 		return randf_range(0.0, TAU)
