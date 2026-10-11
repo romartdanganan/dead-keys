@@ -1,13 +1,13 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://b34j8y8n1qlas"]
 
 [ext_resource type="PackedScene" uid="uid://bfhjsurifryia" path="res://scenes/missions/mission_1.tscn" id="1_base"]
-[ext_resource type="Script" path="res://scripts/missions/mission_3.gd" id="2_script"]
+[ext_resource type="Script" uid="uid://dna1pornmugwy" path="res://scripts/missions/mission_3.gd" id="2_script"]
 
-[node name="Mission3" instance=ExtResource("1_base")]
+[node name="Mission3" unique_id=736424333 instance=ExtResource("1_base")]
 script = ExtResource("2_script")
 
-[node name="BackgroundColour" parent="."]
+[node name="BackgroundColour" parent="." index="0" unique_id=1693243801]
 color = Color(0.42, 0.36, 0.3, 1)
 
-[node name="TypingController" parent="."]
-word_list_path = "res://resources/word_lists/mission_3_words_PLACEHOLDER.json"
+[node name="TypingController" parent="." index="5" unique_id=1294852722]
+word_list_path = "res://resources/word_lists/missions_words/mission3_words.json"

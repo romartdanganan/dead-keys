@@ -1,0 +1,19 @@
+{
+  "theme": "zombie",
+  "words": [
+	"rot", "bite", "bone", "claw", "dark", "dead", "doom", "fear", "flee", "gore",
+	"grim", "hide", "howl", "lure", "lurk", "moan", "tank", "tomb",
+
+	"brute", "crawl", "decay", "feral", "grave", "groan", "horde", "medic", "prowl",
+	"rabid", "skull", "swarm", "virus", "ambush", "corpse", "danger", "hunger",
+	"mutant", "plague", "rotten", "runner", "stench", "undead", "walker", "zombie",
+	"carnage", "shamble", "shelter", "spitter",
+
+	"armoured", "epidemic", "exploder", "infected", "lockdown", "mutation", "outbreak",
+	"pandemic", "survival", "commander", "contagion", "graveyard", "nightmare",
+	"scavenger", "wasteland", "apocalypse", "reanimated",
+
+	"decomposing", "infestation", "resourceful", "survivalist", "unstoppable",
+	"bloodthirsty", "contaminated"
+  ]
+}

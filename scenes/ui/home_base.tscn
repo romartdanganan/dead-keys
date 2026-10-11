@@ -3,9 +3,33 @@
 [ext_resource type="Script" uid="uid://dwgmuxj6ali8m" path="res://scripts/ui/home_base.gd" id="1_xlecv"]
 [ext_resource type="Texture2D" uid="uid://dtxygfe036xnp" path="res://icon.svg" id="3_mkrqy"]
 [ext_resource type="PackedScene" uid="uid://k1bityq7o6hv" path="res://scenes/ui/mission_card.tscn" id="4_nywag"]
-[ext_resource type="Texture2D" uid="uid://dmf0qo03hx2k0" path="res://assets/ui/home_base_background.png" id="5_bgimg"]
-[ext_resource type="Texture2D" uid="uid://bdl8kbkf67gp8" path="res://assets/ui/logo_homebase.png" id="6_logo"]
-[ext_resource type="Texture2D" path="res://assets/sprites/coin.png" id="7_coin"]
+[ext_resource type="Texture2D" uid="uid://bv4k4fje45jcc" path="res://assets/ui/home_base_background.png" id="5_bgimg"]
+[ext_resource type="Texture2D" uid="uid://donoluse24rws" path="res://assets/ui/logo_homebase.png" id="6_logo"]
+[ext_resource type="Texture2D" uid="uid://bgio3fqjydfb3" path="res://assets/sprites/coin.png" id="7_coin"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_topbar_normal"]
+bg_color = Color(0.58, 0.4, 0.24, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.32, 0.2, 0.11, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_topbar_hover"]
+bg_color = Color(0.65, 0.46, 0.28, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.32, 0.2, 0.11, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wood_panel"]
 bg_color = Color(0.58, 0.4, 0.24, 1)
@@ -14,18 +38,6 @@ border_width_top = 4
 border_width_right = 4
 border_width_bottom = 4
 border_color = Color(0.32, 0.2, 0.11, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_paper_panel"]
-bg_color = Color(0.91, 0.84, 0.68, 0.75)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(0.6, 0.47, 0.31, 1)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
@@ -55,6 +67,18 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_paper_panel"]
+bg_color = Color(0.91, 0.84, 0.68, 0.75)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.6, 0.47, 0.31, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_launch_normal"]
 bg_color = Color(0.42, 0.62, 0.3, 1)
 border_width_left = 3
@@ -74,30 +98,6 @@ border_width_top = 3
 border_width_right = 3
 border_width_bottom = 3
 border_color = Color(0.24, 0.42, 0.16, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_topbar_normal"]
-bg_color = Color(0.58, 0.4, 0.24, 1)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(0.32, 0.2, 0.11, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_topbar_hover"]
-bg_color = Color(0.65, 0.46, 0.28, 1)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(0.32, 0.2, 0.11, 1)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
@@ -190,21 +190,21 @@ size_flags_horizontal = 3
 [node name="SettingsButton" type="Button" parent="MainMargin/MainLayout/TopBar" unique_id=1344751636]
 custom_minimum_size = Vector2(150, 60)
 layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_topbar_normal")
-theme_override_styles/hover = SubResource("StyleBoxFlat_topbar_hover")
-theme_override_styles/disabled = SubResource("StyleBoxFlat_topbar_normal")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_disabled_color = Color(1, 1, 1, 0.6)
 theme_override_font_sizes/font_size = 26
+theme_override_styles/normal = SubResource("StyleBoxFlat_topbar_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_topbar_hover")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_topbar_normal")
 text = "SETTINGS"
 
 [node name="MainMenuButton" type="Button" parent="MainMargin/MainLayout/TopBar" unique_id=945917127]
 custom_minimum_size = Vector2(160, 60)
 layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_topbar_normal")
-theme_override_styles/hover = SubResource("StyleBoxFlat_topbar_hover")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 26
+theme_override_styles/normal = SubResource("StyleBoxFlat_topbar_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_topbar_hover")
 text = "MAIN MENU"
 
 [node name="HubContent" type="HBoxContainer" parent="MainMargin/MainLayout" unique_id=1467665291]
@@ -265,9 +265,9 @@ text = "Improve your stats permanently."
 
 [node name="UpgradesButton" type="Button" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/UpgradesPanel/UpgradesMargin/UpgradesContent" unique_id=1554892126]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_styles/normal = SubResource("StyleBoxFlat_open_normal")
 theme_override_styles/hover = SubResource("StyleBoxFlat_open_hover")
-theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "OPEN"
 
 [node name="SuppliesPanel" type="PanelContainer" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel" unique_id=1278995495]
@@ -300,9 +300,9 @@ text = "Buy supplies for your next mission."
 
 [node name="SuppliesButton" type="Button" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/SuppliesPanel/SuppliesMargin/SuppliesContent" unique_id=1275023269]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_styles/normal = SubResource("StyleBoxFlat_open_normal")
 theme_override_styles/hover = SubResource("StyleBoxFlat_open_hover")
-theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "OPEN"
 
 [node name="AbilityPanel" type="PanelContainer" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel" unique_id=1501565202]
@@ -336,9 +336,9 @@ mission."
 
 [node name="AbilityButton" type="Button" parent="MainMargin/MainLayout/HubContent/LeftColumn/LeftPanel/AbilityPanel/AbilityMargin/AbilityContent" unique_id=1074654651]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_styles/normal = SubResource("StyleBoxFlat_open_normal")
 theme_override_styles/hover = SubResource("StyleBoxFlat_open_hover")
-theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "OPEN"
 
 [node name="MissionArea" type="VBoxContainer" parent="MainMargin/MainLayout/HubContent" unique_id=1621863191]
@@ -452,11 +452,11 @@ size_flags_vertical = 3
 [node name="LaunchMissionButton" type="Button" parent="MainMargin/MainLayout/HubContent/MissionDetailsPanel/MissionDetailsMargin/MissionDetails" unique_id=1064126933]
 custom_minimum_size = Vector2(0, 70)
 layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_launch_normal")
-theme_override_styles/hover = SubResource("StyleBoxFlat_launch_hover")
+tooltip_text = "Mission gameplay will be connected in a later issue"
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 26
-tooltip_text = "Mission gameplay will be connected in a later issue"
+theme_override_styles/normal = SubResource("StyleBoxFlat_launch_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_launch_hover")
 text = "LAUNCH MISSION"
 
 [connection signal="pressed" from="MainMargin/MainLayout/TopBar/SettingsButton" to="." method="_on_settings_button_pressed"]

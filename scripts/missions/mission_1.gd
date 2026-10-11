@@ -434,6 +434,7 @@ func _build_mission_config() -> MissionConfigDef:
 	
 	var wave_2b := WaveEntry.new()
 	wave_2b.enemy_type = RUNNER_TYPE
+	wave_2b.allowed_buckets = [1]
 	wave_2b.count = 1
 	wave_2b.spawn_interval = 2.5
 	wave_2b.start_delay = 1.5
@@ -451,6 +452,7 @@ func _build_mission_config() -> MissionConfigDef:
 
 	var wave_3b := WaveEntry.new()
 	wave_3b.enemy_type = RUNNER_TYPE
+	wave_3b.allowed_buckets = [1]
 	wave_3b.count = 2
 	wave_3b.spawn_interval = 2.5
 	wave_3b.start_delay = 1.5
@@ -487,8 +489,7 @@ func _on_status_timer_timeout() -> void:
 
 func _on_zombie_spawned(spawned_zombie: Zombie) -> void:
 	var word_label: RichTextLabel = spawned_zombie.get_node("WordLabel")
-	typing_controller.register_target(spawned_zombie, word_label)
-
+	typing_controller.register_target(spawned_zombie, word_label, "zombie", spawned_zombie.allowed_buckets)
 	# guarded connections since pooled zombies are reused nodes, an unguarded
 	# connect (especially an anonymous lambda) would stack a duplicate
 	# connection on every respawn of the same instance

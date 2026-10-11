@@ -1,0 +1,23 @@
+{
+  "theme": "military",
+  "words": [
+    "gun", "jet", "war", "win", "ammo", "army", "awol", "bomb", "camp", "duty",
+    "gear", "jeep", "navy", "ruck", "shot", "tank",
+
+    "cadet", "fight", "fleet", "grunt", "major", "medic", "radar", "rifle", "roger",
+    "scout", "shell", "siege", "squad", "wilco", "wound", "billet", "combat", "convoy",
+    "dogtag", "enlist", "honour", "marine", "medals", "pistol", "ribbon", "sailor",
+    "salute", "sapper", "sniper", "troops", "weapon", "advance", "assault", "brigade",
+    "captain", "capture", "colonel", "holster", "officer", "platoon", "private",
+    "recruit", "service", "soldier", "theatre", "torpedo", "uniform", "warfare",
+
+    "airforce", "barracks", "chaplain", "flotilla", "furlough", "garrison", "howitzer",
+    "infantry", "marksman", "military", "missiles", "regiment", "reserves", "sergeant",
+    "squadron", "tactical", "tomahawk", "balaclava", "battalion", "explosive",
+    "formation", "gunpowder", "manoeuvre", "submarine", "surrender", "camouflage",
+    "commission", "deployment", "encampment", "lieutenant",
+
+    "battlefield", "bombardment", "paratrooper", "reconnoitre", "conscription",
+    "headquarters", "intelligence", "fortification"
+  ]
+}

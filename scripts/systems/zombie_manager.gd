@@ -83,7 +83,7 @@ func _run_next_wave() -> void:
 	for i in wave.count:
 		if not _running:
 			return
-		_spawn_zombie(wave.enemy_type, wave.side_spawn_only)
+		_spawn_zombie(wave.enemy_type, wave.side_spawn_only, wave.allowed_buckets)
 		if i < wave.count - 1 and wave.spawn_interval > 0.0:
 			await get_tree().create_timer(wave.spawn_interval, false).timeout
 	# entries flagged not to wait let the next batch join this one
@@ -97,12 +97,13 @@ func _wait_for_all_zombies_to_clear() -> void:
 	while _running and is_inside_tree() and not active_zombies.is_empty():
 		await get_tree().process_frame
 
-func _spawn_zombie(type: EnemyTypeDef, side_only: bool = false) -> void:
+func _spawn_zombie(type: EnemyTypeDef, side_only: bool = false, allowed_buckets: Array[int] = []) -> void:
 	if wall_target == null:
 		push_warning("ZombieManager: no wall/base target assigned")
 		return
-	
 	var zombie: Zombie = _pool.acquire()
+	
+	
 	
 	# spawns just past the screen edge instead of on a circle around the corners,
 	# so top and bottom zombies no longer walk ~15s off screen before showing up
@@ -116,6 +117,7 @@ func _spawn_zombie(type: EnemyTypeDef, side_only: bool = false) -> void:
 		zombie.died.connect(_on_zombie_died)
 	
 	zombie.setup(type, wall_target)
+	zombie.allowed_buckets = allowed_buckets
 	active_zombies.append(zombie)
 	zombie_spawned.emit(zombie)
 

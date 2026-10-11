@@ -9,14 +9,12 @@ signal target_unregistered()
 
 # keeps the old single-target prototype scene working temporarily
 @export var word_label: RichTextLabel
+@export var debug_word_log: bool = false
 
 const LETTERS := "abcdefghijklmnopqrstuvwxyz"
 
-# placeholder word list source. this is a temporary stand-in for #43's
-# real per-mission word list system, kept here only so Mission 1 is
-# playable in the meantime. safe to repoint or replace this loading logic
-# entirely once the real system lands
-@export var word_list_path: String = "res://resources/word_lists/mission_1_words_PLACEHOLDER.json"
+#default using Mission 1 word list preload in 
+@export var word_list_path: String = "res://resources/word_lists/missions_words/mission1_words.json"
 
 # fallback used if word_list_path is empty or fails to load
 var test_words: Array[String] = [
@@ -61,6 +59,15 @@ func _load_word_list() -> void:
 
 	var file := FileAccess.open(word_list_path, FileAccess.READ)
 	var parsed = JSON.parse_string(file.get_as_text())
+	
+	if typeof(parsed) == TYPE_DICTIONARY or not parsed.has("themes"):
+		var mission_words := WordListLoader.build_mission_words(parsed)
+		if mission_words.is_empty():
+			push_warning("TypingController: word_list_path malformed, using fallback words: " + word_list_path)
+			return
+		test_words = mission_words
+		return
+		
 
 	if typeof(parsed) != TYPE_DICTIONARY or not parsed.has("words"):
 		push_warning("TypingController: word_list_path malformed, using fallback words: " + word_list_path)
@@ -102,7 +109,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	check_letter(typed_character)
 
 
-func register_target(target: Node, label: RichTextLabel, kind: String = "zombie") -> void:
+func register_target(target: Node, label: RichTextLabel, kind: String = "zombie", allowed_buckets: Array[int] = []) -> void:
 	if not is_instance_valid(target) or not is_instance_valid(label):
 		return
 
@@ -111,7 +118,10 @@ func register_target(target: Node, label: RichTextLabel, kind: String = "zombie"
 		if target_data["target"] == target:
 			return
 
-	var new_word := _choose_unique_word()
+	var new_word := _choose_unique_word(allowed_buckets)
+	#check where the word is coming from
+	if debug_word_log:
+		print("REGISTER: ", new_word, " | buckets: ", allowed_buckets)
 
 	if new_word.is_empty():
 		push_warning("TypingController: no unused words are available")
@@ -122,7 +132,8 @@ func register_target(target: Node, label: RichTextLabel, kind: String = "zombie"
 		"label": label,
 		"word": new_word,
 		"kind": kind,
-	})
+		"allowed_buckets": allowed_buckets,
+})
 
 	_update_all_labels()
 
@@ -247,16 +258,26 @@ func _update_all_labels() -> void:
 
 
 # picks a random word from the pool that isn't currently assigned to an active zombie
-func _choose_unique_word() -> String:
+func _choose_unique_word(allowed_buckets:Array = []) -> String:
 	var available_words: Array[String] = []
+	var fallback_words: Array[String] = []
+	
 
 	for candidate_word in test_words:
-		if not _is_word_active(candidate_word):
+		if _is_word_active(candidate_word):
+			continue
+		
+		fallback_words.append(candidate_word)
+		
+		if _word_fits_buckets(candidate_word,allowed_buckets):
 			available_words.append(candidate_word)
-
+			
+	# if no word fit the bucket, ignore restriction rather than leave the zombie blank
+	if available_words.is_empty():
+		available_words = fallback_words
+	
 	if available_words.is_empty():
 		return ""
-
 	return available_words.pick_random()
 
 
@@ -287,7 +308,9 @@ func _remove_invalid_targets() -> void:
 # finds an available word that no other active zombie is using
 # and avoids re-assigning the same word the zombie just had
 func _choose_unique_word_for_target(target_to_replace: Dictionary, previous_word: String) -> String:
+	var allowed_buckets: Array = target_to_replace.get("allowed_buckets", [])
 	var available_words: Array[String] = []
+	var fallback_words: Array[String] = []
 
 	for candidate_word in test_words:
 		# skip the word this zombie just finished
@@ -305,14 +328,27 @@ func _choose_unique_word_for_target(target_to_replace: Dictionary, previous_word
 				used_by_another_target = true
 				break
 
-		if not used_by_another_target:
+		if used_by_another_target:
+			continue
+		
+		fallback_words.append(candidate_word)
+		
+		if _word_fits_buckets(candidate_word, allowed_buckets):
 			available_words.append(candidate_word)
 
+	if available_words.is_empty():
+		available_words = fallback_words
+		
 	if available_words.is_empty():
 		return ""
 
 	return available_words.pick_random()
 
+# true if the word's bucket is allowed, or if there's no restriction
+func _word_fits_buckets(word: String, allowed_buckets: Array) -> bool:
+	if allowed_buckets.is_empty():
+		return true
+	return get_ammo_reward_for_word(word) in allowed_buckets
 
 # bullet count by word length: 3-4 = 1, 5-7 = 2, 8-10 = 3, 11+ = 4
 static func get_ammo_reward_for_word(word: String) -> int:
