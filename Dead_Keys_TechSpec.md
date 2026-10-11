@@ -17,7 +17,7 @@
 | v0.2 | 2026-07-29 | Added the implemented Main Menu and Operations Hub scene architecture, reusable MissionCard component, image placeholders, menu navigation approach, current repository structure, and Issue #6 UI behaviour. | Romart Danganan |
 | v0.3 | 2026-08-24 | Milestone 2/3 documentation sync (#16, overdue from Milestone 2). §2.1 autoloads rewritten to match what actually exists (`UpgradeState`/`AbilityState`/`SupplyState`, not the originally planned `GameState`/`SaveSystem`/`AudioBus`), with the Catalog-as-static-class architecture decision documented. §3 system entries renamed/corrected to match actual code (`AbilitySystem`→`AbilityState`, `SupplyController`→`SupplyState` + `gameplay_prototype.gd`, `Weapon`→`WeaponController`), and flagged the AmmoSystem word-length-scaling gap as a known prototype limitation, not a GDD change. §4 signal map and §5 data formats corrected to match real signal names/signatures and real resource types (the planned `UpgradeDef`/`SupplyDef`/`AbilityDef` `.tres` files and `word_length_to_bullets` table were never built). §7 Testing strategy updated to reflect GUT actually being set up (#34), not just planned: replaced the planned test-target list with what's actually implemented, including catalog/state systems (`UpgradeCatalog`, `AbilityCatalog`, `SupplyCatalog`, `SupplyState`) that didn't exist when this section was first written. | Romart Danganan |
 | v0.4 | 2026-09-26 | Sprint 5 documentation sync (#51). §2.1 autoloads rewritten again: `UpgradeState` was replaced by Nicole's `ProgressionManager` (#26), and the `Audio` autoload (#40) exists; `SettingsState` noted as arriving with #46. §3 updated for the current code: AmmoSystem word-length gap closed (#50), Combo counter implemented inside `MistakeSystem`, all four abilities handled in `WeaponController`, gameplay scene is now `mission_1.gd` (#42), Medic `SUPPORT` state on `Zombie` (#39). §4 signal map combo rows are no longer planned. §5/§6 save format corrected from the planned JSON file to the `ConfigFile` saves that actually ship. §7 test list updated with the current GUT files. | Romart Danganan |
-
+| v0.5 | 2026-10-10 | §5 word list format updated for the per-mission themed word list system (#43); schema documented in `resources/word_lists/README.md`. | Nicole Lai |
 
 ---
 
@@ -182,7 +182,9 @@ Actually-built content is an external `.tres` Resource where noted below. Upgrad
 | `EnemyTypeDef.tres` | health, speed, word-pool tag, special-behaviour tag (optional) | Zombie.gd |
 | `MissionConfigDef` / `WaveEntry` | mission id, waves (enemy type, count, spawn interval, start delay), base coin reward | ZombieManager |
 | `UpgradeCatalog`, `AbilityCatalog`, `SupplyCatalog` | static tables: id, display name, cost/level or per-level effect value (`scripts/resources/`) | `ProgressionManager`, `AbilityState`, `SupplyState` |
-| Word list JSON | `theme`, `words` array (`resources/word_lists/`) | `TypingController` |
+
+Words are split into shared theme files that each mission mixes together (#43). Word length buckets reuse the GDD §2.2.1 ammo tiers through `TypingController.get_ammo_reward_for_word()`, and `WaveEntry.allowed_buckets` can narrow them per wave. The full schema is in `resources/word_lists/README_words.md`.
+
 
 The word list is currently a single placeholder file; the per-mission system with length buckets is #43. The word length to bullet count mapping is a small static function (§3.2) rather than a data table, since the tiers come straight from GDD §2.2.1.
 

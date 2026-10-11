@@ -46,19 +46,18 @@ func _load_words(path: String) -> Array:
 
 func test_every_built_mission_has_a_word_list() -> void:
 	var missions := _list_json(MISSIONS_DIR)
-	assert_true("mission1_words.json" in missions)
-	assert_true("mission2_words.json" in missions)
-	# mission 3 keeps its old flat list until it gets themes
-	assert_true("mission_3_words_PLACEHOLDER.json" in _list_json(WORD_LIST_DIR))
-
+	for number in range(1, 7):
+		assert_true("mission%d_words.json" % number in missions, "missing word list for mission %d" % number)
 
 # the tank only uses long words, so the boss mission needs plenty of them
 func test_mission_3_has_enough_long_words_for_the_boss() -> void:
-	var long_words := 0
-	for word in _load_words(WORD_LIST_DIR +"mission_3_words_PLACEHOLDER.json"):
-		if String(word).length() >= 9:
-			long_words += 1
-	assert_gte(long_words, 15)
+	var data = _read_json(MISSIONS_DIR + "mission3_words.json")
+	var long_words := {}
+	for theme_name in data["themes"]:
+		for word in _load_words(THEMES_DIR + str(theme_name) + ".json"):
+			if String(word).length() >= 9:
+				long_words[word] = true   # dictionary, so a word in 2 themes only counts once
+	assert_gte(long_words.size(), 15)
 
 
 func test_every_word_file_parses_with_enough_words() -> void:

@@ -1,11 +1,14 @@
 class_name WordListLoader
 extends RefCounted
 
-#build a mission word pool from shared theme files #43 
+# builds a mission word pool from shared theme files (#43)
+# file formats and bucket rules: resources/word_lists/README.md
+
 #theme file format: {"theme: "suburb", words" : ["gate, "home" ...]}
 #mission file format: {"themes: ["suburb", "zombie"], "word_count":20, "allowed_bucket: [1,2,3]}
 #bucket follow GD 2.2.1 tiers from TyperController.get_ammo>reward_for_word,
 # so 1 ammo = 3-4 words, 2 ammo = 5-7 words, 3 = 8-10, 4 = 11+
+
 
 const THEMES_DIR := "res://resources/word_lists/themes/"
 

@@ -1,0 +1,20 @@
+{
+  "theme": "city",
+  "words": [
+    "bar", "bank", "city", "club", "park", "port", "road", "taxi", "town", "tram",
+
+    "alley", "block", "hotel", "lofts", "place", "plaza", "siren", "slums", "tower",
+    "urban", "avenue", "bridge", "garage", "hamlet", "museum", "region", "resort",
+    "rubble", "scenic", "street", "tunnel", "airport", "borough", "capital", 
+    "laneway", "library", "offices", "parking", "rooftop", "skyline",
+    "station", "tourist", "traffic", "village",
+
+    "alleyway", "blackout", "building", "bystreet", "district", "downtown", "festival",
+    "footpath", "gridlock", "historic", "junction", "landmark", "monument", "motorway",
+    "overpass", "speedway", "billboard", "cathedral", "crossroad", "underpass",
+    "apartments", "courthouse", "metropolis", "pedestrian", "settlement", "skyscraper",
+
+    "communities", "sightseeing", "underground", "civilisation", "construction",
+    "intersection", "metropolitan", "neighbourhood"
+  ]
+}

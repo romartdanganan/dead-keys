@@ -1,0 +1,5 @@
+{ 
+    "themes": ["zombie", "positive", "rescue"], 
+    "word_count": 45, 
+    "allowed_buckets": [] 
+}
