@@ -21,6 +21,10 @@ const BEHAVIOUR_COMMANDER: String = "commander"
 @export var silhouette_scale: Vector2 = Vector2.ONE
 @export var silhouette_modulate: Color = Color.WHITE
 @export var word_label_border_color: Color = Color.WHITE
+# which art set zombie.tscn plays, "" is the cat and "dog_" is the dog
+@export var animation_prefix: String = ""
+# the cat art faces left, the dog art faces right
+@export var art_faces_right: bool = false
 
 # Only for support behaviours
 @export var heal_per_second: float = 10.0

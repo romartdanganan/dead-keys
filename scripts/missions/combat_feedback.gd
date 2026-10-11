@@ -52,6 +52,9 @@ func _process(delta: float) -> void:
 func _on_zombie_spawned(zombie: Zombie) -> void:
 	if not zombie.damaged.is_connected(_on_zombie_damaged):
 		zombie.damaged.connect(_on_zombie_damaged)
+	# the poof waits for the death animation to finish
+	if not zombie.death_finished.is_connected(_on_zombie_death_finished):
+		zombie.death_finished.connect(_on_zombie_death_finished)
 
 
 # self_modulate so the flash never fights the freeze tint or type colour on modulate
@@ -68,13 +71,13 @@ func _on_zombie_damaged(zombie: Zombie) -> void:
 		tween.tween_property(sprite, "self_modulate", Color.WHITE, HIT_FLASH_SECONDS)
 		zombie.set_meta("hit_flash_tween", tween)
 
-	# damaged fires before the zombie dies and is pooled off-screen, so it's still in place here
-	if zombie.health <= 0.0:
-		var colour := zombie.enemy_type.silhouette_modulate if zombie.enemy_type != null else Color.WHITE
-		spawn_death_burst(zombie.global_position, colour)
+
+# the poof comes after the death animation, death_finished fires before the zombie is pooled off screen
+func _on_zombie_death_finished(zombie: Zombie) -> void:
+	var colour := zombie.enemy_type.silhouette_modulate if zombie.enemy_type != null else Color.WHITE
+	spawn_death_burst(zombie.global_position, colour)
 
 
-# public so a future sprite death animation can call it when the animation starts
 func spawn_death_burst(at: Vector2, colour: Color) -> CPUParticles2D:
 	var burst := CPUParticles2D.new()
 	burst.one_shot = true

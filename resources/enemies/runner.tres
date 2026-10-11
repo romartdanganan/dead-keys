@@ -12,3 +12,6 @@ word_pool_tag = "short"
 special_behaviour_tag = "zigzag"
 zigzag_amplitude = 1.0
 zigzag_frequency = 0.9
+silhouette_scale = Vector2(0.75, 0.75)
+animation_prefix = "dog_"
+art_faces_right = true

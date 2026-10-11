@@ -34,6 +34,8 @@ func _build_mission_config() -> MissionConfigDef:
 	var wave_4a := _make_wave(TANK_TYPE, 1, 0.0, 3.0, 4)
 	wave_4a.wait_for_clear = false
 	wave_4a.side_spawn_only = true
+	# boss only gets 8+ letter words (buckets 3 and 4), worth 3 to 4 bullets each
+	wave_4a.allowed_buckets = [3, 4]
 	var wave_4b := _make_wave(WALKER_TYPE, 4, 4.0, 4.0, 4)
 	wave_4b.wait_for_clear = false
 	var wave_4c := _make_wave(RUNNER_TYPE, 3, 3.0, 4.0, 4)

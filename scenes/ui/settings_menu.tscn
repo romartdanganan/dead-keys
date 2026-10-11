@@ -148,7 +148,7 @@ grow_vertical = 2
 mouse_filter = 2
 
 [node name="MenuPanel" type="PanelContainer" parent="CenterContainer" unique_id=1716021947]
-custom_minimum_size = Vector2(660, 0)
+custom_minimum_size = Vector2(820, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_wood_panel")
 
@@ -313,27 +313,6 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 0.75)
 theme_override_font_sizes/font_size = 20
 text = "When on, every wrong key costs 1 ammo and 3 wrong keys in a row jam your weapon. Turn off to type without penalties."
-autowrap_mode = 3
-
-[node name="ReduceFlashingRow" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/GAMEPLAY" unique_id=261762114]
-layout_mode = 2
-theme_override_constants/separation = 16
-
-[node name="ReduceFlashingLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/GAMEPLAY/ReduceFlashingRow" unique_id=116730377]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
-text = "REDUCE FLASHING"
-
-[node name="ReduceFlashingToggle" type="CheckButton" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/GAMEPLAY/ReduceFlashingRow" unique_id=1911711702]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="ReduceFlashingHintLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/GAMEPLAY" unique_id=1914606594]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 0.75)
-theme_override_font_sizes/font_size = 20
-text = "When on, hit flashes are turned off and warnings use a steady colour instead of pulsing."
 autowrap_mode = 3
 
 [node name="DISPLAY" type="VBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs" unique_id=612116458]
@@ -509,6 +488,98 @@ theme_override_font_sizes/font_size = 20
 text = "Click a binding then press any key or mouse button (not A-Z). Fire and ability accept a key or mouse button, supply keys accept keyboard only. Duplicate bindings are rejected."
 autowrap_mode = 3
 
+[node name="ACCESSIBILITY" type="VBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 8
+metadata/_tab_index = 4
+
+[node name="ZombieSpeedRow" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="ZombieSpeedLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY/ZombieSpeedRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
+text = "ZOMBIE SPEED"
+
+[node name="ZombieSpeedOption" type="OptionButton" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY/ZombieSpeedRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(230, 48)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_disabled_color = Color(1, 1, 1, 0.45)
+theme_override_styles/normal = SubResource("StyleBoxFlat_dark_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_dark_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_dark_hover")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_dark_disabled")
+theme_override_styles/focus = SubResource("StyleBoxFlat_dark_normal")
+
+[node name="LongerCrateTimerRow" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="LongerCrateTimerLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY/LongerCrateTimerRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
+text = "LONGER CRATE TIMER"
+
+[node name="LongerCrateTimerToggle" type="CheckButton" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY/LongerCrateTimerRow"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="LargeWordTextRow" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="LargeWordTextLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY/LargeWordTextRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
+text = "LARGE WORD TEXT"
+
+[node name="LargeWordTextToggle" type="CheckButton" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY/LargeWordTextRow"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="HoldToFireRow" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="HoldToFireLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY/HoldToFireRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
+text = "HOLD TO FIRE"
+
+[node name="HoldToFireToggle" type="CheckButton" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY/HoldToFireRow"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="ReduceFlashingRow" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY" unique_id=261762114]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="ReduceFlashingLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY/ReduceFlashingRow" unique_id=116730377]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
+text = "REDUCE FLASHING"
+
+[node name="ReduceFlashingToggle" type="CheckButton" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY/ReduceFlashingRow" unique_id=1911711702]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="AccessibilityHintLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 0.75)
+theme_override_font_sizes/font_size = 20
+text = "Slower zombies, longer crate timers and larger words give you more time to read and type. Hold to fire keeps shooting while fire is held down. Reduce flashing swaps hit flashes and pulsing warnings for steady colours."
+autowrap_mode = 3
+
 [node name="BackButton" type="Button" parent="CenterContainer/MenuPanel/MenuMargin/MenuList" unique_id=1657156015]
 custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
@@ -523,7 +594,7 @@ text = "BACK"
 [connection signal="value_changed" from="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/AUDIO/MusicRow/MusicSlider" to="." method="_on_music_slider_value_changed"]
 [connection signal="value_changed" from="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/AUDIO/SFXRow/SFXSlider" to="." method="_on_sfx_slider_value_changed"]
 [connection signal="toggled" from="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/GAMEPLAY/MistakeSystemRow/MistakeSystemToggle" to="." method="_on_mistake_system_toggle_toggled"]
-[connection signal="toggled" from="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/GAMEPLAY/ReduceFlashingRow/ReduceFlashingToggle" to="." method="_on_reduce_flashing_toggle_toggled"]
+[connection signal="toggled" from="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY/ReduceFlashingRow/ReduceFlashingToggle" to="." method="_on_reduce_flashing_toggle_toggled"]
 [connection signal="item_selected" from="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/DISPLAY/WindowModeRow/WindowModeOption" to="." method="_on_window_mode_option_item_selected"]
 [connection signal="item_selected" from="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/DISPLAY/ResolutionRow/ResolutionOption" to="." method="_on_resolution_option_item_selected"]
 [connection signal="pressed" from="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/CONTROLS/FireRow/FireButton" to="." method="_on_fire_bind_pressed"]
@@ -532,3 +603,7 @@ text = "BACK"
 [connection signal="pressed" from="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/CONTROLS/Supply2Row/Supply2Button" to="." method="_on_supply_bind_pressed" binds= [1]]
 [connection signal="pressed" from="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/CONTROLS/Supply3Row/Supply3Button" to="." method="_on_supply_bind_pressed" binds= [2]]
 [connection signal="pressed" from="CenterContainer/MenuPanel/MenuMargin/MenuList/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="item_selected" from="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY/ZombieSpeedRow/ZombieSpeedOption" to="." method="_on_zombie_speed_option_item_selected"]
+[connection signal="toggled" from="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY/LongerCrateTimerRow/LongerCrateTimerToggle" to="." method="_on_longer_crate_timer_toggle_toggled"]
+[connection signal="toggled" from="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY/LargeWordTextRow/LargeWordTextToggle" to="." method="_on_large_word_text_toggle_toggled"]
+[connection signal="toggled" from="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY/HoldToFireRow/HoldToFireToggle" to="." method="_on_hold_to_fire_toggle_toggled"]

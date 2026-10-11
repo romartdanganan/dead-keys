@@ -16,6 +16,7 @@ func backup() -> void:
 		"highest_unlocked": ProgressionManager.highest_unlocked,
 		"upgrade_levels": ProgressionManager.upgrade_levels.duplicate(),
 		"owned_abilities": ProgressionManager.owned_abilities.duplicate(),
+		"best_medals": ProgressionManager.best_medals.duplicate(),
 	}
 
 
@@ -30,3 +31,4 @@ func restore() -> void:
 	ProgressionManager.highest_unlocked = _state.highest_unlocked
 	ProgressionManager.upgrade_levels = _state.upgrade_levels
 	ProgressionManager.owned_abilities = _state.owned_abilities
+	ProgressionManager.best_medals = _state.best_medals

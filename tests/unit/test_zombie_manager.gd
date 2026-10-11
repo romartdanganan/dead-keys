@@ -49,6 +49,26 @@ func test_non_waiting_batch_lets_the_next_one_spawn() -> void:
 	assert_eq(manager.active_zombies.size(), 2)
 
 
+# a corpse goes back to the pool only after its death animation, so new spawns can't grab it
+func test_dying_zombie_returns_to_the_pool_after_its_death_animation() -> void:
+	var only := WaveEntry.new()
+	only.enemy_type = WALKER_TYPE
+	only.count = 1
+	var config := MissionConfigDef.new()
+	config.waves = [only]
+	manager.mission_config = config
+	manager.start_mission()
+	await wait_physics_frames(2)
+	var zombie: Zombie = manager.active_zombies[0]
+
+	zombie.take_damage(9999.0)
+	assert_false(manager.active_zombies.has(zombie))
+	assert_eq(manager._pool.size(), 0)
+
+	await wait_for_signal(zombie.death_finished, 2.0)
+	assert_eq(manager._pool.size(), 1)
+
+
 func test_spawned_zombie_emits_zombie_spawned() -> void:
 	watch_signals(manager)
 	_start_with_two_batches(true)

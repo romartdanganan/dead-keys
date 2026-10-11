@@ -83,6 +83,20 @@ Main Menu
 | 1, 2, 3 | Call in the supply in that slot (rebindable in Settings) |
 | Escape | Pause |
 
+### Accessibility
+
+The **Accessibility** tab in Settings is aimed at slower or newer typists.
+Every option saves between sessions and can be changed mid mission from the
+Pause menu.
+
+| Option | Effect |
+|---|---|
+| Zombie Speed | Normal, 85%, 70% or 55% movement speed for every zombie |
+| Longer Crate Timer | Supply crates stay for 12 seconds instead of 8 |
+| Large Word Text | Words above zombies and crates use bigger text |
+| Hold To Fire | Holding the fire button keeps shooting at your fire rate |
+| Reduce Flashing | Hit flashes are turned off and warnings use a steady colour |
+
 ### Developer debug keys (editor only)
 
 These only work when the game is run from the Godot editor. They are disabled

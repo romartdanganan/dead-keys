@@ -102,6 +102,7 @@ func test_mission_3_ends_with_a_single_tank() -> void:
 			tank_count += wave.count
 			assert_eq(wave.display_wave_number, last_wave_number, "tank spawns before the final wave")
 			assert_true(wave.side_spawn_only, "tank can come from the top or bottom")
+			assert_eq(wave.allowed_buckets, [3, 4] as Array[int], "tank should only get long words")
 	assert_eq(tank_count, 1)
 
 

@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://bli7w8w887at1" path="res://scripts/ui/main_menu.gd" id="1_fe2o3"]
 [ext_resource type="Texture2D" uid="uid://ci3tfyme3nrhn" path="res://assets/ui/main_menu_background.png" id="2_bgimg"]
 [ext_resource type="Texture2D" uid="uid://f51out3sld4l" path="res://assets/ui/logo.png" id="3_logo"]
+[ext_resource type="Texture2D" path="res://assets/ui/zombie_hand.png" id="4_hand"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_button_panel"]
 
@@ -119,6 +120,61 @@ mouse_filter = 2
 texture = ExtResource("2_bgimg")
 expand_mode = 1
 stretch_mode = 6
+
+[node name="ZombieHand1" type="TextureRect" parent="."]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -330.0
+offset_top = -305.0
+offset_right = -261.0
+offset_bottom = -212.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+texture = ExtResource("4_hand")
+expand_mode = 1
+
+[node name="ZombieHand2" type="TextureRect" parent="."]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -120.0
+offset_top = -325.0
+offset_right = -51.0
+offset_bottom = -232.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+texture = ExtResource("4_hand")
+expand_mode = 1
+flip_h = true
+
+[node name="ZombieHand3" type="TextureRect" parent="."]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -120.0
+offset_top = -145.0
+offset_right = -51.0
+offset_bottom = -52.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+texture = ExtResource("4_hand")
+expand_mode = 1
 
 [node name="MainMargin" type="MarginContainer" parent="." unique_id=421000454]
 layout_mode = 1

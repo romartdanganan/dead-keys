@@ -103,13 +103,16 @@ func _bursts() -> Array[CPUParticles2D]:
 	return found
 
 
-func test_killing_hit_spawns_a_death_burst_where_the_zombie_was() -> void:
+# the poof waits for the death animation, then appears where the zombie fell
+func test_death_burst_waits_for_the_death_animation() -> void:
 	var zombie := _zombie_with_word("code")
 	zombie.global_position = Vector2(300, 200)
 	manager.zombie_spawned.emit(zombie)
 
 	zombie.take_damage(9999.0)
+	assert_eq(_bursts().size(), 0)
 
+	await wait_for_signal(zombie.death_finished, 2.0)
 	assert_eq(_bursts().size(), 1)
 	assert_eq(_bursts()[0].global_position, Vector2(300, 200))
 
@@ -144,6 +147,7 @@ func test_respawned_zombie_is_only_connected_once() -> void:
 	manager.zombie_spawned.emit(zombie)
 	manager.zombie_spawned.emit(zombie)
 	assert_eq(zombie.damaged.get_connections().size(), 1)
+	assert_eq(zombie.death_finished.get_connections().size(), 1)
 
 
 func test_firing_without_ammo_shows_the_reload_prompt() -> void:

@@ -31,6 +31,9 @@ extends Control
 const SETTINGS_MENU_SCENE := preload("res://scenes/ui/settings_menu.tscn")
 var settings_menu: Node = null
 
+const MissionRating := preload("res://scripts/missions/mission_rating.gd")
+var best_medal_icon: TextureRect
+
 
 func _ready() -> void:
 	# only swap to menu music if mission music is playing (returning from a
@@ -41,6 +44,7 @@ func _ready() -> void:
 		Audio.play("main_music")
 	else:
 		Audio.play("main_music")
+	_setup_best_medal_icon()
 	_show_mission_details(mission_1_card)
 	ProgressionManager.gold_changed.connect(_on_gold_changed)
 	_on_gold_changed(ProgressionManager.get_gold())
@@ -82,10 +86,26 @@ func _show_mission_details(card: MissionCard) -> void:
 	]
 
 	mission_description_label.text = card.mission_description
-	best_medal_label.text = card.best_medal
+	# best medal comes from the save now instead of the card's placeholder
+	var best_medal := ProgressionManager.get_best_medal(card.mission_id)
+	best_medal_label.text = best_medal
+	best_medal_icon.texture = MissionRating.get_medal_texture(best_medal)
+	best_medal_icon.visible = best_medal_icon.texture != null
+	# the sprite replaces the medal name, the label only stays for NONE
+	best_medal_label.visible = not best_medal_icon.visible
 
 	if card.mission_image != null:
 		selected_mission_image.texture = card.mission_image
+
+
+# medal sprite between the BEST MEDAL heading and its label, built in code
+# so the home base scene stays untouched
+func _setup_best_medal_icon() -> void:
+	best_medal_icon = MissionRating.make_medal_icon(MissionRating.NONE, 64)
+	best_medal_icon.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	var details := best_medal_label.get_parent()
+	details.add_child(best_medal_icon)
+	details.move_child(best_medal_icon, best_medal_label.get_index())
 
 
 func _on_launch_mission_button_pressed() -> void:
