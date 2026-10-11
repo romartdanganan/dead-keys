@@ -257,6 +257,19 @@ theme_override_font_sizes/font_size = 17
 text = "ENTER HOME BASE"
 horizontal_alignment = 1
 
+[node name="EndlessButton" type="Button" parent="MainMargin/MainLayout/LeftMenu/ButtonPanel/ButtonMargin/ButtonList"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(260, 70)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_disabled_color = Color(1, 1, 1, 0.6)
+theme_override_font_sizes/font_size = 26
+theme_override_styles/normal = SubResource("StyleBoxFlat_settings_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_settings_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_settings_hover")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_settings_normal")
+text = "ENDLESS MODE"
+
 [node name="SettingsButton" type="Button" parent="MainMargin/MainLayout/LeftMenu/ButtonPanel/ButtonMargin/ButtonList" unique_id=1464386404]
 custom_minimum_size = Vector2(260, 70)
 layout_mode = 2
@@ -299,3 +312,4 @@ size_flags_horizontal = 3
 [connection signal="pressed" from="MainMargin/MainLayout/LeftMenu/ButtonPanel/ButtonMargin/ButtonList/SettingsButton" to="." method="_on_settings_button_pressed"]
 [connection signal="pressed" from="MainMargin/MainLayout/LeftMenu/ButtonPanel/ButtonMargin/ButtonList/How To Play" to="." method="_on_how_to_play_pressed"]
 [connection signal="pressed" from="MainMargin/MainLayout/LeftMenu/ButtonPanel/ButtonMargin/ButtonList/QuitButton" to="." method="_on_quit_button_pressed"]
+[connection signal="pressed" from="MainMargin/MainLayout/LeftMenu/ButtonPanel/ButtonMargin/ButtonList/EndlessButton" to="." method="_on_endless_button_pressed"]

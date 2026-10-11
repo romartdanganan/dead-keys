@@ -1,0 +1,5 @@
+{
+  "themes": ["zombie", "positive", "suburb", "city", "hospital", "shopping"],
+  "word_count": 200,
+  "allowed_buckets": []
+}

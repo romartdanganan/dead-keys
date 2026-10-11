@@ -6,6 +6,8 @@ var settings_menu: Node = null
 const HOW_TO_PLAY_SCENE := preload("res://scenes/ui/how_to_play.tscn")
 var how_to_play_overlay: Node = null
 
+const ENDLESS_SCENE_PATH := "res://scenes/missions/endless.tscn"
+
 func _ready() -> void:
 	Audio.play("main_music")
 
@@ -19,6 +21,12 @@ func _input(event):
 
 func _on_start_button_pressed() -> void:
 	get_tree().change_scene_to_file("res://scenes/ui/home_base.tscn")
+
+
+func _on_endless_button_pressed() -> void:
+	Audio.clear_music()
+	Audio.play("play_music")
+	get_tree().change_scene_to_file(ENDLESS_SCENE_PATH)
 
 
 func _on_quit_button_pressed() -> void:
