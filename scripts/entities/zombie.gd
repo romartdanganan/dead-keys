@@ -246,6 +246,7 @@ func _enter_state(new_state: State) -> void:
 				_deactivate()
 			else:
 				queue_free()
+			Audio.play("kill_zombie")
 			died.emit(self) # TODO: Despawning for now alter for next milestone
 
 func _deactivate() -> void:

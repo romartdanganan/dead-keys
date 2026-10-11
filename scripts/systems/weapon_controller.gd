@@ -82,25 +82,32 @@ func try_fire_ability(target_position: Vector2) -> bool:
 
 	match AbilityState.equipped_ability_id:
 		"spread_shot":
+			Audio.play("spread_shot")
 			_fire_spread_shot(target_position)
 		"ricochet":
+			Audio.play("shoot")
 			_fire_ricochet_shot(target_position)
 		"piercing_shot":
+			Audio.play("piercing_shot")
 			_fire_piercing_shot(target_position)
 		"freeze_round":
+			Audio.play("freeze_round")
 			_fire_freeze_round(target_position)
 		"explosive_round":
+			Audio.play("explosive_round")
 			_fire_explosive_round(target_position)
 		"heavy_round":
+			Audio.play("heavy_round")
 			_fire_heavy_round(target_position)
 		"homing_shot":
+			Audio.play("homing_shot")
 			_fire_homing_shot(target_position)
 		"shockwave_round":
+			Audio.play("shockwave_round")
 			_fire_shockwave_round(target_position)
 		_:
 			_spawn_projectile(target_position)
 
-	Audio.play("spread_shot" if AbilityState.equipped_ability_id == "spread_shot" else "shoot")
 	AbilityState.consume_charge()
 	return true
 
