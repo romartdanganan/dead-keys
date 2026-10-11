@@ -1,0 +1,364 @@
+[gd_scene format=3 uid="uid://dsq81l3fnqltm"]
+
+[ext_resource type="Script" uid="uid://cfugwklve4ecc" path="res://scripts/ui/endless_game_over.gd" id="1_se61j"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0limp"]
+content_margin_left = 48.0
+content_margin_top = 48.0
+content_margin_right = 48.0
+content_margin_bottom = 48.0
+bg_color = Color(0.13, 0.12, 0.15, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.78, 0.22, 0.22, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3gcc2"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(1, 0.82, 0.3, 1)
+border_color = Color(1, 0.82, 0.3, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rrj4p"]
+content_margin_left = 16.0
+content_margin_top = 16.0
+content_margin_right = 16.0
+content_margin_bottom = 16.0
+bg_color = Color(0.19, 0.18, 0.22, 1)
+border_color = Color(0.19, 0.18, 0.22, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_np3cj"]
+content_margin_left = 12.0
+content_margin_top = 12.0
+content_margin_right = 12.0
+content_margin_bottom = 12.0
+bg_color = Color(0.78, 0.22, 0.22, 1)
+border_color = Color(0.78, 0.22, 0.22, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cryre"]
+content_margin_left = 12.0
+content_margin_top = 12.0
+content_margin_right = 12.0
+content_margin_bottom = 12.0
+bg_color = Color(0.624, 0.176, 0.176, 1)
+border_color = Color(0.78, 0.22, 0.22, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h6fa2"]
+content_margin_left = 12.0
+content_margin_top = 12.0
+content_margin_right = 12.0
+content_margin_bottom = 12.0
+bg_color = Color(0.81299996, 0.337, 0.337, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_njn2h"]
+content_margin_left = 12.0
+content_margin_top = 12.0
+content_margin_right = 12.0
+content_margin_bottom = 12.0
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pbe1v"]
+content_margin_left = 12.0
+content_margin_top = 12.0
+content_margin_right = 12.0
+content_margin_bottom = 12.0
+bg_color = Color(0.19, 0.18, 0.22, 1)
+border_color = Color(0.19, 0.18, 0.22, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ey6a0"]
+content_margin_left = 12.0
+content_margin_top = 12.0
+content_margin_right = 12.0
+content_margin_bottom = 12.0
+bg_color = Color(0.152, 0.14400001, 0.176, 1)
+border_color = Color(0.19, 0.18, 0.22, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jrn2b"]
+content_margin_left = 12.0
+content_margin_top = 12.0
+content_margin_right = 12.0
+content_margin_bottom = 12.0
+bg_color = Color(0.3115, 0.303, 0.337, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="EndlessGameOver" type="CanvasLayer" unique_id=262254244]
+process_mode = 3
+layer = 10
+script = ExtResource("1_se61j")
+
+[node name="Backdrop" type="ColorRect" parent="." unique_id=1070951692]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.05, 0.04, 0.06, 0.82)
+
+[node name="Centre" type="CenterContainer" parent="." unique_id=825778816]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Card" type="PanelContainer" parent="Centre" unique_id=1861480382]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(880, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_0limp")
+
+[node name="Layout" type="VBoxContainer" parent="Centre/Card" unique_id=864061217]
+layout_mode = 2
+theme_override_constants/separation = 26
+
+[node name="Header" type="VBoxContainer" parent="Centre/Card/Layout" unique_id=1653431667]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="TitleLabel" type="Label" parent="Centre/Card/Layout/Header" unique_id=1640951659]
+layout_mode = 2
+theme_override_font_sizes/font_size = 44
+theme_override_colors/font_color = Color(0.78, 0.22, 0.22, 1)
+text = "OVERRUN"
+horizontal_alignment = 1
+
+[node name="SubtitleLabel" type="Label" parent="Centre/Card/Layout/Header" unique_id=448986508]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+theme_override_colors/font_color = Color(0.65, 0.63, 0.7, 1)
+text = "You held out until round 1"
+horizontal_alignment = 1
+
+[node name="ScoreRow" type="HBoxContainer" parent="Centre/Card/Layout" unique_id=56201986]
+layout_mode = 2
+theme_override_constants/separation = 48
+alignment = 1
+
+[node name="ScoreBlock" type="VBoxContainer" parent="Centre/Card/Layout/ScoreRow" unique_id=802468432]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="ScoreHeading" type="Label" parent="Centre/Card/Layout/ScoreRow/ScoreBlock" unique_id=1137018316]
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+theme_override_colors/font_color = Color(0.65, 0.63, 0.7, 1)
+text = "SCORE"
+horizontal_alignment = 1
+
+[node name="ScoreLabel" type="Label" parent="Centre/Card/Layout/ScoreRow/ScoreBlock" unique_id=667458412]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 120
+theme_override_colors/font_color = Color(1, 0.82, 0.3, 1)
+text = "0"
+horizontal_alignment = 1
+
+[node name="NewBestBadge" type="PanelContainer" parent="Centre/Card/Layout/ScoreRow/ScoreBlock" unique_id=954746558]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_3gcc2")
+
+[node name="NewBestLabel" type="Label" parent="Centre/Card/Layout/ScoreRow/ScoreBlock/NewBestBadge" unique_id=1125973883]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+theme_override_colors/font_color = Color(0.13, 0.12, 0.15, 1)
+text = "NEW BEST!"
+horizontal_alignment = 1
+
+[node name="ScoreDivider" type="ColorRect" parent="Centre/Card/Layout/ScoreRow" unique_id=486545992]
+custom_minimum_size = Vector2(2, 150)
+layout_mode = 2
+size_flags_vertical = 0
+color = Color(0.19, 0.18, 0.22, 1)
+
+[node name="BestBlock" type="VBoxContainer" parent="Centre/Card/Layout/ScoreRow" unique_id=620090399]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="BestHeading" type="Label" parent="Centre/Card/Layout/ScoreRow/BestBlock" unique_id=670147323]
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+theme_override_colors/font_color = Color(0.65, 0.63, 0.7, 1)
+text = "BEST"
+horizontal_alignment = 1
+
+[node name="BestLabel" type="Label" parent="Centre/Card/Layout/ScoreRow/BestBlock" unique_id=780130556]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 120
+theme_override_colors/font_color = Color(0.88, 0.87, 0.92, 1)
+text = "0"
+horizontal_alignment = 1
+
+[node name="Divider" type="ColorRect" parent="Centre/Card/Layout" unique_id=2004951571]
+custom_minimum_size = Vector2(0, 2)
+layout_mode = 2
+color = Color(0.19, 0.18, 0.22, 1)
+
+[node name="StatsRow" type="HBoxContainer" parent="Centre/Card/Layout" unique_id=1724964439]
+layout_mode = 2
+theme_override_constants/separation = 18
+alignment = 1
+
+[node name="KillsCard" type="PanelContainer" parent="Centre/Card/Layout/StatsRow" unique_id=1904460639]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_rrj4p")
+
+[node name="Stack" type="VBoxContainer" parent="Centre/Card/Layout/StatsRow/KillsCard" unique_id=1773153226]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="Heading" type="Label" parent="Centre/Card/Layout/StatsRow/KillsCard/Stack" unique_id=136505568]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(0.65, 0.63, 0.7, 1)
+text = "KILLS"
+horizontal_alignment = 1
+
+[node name="KillsValue" type="Label" parent="Centre/Card/Layout/StatsRow/KillsCard/Stack" unique_id=477246900]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 54
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "-"
+horizontal_alignment = 1
+
+[node name="AccuracyCard" type="PanelContainer" parent="Centre/Card/Layout/StatsRow" unique_id=97004777]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_rrj4p")
+
+[node name="Stack" type="VBoxContainer" parent="Centre/Card/Layout/StatsRow/AccuracyCard" unique_id=1396856407]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="Heading" type="Label" parent="Centre/Card/Layout/StatsRow/AccuracyCard/Stack" unique_id=1624866972]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(0.65, 0.63, 0.7, 1)
+text = "ACCURACY"
+horizontal_alignment = 1
+
+[node name="AccuracyValue" type="Label" parent="Centre/Card/Layout/StatsRow/AccuracyCard/Stack" unique_id=219002974]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 54
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "-"
+horizontal_alignment = 1
+
+[node name="WpmCard" type="PanelContainer" parent="Centre/Card/Layout/StatsRow" unique_id=268435631]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_rrj4p")
+
+[node name="Stack" type="VBoxContainer" parent="Centre/Card/Layout/StatsRow/WpmCard" unique_id=1081545996]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="Heading" type="Label" parent="Centre/Card/Layout/StatsRow/WpmCard/Stack" unique_id=2021755500]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(0.65, 0.63, 0.7, 1)
+text = "WPM"
+horizontal_alignment = 1
+
+[node name="WpmValue" type="Label" parent="Centre/Card/Layout/StatsRow/WpmCard/Stack" unique_id=124675425]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 54
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "-"
+horizontal_alignment = 1
+
+[node name="ButtonRow" type="HBoxContainer" parent="Centre/Card/Layout" unique_id=213558498]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="PlayAgainButton" type="Button" parent="Centre/Card/Layout/ButtonRow" unique_id=948334800]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(280, 68)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_np3cj")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_cryre")
+theme_override_styles/hover = SubResource("StyleBoxFlat_h6fa2")
+theme_override_styles/focus = SubResource("StyleBoxFlat_njn2h")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 30
+text = "PLAY AGAIN"
+
+[node name="MainMenuButton" type="Button" parent="Centre/Card/Layout/ButtonRow" unique_id=132426008]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(280, 68)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_pbe1v")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ey6a0")
+theme_override_styles/hover = SubResource("StyleBoxFlat_jrn2b")
+theme_override_styles/focus = SubResource("StyleBoxFlat_njn2h")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 30
+text = "MAIN MENU"
+
+[connection signal="pressed" from="Centre/Card/Layout/ButtonRow/PlayAgainButton" to="." method="_on_play_again_button_pressed"]
+[connection signal="pressed" from="Centre/Card/Layout/ButtonRow/MainMenuButton" to="." method="_on_main_menu_button_pressed"]

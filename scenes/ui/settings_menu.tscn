@@ -401,17 +401,17 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_dark_normal")
 theme_override_styles/hover = SubResource("StyleBoxFlat_dark_hover")
 text = "Left Click"
 
-[node name="AbilityRow" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/CONTROLS"]
+[node name="AbilityRow" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/CONTROLS" unique_id=467205063]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="AbilityLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/CONTROLS/AbilityRow"]
+[node name="AbilityLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/CONTROLS/AbilityRow" unique_id=287950424]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
 text = "USE ABILITY"
 
-[node name="AbilityButton" type="Button" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/CONTROLS/AbilityRow"]
+[node name="AbilityButton" type="Button" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/CONTROLS/AbilityRow" unique_id=2043025790]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(230, 48)
 layout_mode = 2
@@ -488,23 +488,23 @@ theme_override_font_sizes/font_size = 20
 text = "Click a binding then press any key or mouse button (not A-Z). Fire and ability accept a key or mouse button, supply keys accept keyboard only. Duplicate bindings are rejected."
 autowrap_mode = 3
 
-[node name="ACCESSIBILITY" type="VBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs"]
+[node name="ACCESSIBILITY" type="VBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs" unique_id=263148940]
 visible = false
 layout_mode = 2
 theme_override_constants/separation = 8
 metadata/_tab_index = 4
 
-[node name="ZombieSpeedRow" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY"]
+[node name="ZombieSpeedRow" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY" unique_id=133198521]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="ZombieSpeedLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY/ZombieSpeedRow"]
+[node name="ZombieSpeedLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY/ZombieSpeedRow" unique_id=1586071464]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
 text = "ZOMBIE SPEED"
 
-[node name="ZombieSpeedOption" type="OptionButton" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY/ZombieSpeedRow"]
+[node name="ZombieSpeedOption" type="OptionButton" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY/ZombieSpeedRow" unique_id=1958369642]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(230, 48)
 layout_mode = 2
@@ -517,45 +517,45 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_dark_hover")
 theme_override_styles/disabled = SubResource("StyleBoxFlat_dark_disabled")
 theme_override_styles/focus = SubResource("StyleBoxFlat_dark_normal")
 
-[node name="LongerCrateTimerRow" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY"]
+[node name="LongerCrateTimerRow" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY" unique_id=445521311]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="LongerCrateTimerLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY/LongerCrateTimerRow"]
+[node name="LongerCrateTimerLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY/LongerCrateTimerRow" unique_id=714384571]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
 text = "LONGER CRATE TIMER"
 
-[node name="LongerCrateTimerToggle" type="CheckButton" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY/LongerCrateTimerRow"]
+[node name="LongerCrateTimerToggle" type="CheckButton" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY/LongerCrateTimerRow" unique_id=941853952]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="LargeWordTextRow" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY"]
+[node name="LargeWordTextRow" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY" unique_id=64908593]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="LargeWordTextLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY/LargeWordTextRow"]
+[node name="LargeWordTextLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY/LargeWordTextRow" unique_id=416883125]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
 text = "LARGE WORD TEXT"
 
-[node name="LargeWordTextToggle" type="CheckButton" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY/LargeWordTextRow"]
+[node name="LargeWordTextToggle" type="CheckButton" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY/LargeWordTextRow" unique_id=321921432]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="HoldToFireRow" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY"]
+[node name="HoldToFireRow" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY" unique_id=859299175]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="HoldToFireLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY/HoldToFireRow"]
+[node name="HoldToFireLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY/HoldToFireRow" unique_id=109836122]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
 text = "HOLD TO FIRE"
 
-[node name="HoldToFireToggle" type="CheckButton" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY/HoldToFireRow"]
+[node name="HoldToFireToggle" type="CheckButton" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY/HoldToFireRow" unique_id=1894571887]
 unique_name_in_owner = true
 layout_mode = 2
 
@@ -573,21 +573,21 @@ text = "REDUCE FLASHING"
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="ReduceScreenShakeRow" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY"]
+[node name="ReduceScreenShakeRow" type="HBoxContainer" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY" unique_id=280727403]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="ReduceScreenShakeLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY/ReduceScreenShakeRow"]
+[node name="ReduceScreenShakeLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY/ReduceScreenShakeRow" unique_id=391846592]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
 text = "REDUCE SCREEN SHAKE"
 
-[node name="ReduceScreenShakeToggle" type="CheckButton" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY/ReduceScreenShakeRow"]
+[node name="ReduceScreenShakeToggle" type="CheckButton" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY/ReduceScreenShakeRow" unique_id=1893666477]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="AccessibilityHintLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY"]
+[node name="AccessibilityHintLabel" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList/Tabs/ACCESSIBILITY" unique_id=218539384]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 0.75)
 theme_override_font_sizes/font_size = 20

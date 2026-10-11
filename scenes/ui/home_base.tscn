@@ -439,6 +439,16 @@ theme_override_colors/font_color = Color(0.3, 0.2, 0.1, 1)
 theme_override_font_sizes/font_size = 30
 text = "BEST MEDAL"
 
+[node name="BestMedalIcon" type="TextureRect" parent="MainMargin/MainLayout/HubContent/MissionDetailsPanel/MissionDetailsMargin/MissionDetails" unique_id=873520194]
+visible = false
+texture_filter = 1
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+size_flags_horizontal = 0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
 [node name="BestMedalLabel" type="Label" parent="MainMargin/MainLayout/HubContent/MissionDetailsPanel/MissionDetailsMargin/MissionDetails" unique_id=1280952726]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.35, 0.26, 0.16, 1)

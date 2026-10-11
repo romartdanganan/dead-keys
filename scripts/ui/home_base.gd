@@ -23,6 +23,11 @@ extends Control
 	/MissionDetailsMargin/MissionDetails/BestMedalLabel
 )
 
+@onready var best_medal_icon: TextureRect = (
+	$MainMargin/MainLayout/HubContent/MissionDetailsPanel
+	/MissionDetailsMargin/MissionDetails/BestMedalIcon
+)
+
 @onready var mission_1_card: MissionCard = (
 	$MainMargin/MainLayout/HubContent/MissionArea
 	/MissionTable/MissionGrid/Mission1Card
@@ -32,7 +37,6 @@ const SETTINGS_MENU_SCENE := preload("res://scenes/ui/settings_menu.tscn")
 var settings_menu: Node = null
 
 const MissionRating := preload("res://scripts/missions/mission_rating.gd")
-var best_medal_icon: TextureRect
 
 
 func _ready() -> void:
@@ -44,7 +48,6 @@ func _ready() -> void:
 		Audio.play("main_music")
 	else:
 		Audio.play("main_music")
-	_setup_best_medal_icon()
 	_show_mission_details(mission_1_card)
 	ProgressionManager.gold_changed.connect(_on_gold_changed)
 	_on_gold_changed(ProgressionManager.get_gold())
@@ -96,16 +99,6 @@ func _show_mission_details(card: MissionCard) -> void:
 
 	if card.mission_image != null:
 		selected_mission_image.texture = card.mission_image
-
-
-# medal sprite between the BEST MEDAL heading and its label, built in code
-# so the home base scene stays untouched
-func _setup_best_medal_icon() -> void:
-	best_medal_icon = MissionRating.make_medal_icon(MissionRating.NONE, 64)
-	best_medal_icon.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-	var details := best_medal_label.get_parent()
-	details.add_child(best_medal_icon)
-	details.move_child(best_medal_icon, best_medal_label.get_index())
 
 
 func _on_launch_mission_button_pressed() -> void:

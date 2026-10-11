@@ -2,13 +2,13 @@ extends GutTest
 
 # endless game over screen: stat cards, the new best badge and the two buttons
 
-const EndlessGameOver := preload("res://scripts/ui/endless_game_over.gd")
+const ENDLESS_GAME_OVER_SCENE := preload("res://scenes/ui/endless_game_over.tscn")
 
 var screen: CanvasLayer
 
 
 func before_each() -> void:
-	screen = EndlessGameOver.new()
+	screen = ENDLESS_GAME_OVER_SCENE.instantiate()
 	add_child_autofree(screen)
 
 
@@ -25,7 +25,13 @@ func test_shows_the_score_round_and_stats() -> void:
 	assert_eq(screen.stat_values["KILLS"].text, "34")
 	assert_eq(screen.stat_values["ACCURACY"].text, "92%")
 	assert_eq(screen.stat_values["WPM"].text, "48")
-	assert_eq(screen.stat_values["BEST"].text, "900")
+	assert_eq(screen.best_label.text, "900")
+
+
+# best sits beside the score, so the cards only hold this run's stats
+func test_best_is_beside_the_score_not_a_stat_card() -> void:
+	assert_false(screen.stat_values.has("BEST"))
+	assert_eq(screen.best_label.get_parent().get_parent(), screen.score_label.get_parent().get_parent())
 
 
 func test_no_typing_shows_dashes_not_a_fake_score() -> void:

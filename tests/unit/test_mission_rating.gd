@@ -117,14 +117,73 @@ func test_every_medal_has_a_sprite_and_none_does_not() -> void:
 	assert_null(MissionRating.get_medal_texture(MissionRating.NONE))
 
 
-func test_medal_icon_is_hidden_when_there_is_no_medal() -> void:
-	var icon := MissionRating.make_medal_icon(MissionRating.NONE, 64)
-	autofree(icon)
-	assert_false(icon.visible)
+# the medal sprite is a node in the Mission Complete scene, sized up with sharp pixels
+func test_mission_complete_screen_has_a_sharp_medal_icon() -> void:
+	var overlay = load("res://scenes/ui/mission_success_overlay.tscn").instantiate()
+	add_child_autofree(overlay)
+	assert_true(overlay.medal_icon is TextureRect)
+	assert_eq(overlay.medal_icon.custom_minimum_size, Vector2(96, 96))
+	assert_eq(overlay.medal_icon.texture_filter, CanvasItem.TEXTURE_FILTER_NEAREST)
 
 
-func test_medal_icon_uses_the_requested_size() -> void:
-	var icon := MissionRating.make_medal_icon(MissionRating.GOLD, 96)
-	autofree(icon)
-	assert_true(icon.visible)
-	assert_eq(icon.custom_minimum_size, Vector2(96, 96))
+# home base hides its medal icon until a mission with a medal is picked
+func test_home_base_medal_icon_starts_hidden() -> void:
+	var state: SceneState = load("res://scenes/ui/home_base.tscn").get_state()
+	var found := false
+	for node_index in state.get_node_count():
+		if state.get_node_name(node_index) != "BestMedalIcon":
+			continue
+		found = true
+		for property_index in state.get_node_property_count(node_index):
+			if state.get_node_property_name(node_index, property_index) == "visible":
+				assert_false(state.get_node_property_value(node_index, property_index))
+	assert_true(found, "BestMedalIcon should be a node in home_base.tscn")
+
+
+# types a word with an even gap between keys, starting at start_seconds
+func _type_word(length: int, start_seconds: float, gap_seconds: float) -> void:
+	for i in length:
+		rating.record_correct_stroke(int((start_seconds + i * gap_seconds) * 1000000.0))
+	rating.end_word()
+
+
+func test_wpm_is_zero_before_any_typing() -> void:
+	assert_eq(rating.get_words_per_minute(), 0)
+
+
+# five keys 0.2 s apart is one key every 0.2 s, which is 300 keys or 60 words a minute
+func test_wpm_counts_the_gaps_between_keys_in_a_word() -> void:
+	_type_word(5, 0.0, 0.2)
+	assert_eq(rating.timed_strokes, 4)
+	assert_almost_eq(rating.typing_seconds, 0.8, 0.001)
+	assert_eq(rating.get_words_per_minute(), 60)
+
+
+# the wait between words, like a round break, never counts as typing time
+func test_wpm_ignores_time_between_words() -> void:
+	_type_word(5, 0.0, 0.2)
+	_type_word(5, 30.0, 0.2)
+	assert_almost_eq(rating.typing_seconds, 1.6, 0.001)
+	assert_eq(rating.get_words_per_minute(), 60)
+
+
+# stopping mid word, like opening the pause menu, is skipped instead of dragging wpm down
+func test_wpm_skips_a_long_pause_inside_a_word() -> void:
+	rating.record_correct_stroke(0)
+	rating.record_correct_stroke(200000)
+	rating.record_correct_stroke(10200000)
+	rating.record_correct_stroke(10400000)
+	rating.end_word()
+	assert_eq(rating.timed_strokes, 2)
+	assert_almost_eq(rating.typing_seconds, 0.4, 0.001)
+
+
+# a finished word or a lost target ends the word, so the next key starts a fresh clock
+func test_typing_controller_signals_end_the_word() -> void:
+	rating.record_correct_stroke(0)
+	typing.word_completed.emit("cat", 1)
+	rating.record_correct_stroke(500000)
+	assert_eq(rating.timed_strokes, 0)
+	typing.target_unregistered.emit()
+	rating.record_correct_stroke(900000)
+	assert_eq(rating.timed_strokes, 0)

@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://c1q31m0b087wv"]
+
+[ext_resource type="Script" uid="uid://dbn720gq5y32f" path="res://scripts/effects/impact_ring_effect.gd" id="1_tl8x2"]
+
+[node name="ImpactRingEffect" type="Node2D" unique_id=1579228094]
+z_index = 10
+script = ExtResource("1_tl8x2")

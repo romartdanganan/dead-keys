@@ -1,20 +1,15 @@
 extends Camera2D
 
 # mission camera that shakes on big moments, skipped when reduce screen shake is on
-# trauma builds up from hits and fades out, the shake is trauma squared so small hits stay subtle
+# the mission backgrounds overhang the screen by 24 px so a shake never shows their edge
 
 const MAX_OFFSET: float = 10.0
 const TRAUMA_DECAY: float = 1.6
-# background gets this much extra on every side so a shake never shows its edge
-const BACKGROUND_BLEED: float = 24.0
 
 var trauma: float = 0.0
 var _zoom_tween: Tween
-
-
-func _ready() -> void:
-	position = get_viewport_rect().size / 2.0
-	make_current()
+# where the scene places the camera, the finale zoom always returns here
+@onready var _home_position: Vector2 = position
 
 
 func add_trauma(amount: float) -> void:
@@ -50,7 +45,7 @@ func focus_on(point: Vector2, zoom_level: float, seconds: float) -> Tween:
 func reset_focus(seconds: float) -> Tween:
 	_kill_zoom_tween()
 	_zoom_tween = create_tween().set_ignore_time_scale(true).set_parallel(true)
-	_zoom_tween.tween_property(self, "position", get_viewport_rect().size / 2.0, seconds).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_zoom_tween.tween_property(self, "position", _home_position, seconds).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	_zoom_tween.tween_property(self, "zoom", Vector2.ONE, seconds).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	return _zoom_tween
 
@@ -60,12 +55,7 @@ func _kill_zoom_tween() -> void:
 		_zoom_tween.kill()
 
 
-# grows a full screen background so camera movement never reveals the edge
-static func bleed_background(background: Control) -> void:
-	background.position -= Vector2.ONE * BACKGROUND_BLEED
-	background.size += Vector2.ONE * BACKGROUND_BLEED * 2.0
-
-
+# trauma builds up from hits and fades out, the shake is trauma squared so small hits stay subtle
 func _process(delta: float) -> void:
 	if trauma <= 0.0:
 		offset = Vector2.ZERO

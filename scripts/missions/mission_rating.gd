@@ -23,16 +23,26 @@ const SILVER_ACCURACY: float = 0.85
 const SILVER_WALL_FRACTION: float = 0.3
 # a mission with no typing mistakes pays this share of its base reward on top
 const PERFECT_ACCURACY_SHARE: float = 0.1
+# a longer gap between two keys of a word is not typing, e.g. the pause menu or stopping to shoot
+const MAX_KEY_GAP_SECONDS: float = 1.5
 
 var correct_strokes: int = 0
 var mistakes: int = 0
 var lives_lost: int = 0
+# wpm only uses the gaps between keys inside a word, never the wait between words
+var typing_seconds: float = 0.0
+var timed_strokes: int = 0
+var _last_stroke_usec: int = -1
 
 
 # listens to every keystroke the typing controller judges
 func setup(typing_controller: TypingController) -> void:
 	typing_controller.correct_stroke.connect(_on_correct_stroke)
 	typing_controller.typing_mistake.connect(_on_typing_mistake)
+	# a word ends when it is finished or its target is gone, the next key starts a new one
+	typing_controller.word_completed.connect(func(_word: String, _reward: int) -> void: end_word())
+	typing_controller.supply_word_completed.connect(func(_crate: Node, _word: String) -> void: end_word())
+	typing_controller.target_unregistered.connect(end_word)
 
 
 # called by the mission each time the wall breaks and a life is spent
@@ -46,6 +56,28 @@ func get_accuracy() -> float:
 	if total == 0:
 		return 1.0
 	return float(correct_strokes) / total
+
+
+# five keystrokes count as one word, the usual typing test rule, 0 before any timed typing
+func get_words_per_minute() -> int:
+	if typing_seconds <= 0.0:
+		return 0
+	return roundi((timed_strokes / 5.0) / (typing_seconds / 60.0))
+
+
+# the first key of a word only starts its clock, each later key adds the gap since the last one
+func record_correct_stroke(now_usec: int) -> void:
+	correct_strokes += 1
+	if _last_stroke_usec >= 0:
+		var gap := (now_usec - _last_stroke_usec) / 1000000.0
+		if gap <= MAX_KEY_GAP_SECONDS:
+			typing_seconds += gap
+			timed_strokes += 1
+	_last_stroke_usec = now_usec
+
+
+func end_word() -> void:
+	_last_stroke_usec = -1
 
 
 # medal for this run, wall_fraction is wall health left divided by max health
@@ -79,26 +111,13 @@ static func get_medal_texture(medal: String) -> Texture2D:
 	return MEDAL_TEXTURES.get(medal)
 
 
-# square medal sprite scaled up with sharp pixels, hidden when there is no medal
-static func make_medal_icon(medal: String, icon_size: int) -> TextureRect:
-	var icon := TextureRect.new()
-	icon.texture = get_medal_texture(medal)
-	icon.visible = icon.texture != null
-	icon.custom_minimum_size = Vector2(icon_size, icon_size)
-	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	return icon
-
-
 # used so a worse run never replaces a saved better medal
 static func is_better(new_medal: String, old_medal: String) -> bool:
 	return MEDAL_RANK.get(new_medal, 0) > MEDAL_RANK.get(old_medal, 0)
 
 
 func _on_correct_stroke() -> void:
-	correct_strokes += 1
+	record_correct_stroke(Time.get_ticks_usec())
 
 
 func _on_typing_mistake() -> void:

@@ -77,12 +77,11 @@ const HUD_WARNINGS_SCRIPT := preload("res://scripts/missions/hud_warnings.gd")
 const BOSS_HEALTH_BAR_SCENE := preload("res://scenes/ui/boss_health_bar.tscn")
 const WordLabelStyle := preload("res://scripts/ui/word_label_style.gd")
 const MissionRating := preload("res://scripts/missions/mission_rating.gd")
-const SCREEN_SHAKE_SCRIPT := preload("res://scripts/missions/screen_shake.gd")
 const BOSS_FIGHT_SCRIPT := preload("res://scripts/missions/boss_fight.gd")
 # shake strengths, trauma from 0 to 1
 const WALL_HIT_SHAKE: float = 0.18
 const LIFE_LOST_SHAKE: float = 0.7
-var camera: Camera2D
+@onready var camera: Camera2D = $Camera
 var boss_fight: Node
 var kill_count := 0
 var mission_rating: MissionRating
@@ -132,7 +131,6 @@ func _ready() -> void:
 	_setup_rating()
 	_setup_ability_hud()
 	_setup_supplies()
-	_setup_camera()
 	_start_mission()
 
 
@@ -243,13 +241,6 @@ func _setup_typing() -> void:
 func _setup_rating() -> void:
 	mission_rating = MissionRating.new()
 	mission_rating.setup(typing_controller)
-
-# camera at the screen centre so the view is unchanged until something shakes it
-func _setup_camera() -> void:
-	SCREEN_SHAKE_SCRIPT.bleed_background($BackgroundColour)
-	SCREEN_SHAKE_SCRIPT.bleed_background($Background)
-	camera = SCREEN_SHAKE_SCRIPT.new()
-	add_child(camera)
 
 func _setup_supplies() -> void:
 	for i in supply_slot_icons.size():
@@ -659,12 +650,7 @@ func _display_mission_success_overlay() -> void:
 	add_child(mission_success_overlay)
 	
 	mission_success_overlay.stats.text = _success_stats_text()
-	# medal sprite above the stats, added in code so the overlay scene stays as it is
-	var medal_icon := MissionRating.make_medal_icon(_result.medal, 96)
-	medal_icon.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	var stats_list := mission_success_overlay.stats.get_parent()
-	stats_list.add_child(medal_icon)
-	stats_list.move_child(medal_icon, mission_success_overlay.stats.get_index())
+	mission_success_overlay.medal_icon.texture = MissionRating.get_medal_texture(_result.medal)
 	
 	mission_success_overlay.replay_requested.connect(_on_mission_success_replay_requested)
 	mission_success_overlay.next_mission_requested.connect(_on_mission_success_next_mission_requested)

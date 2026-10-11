@@ -5,7 +5,7 @@ extends "res://scripts/missions/mission_1.gd"
 
 const EndlessWaves := preload("res://scripts/missions/endless_waves.gd")
 const EndlessScores := preload("res://scripts/missions/endless_scores.gd")
-const ENDLESS_GAME_OVER := preload("res://scripts/ui/endless_game_over.gd")
+const ENDLESS_GAME_OVER_SCENE := preload("res://scenes/ui/endless_game_over.tscn")
 const MAIN_MENU_PATH := "res://scenes/ui/main_menu.tscn"
 
 # short breather between rounds, plus a small wall repair as a reward
@@ -14,7 +14,6 @@ const ROUND_WALL_REPAIR: float = 0.25
 
 var round_number: int = 1
 var rounds_cleared: int = 0
-var _seconds_played: float = 0.0
 var game_over_screen: CanvasLayer = null
 
 
@@ -26,11 +25,6 @@ func _init() -> void:
 func _ready() -> void:
 	super()
 	_update_endless_label()
-
-
-func _process(delta: float) -> void:
-	super(delta)
-	_seconds_played += delta
 
 
 func _build_mission_config() -> MissionConfigDef:
@@ -87,13 +81,6 @@ func get_score() -> int:
 	return EndlessScores.compute_score(kill_count, rounds_cleared)
 
 
-# words per minute counts five keystrokes as one word, the usual typing test rule
-func get_words_per_minute() -> int:
-	if _seconds_played <= 0.0:
-		return 0
-	return roundi((mission_rating.correct_strokes / 5.0) / (_seconds_played / 60.0))
-
-
 # its own game over screen with the score up front, the mission fail overlay stays for missions
 func _display_mission_fail_overlay() -> void:
 	if zombie_manager:
@@ -103,7 +90,7 @@ func _display_mission_fail_overlay() -> void:
 	var score := get_score()
 	var previous_best := EndlessScores.best_score()
 	EndlessScores.submit(score, round_number)
-	game_over_screen = ENDLESS_GAME_OVER.new()
+	game_over_screen = ENDLESS_GAME_OVER_SCENE.instantiate()
 	add_child(game_over_screen)
 	game_over_screen.show_results(build_results(score, previous_best))
 	game_over_screen.play_again_requested.connect(_on_play_again_requested)
@@ -114,12 +101,13 @@ func _display_mission_fail_overlay() -> void:
 # typing stats are -1 until the player has typed, so the screen never shows a fake 100%
 func build_results(score: int, previous_best: int) -> Dictionary:
 	var typed := mission_rating.correct_strokes > 0
+	var timed := mission_rating.timed_strokes > 0
 	return {
 		"score": score,
 		"round": round_number,
 		"kills": kill_count,
 		"accuracy": floori(mission_rating.get_accuracy() * 100) if typed else -1,
-		"wpm": get_words_per_minute() if typed else -1,
+		"wpm": mission_rating.get_words_per_minute() if timed else -1,
 		"best": maxi(score, previous_best),
 		"new_best": score > previous_best,
 	}
