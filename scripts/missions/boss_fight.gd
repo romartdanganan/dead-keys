@@ -10,6 +10,7 @@ signal finale_finished
 const BossHealthBar := preload("res://scripts/ui/boss_health_bar.gd")
 const WALKER_TYPE: EnemyTypeDef = preload("res://resources/enemies/walker.tres")
 const RUNNER_TYPE: EnemyTypeDef = preload("res://resources/enemies/runner.tres")
+const IMPACT_RING_SCENE := preload("res://scenes/effects/impact_ring_effect.tscn")
 
 const PHASE_2_FRACTION: float = 0.66
 const PHASE_3_FRACTION: float = 0.33
@@ -17,8 +18,17 @@ const PHASE_3_FRACTION: float = 0.33
 const STAGGER_SECONDS: float = 2.5
 # helpers have short words, quick kills that refill ammo for the long boss words
 const SUMMON_COUNT: int = 2
-const SUMMON_SPREAD: float = 80.0
 const SUMMON_BUCKETS: Array[int] = [1]
+# helpers spawn behind where the tank lands, phase 3 further back so dogs never land on the cats
+const SUMMON_BACK_PHASE_2: float = 60.0
+const SUMMON_BACK_PHASE_3: float = 140.0
+const SUMMON_SIDE_SPREAD: float = 140.0
+# each phase change roars, blowing zombies near the tank away from the base like the shockwave ability
+const ROAR_RADIUS: float = 150.0
+const ROAR_PUSH: float = 120.0
+const ROAR_COLOUR: Color = Color(0.5, 0.85, 1.0)
+# a tank closer than this past the ring is shoved back out to it, so it can't keep hitting the wall
+const SAFE_DISTANCE_PAST_RING: float = 180.0
 # phase 3 cracks the armour, knocking off a share of the health it has left
 const ARMOUR_CRACK_SHARE: float = 1.0 / 3.0
 const ENRAGED_SPEED_MULTIPLIER: float = 1.25
@@ -96,9 +106,10 @@ func _enter_phase_2() -> void:
 	phase = 2
 	_announce("THE TANK CALLS FOR HELP")
 	_shake(0.45)
+	var landing := _roar()
 	_stagger()
 	# deferred since this runs inside a bullet hit, where new hitboxes can't be set up
-	_summon.call_deferred(WALKER_TYPE)
+	_summon.call_deferred(WALKER_TYPE, landing, SUMMON_BACK_PHASE_2)
 	phase_changed.emit(phase)
 
 
@@ -110,19 +121,61 @@ func _enter_phase_3() -> void:
 	boss.health *= 1.0 - ARMOUR_CRACK_SHARE
 	_speed_multiplier = ENRAGED_SPEED_MULTIPLIER
 	boss.zombie_sprite.modulate = ENRAGED_TINT
+	var landing := _roar()
 	_stagger()
-	_summon.call_deferred(RUNNER_TYPE)
+	_summon.call_deferred(RUNNER_TYPE, landing, SUMMON_BACK_PHASE_3)
 	phase_changed.emit(phase)
 
 
-# one helper above the tank and one below so the word labels never stack
-func _summon(type: EnemyTypeDef) -> void:
+# blows nearby zombies away from the base and shoves the tank clear of the ring, returns where the tank lands
+func _roar() -> Vector2:
+	_spawn_roar_ring()
+	var centre := boss.wall_target.global_position
+	for zombie: Zombie in _zombie_manager.active_zombies:
+		if zombie == boss or zombie.current_state == Zombie.State.DEAD:
+			continue
+		if zombie.global_position.distance_to(boss.global_position) <= ROAR_RADIUS:
+			zombie.apply_knockback(_away_from(centre, zombie.global_position) * ROAR_PUSH)
+	var safe_distance := boss.wall_contact_radius + SAFE_DISTANCE_PAST_RING
+	var distance := boss.global_position.distance_to(centre)
+	if distance >= safe_distance:
+		return boss.global_position
+	var push := _away_from(centre, boss.global_position) * (safe_distance - distance)
+	boss.apply_knockback(push)
+	return boss.global_position + push
+
+
+# the same ring the shockwave ability shows, deferred since this runs inside a bullet hit
+func _spawn_roar_ring() -> void:
+	_add_roar_ring.call_deferred(boss.get_parent(), boss.global_position)
+
+
+# made here rather than before the deferral, so nothing is left over if the scene is gone by then
+func _add_roar_ring(parent: Node, at: Vector2) -> void:
+	if not is_instance_valid(parent):
+		return
+	var ring := IMPACT_RING_SCENE.instantiate()
+	ring.radius = ROAR_RADIUS
+	ring.colour = ROAR_COLOUR
+	ring.position = parent.to_local(at)
+	parent.add_child(ring)
+
+
+# one helper each side of the tank's landing spot and further out, so they always have a walk to the ring
+func _summon(type: EnemyTypeDef, landing: Vector2, back: float) -> void:
 	if boss == null:
 		return
+	var outward := _away_from(boss.wall_target.global_position, landing)
+	var across := outward.orthogonal()
 	for i in SUMMON_COUNT:
 		var side := -1.0 if i % 2 == 0 else 1.0
-		var spot := boss.global_position + Vector2(side * SUMMON_SPREAD, side * SUMMON_SPREAD * 1.6)
+		var spot := landing + outward * back + across * side * SUMMON_SIDE_SPREAD
 		_zombie_manager.spawn_extra(type, _clamp_to_screen(spot), SUMMON_BUCKETS)
+
+
+static func _away_from(centre: Vector2, point: Vector2) -> Vector2:
+	var offset := point - centre
+	return Vector2.RIGHT if offset.is_zero_approx() else offset.normalized()
 
 
 func _stagger() -> void:

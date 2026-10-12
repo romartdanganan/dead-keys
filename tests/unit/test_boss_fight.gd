@@ -171,3 +171,54 @@ func test_finale_kills_every_zombie_then_finishes() -> void:
 	assert_eq(walker.current_state, Zombie.State.DEAD)
 	assert_eq(Engine.time_scale, 1.0)
 	assert_false(fight.finale_playing)
+
+
+# a tank already hitting the ring, standing on its left edge
+func _spawn_tank_at_the_ring() -> Zombie:
+	var tank := manager.spawn_extra(TANK_TYPE, wall.global_position + Vector2(-manager.wall_contact_radius, 0))
+	tank._enter_state(Zombie.State.ATTACK)
+	return tank
+
+
+func _distance_to_base(zombie: Zombie) -> float:
+	return zombie.global_position.distance_to(wall.global_position)
+
+
+# the roar shoves a tank at the wall back out, so it can't keep hitting the wall through its stagger
+func test_roar_pushes_a_tank_at_the_ring_to_a_safe_distance() -> void:
+	var tank := _spawn_tank_at_the_ring()
+	_damage_to(tank, 0.6)
+	assert_eq(tank.current_state, Zombie.State.APPROACH)
+	# one physics step longer than the slide finishes the whole knockback
+	tank._physics_process(Zombie.KNOCKBACK_DURATION + 0.01)
+	assert_almost_eq(_distance_to_base(tank), manager.wall_contact_radius + BossFight.SAFE_DISTANCE_PAST_RING, 0.5)
+
+
+func test_roar_leaves_a_far_away_tank_where_it_is() -> void:
+	var tank := _spawn_tank()
+	_damage_to(tank, 0.6)
+	assert_eq(tank._knockback_remaining, 0.0)
+
+
+# like the shockwave ability, zombies near the tank are blown away from the base, far ones are not
+func test_roar_blows_back_zombies_near_the_tank_only() -> void:
+	var tank := _spawn_tank_at_the_ring()
+	var near := manager.spawn_extra(WALKER_TYPE, tank.global_position + Vector2(0, -60))
+	var far := manager.spawn_extra(WALKER_TYPE, wall.global_position + Vector2(manager.wall_contact_radius + 40, 0))
+	var near_before := _distance_to_base(near)
+	_damage_to(tank, 0.6)
+	near._physics_process(Zombie.KNOCKBACK_DURATION + 0.01)
+	assert_gt(_distance_to_base(near), near_before)
+	assert_eq(far._knockback_remaining, 0.0)
+
+
+# helpers always land further out than the tank, so they have a walk before reaching the ring
+func test_helpers_spawn_further_from_the_base_than_the_tank() -> void:
+	var tank := _spawn_tank_at_the_ring()
+	_damage_to(tank, 0.6)
+	await wait_physics_frames(2)
+	var landing := manager.wall_contact_radius + BossFight.SAFE_DISTANCE_PAST_RING
+	var helpers := manager.active_zombies.filter(func(zombie: Zombie) -> bool: return zombie != tank)
+	assert_eq(helpers.size(), BossFight.SUMMON_COUNT)
+	for helper: Zombie in helpers:
+		assert_gt(_distance_to_base(helper), landing)
