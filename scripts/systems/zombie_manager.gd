@@ -9,6 +9,7 @@ signal wave_started(wave_number: int, is_final_wave: bool)
 
 @export var mission_config: MissionConfigDef
 @export var wall_target: Node2D
+@export_range(90.0, 120.0, 1.0) var wall_contact_radius: float = 105.0
 
 const SPAWN_MARGIN: float = 100.0
 # side only spawns stay within 45 degrees of horizontal, which still covers the corners
@@ -119,7 +120,7 @@ func _spawn_zombie(type: EnemyTypeDef, side_only: bool = false, allowed_buckets:
 	if not zombie.death_finished.is_connected(_on_zombie_death_finished):
 		zombie.death_finished.connect(_on_zombie_death_finished)
 	
-	zombie.setup(type, wall_target)
+	zombie.setup(type, wall_target, wall_contact_radius)
 	zombie.allowed_buckets = allowed_buckets
 	active_zombies.append(zombie)
 	zombie_spawned.emit(zombie)

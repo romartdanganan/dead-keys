@@ -10,6 +10,7 @@ var mission_number: int = 1
 
 
 @export var crosshair_texture: Texture2D
+@export_range(90.0, 120.0, 1.0) var barrier_radius: float = 105.0
 
 # base enemy types used to build Mission 1's waves in _build_mission_config()
 const WALKER_TYPE: EnemyTypeDef = preload("res://resources/enemies/walker.tres")
@@ -32,6 +33,7 @@ const RUNNER_TYPE: EnemyTypeDef = preload("res://resources/enemies/runner.tres")
 @onready var ability_name_label: Label = $HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent/AbilitySection/AbilityNameLabel
 @onready var projectile_container: Node2D = $World/ProjectileContainer
 @onready var wall_target: Marker2D = $World/WallAttackLine
+@onready var barrier_ring: BarrierRing = $World/BarrierRing
 @onready var status_timer: Timer = $StatusTimer
 @onready var supply_landing_point: Marker2D = $World/SupplyLandingPoint
 @onready var supply_container: Node2D = $World/SupplyContainer
@@ -121,6 +123,7 @@ var supply_call_supply_id: String = ""
 var wall_damage_reduction_active: bool = false
 
 func _ready() -> void:
+	barrier_ring.radius = barrier_radius
 	_apply_upgrades()
 	_setup_cursor()
 	_setup_ammo_hud()
@@ -375,6 +378,7 @@ func _start_mission() -> void:
 	add_child(zombie_manager)
 	zombie_manager.mission_config = mission
 	zombie_manager.wall_target = wall_target
+	zombie_manager.wall_contact_radius = barrier_radius
 	zombie_manager.all_waves_cleared.connect(_on_all_waves_cleared)
 	zombie_manager.zombie_spawned.connect(_on_zombie_spawned)
 	zombie_manager.wave_started.connect(_on_wave_started)

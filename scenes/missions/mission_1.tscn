@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/wave_announcement.tscn" id="10_wave"]
 [ext_resource type="Texture2D" uid="uid://c1m8brksixm7k" path="res://assets/ui/life_icon.png" id="11_lifeicon"]
 [ext_resource type="Script" uid="uid://cn8sy043u1gt" path="res://scripts/missions/screen_shake.gd" id="12_camera"]
+[ext_resource type="Script" path="res://scripts/entities/barrier_ring.gd" id="12_barrier_ring"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_combo_bg"]
 bg_color = Color(0.2, 0.16, 0.1, 1)
@@ -65,6 +66,12 @@ position = Vector2(0, -22)
 
 [node name="WallAttackLine" type="Marker2D" parent="World" unique_id=689915184]
 position = Vector2(640, 360)
+
+[node name="BarrierRing" type="Node2D" parent="World"]
+position = Vector2(640, 360)
+z_index = 1
+script = ExtResource("12_barrier_ring")
+radius = 105.0
 
 [node name="SupplyLandingPoint" type="Marker2D" parent="World" unique_id=1218651921]
 position = Vector2(1150, 380)
