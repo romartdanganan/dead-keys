@@ -236,7 +236,7 @@ size = Vector2(64, 64)
 
 [node name="Zombie" type="CharacterBody2D" unique_id=1376647345]
 collision_layer = 4
-collision_mask = 3
+collision_mask = 7
 script = ExtResource("1_frpv3")
 enemy_type = SubResource("Resource_qgoda")
 debug_show_support_radius = true
@@ -274,4 +274,3 @@ theme_override_font_sizes/normal_font_size = 22
 bbcode_enabled = true
 fit_content = true
 horizontal_alignment = 1
-

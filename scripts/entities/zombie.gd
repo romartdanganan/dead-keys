@@ -21,6 +21,7 @@ enum State { SPAWN, APPROACH, SUPPORT, ATTACK, DEAD, FROZEN }
 var current_state: State = State.APPROACH
 var health: float = 0.0
 var wall_target: Node2D = null
+var wall_contact_radius: float = WALL_CONTACT_DISTANCE
 var current_word: String = "" #TODO: Under the assumption an external system will adjust this
 var is_pooled: bool = false
 var _time_alive: float = 0.0
@@ -67,10 +68,11 @@ func _ready() -> void:
 	if enemy_type:
 		health = enemy_type.health
 
-func setup(type: EnemyTypeDef, wall: Node2D) -> void:
+func setup(type: EnemyTypeDef, wall: Node2D, contact_radius: float = WALL_CONTACT_DISTANCE) -> void:
 	enemy_type = type
 	health = type.health
 	wall_target = wall
+	wall_contact_radius = maxf(contact_radius, WALL_CONTACT_DISTANCE)
 	current_word = ""
 	_time_alive = 0.0
 	_support_target = null
@@ -144,6 +146,8 @@ func _physics_process(delta: float) -> void:
 		return
 	if current_state == State.APPROACH:
 		_process_approach(delta)
+	elif current_state == State.ATTACK:
+		_process_attack()
 	elif current_state == State.SUPPORT:
 		_process_support(delta)
 	_time_alive += delta
@@ -162,6 +166,9 @@ func _process_approach(delta: float) -> void:
 			_enter_state(State.SUPPORT)
 			return
 	var base_direction: Vector2 = (wall_target.global_position - global_position).normalized()
+	if global_position.distance_to(wall_target.global_position) <= wall_contact_radius:
+		_reach_wall()
+		return
 	var move_direction: Vector2 = base_direction
 	
 	if enemy_type.special_behaviour_tag == EnemyTypeDef.BEHAVIOUR_ZIGZAG and enemy_type.zigzag_amplitude > 0.0:
@@ -171,9 +178,30 @@ func _process_approach(delta: float) -> void:
 	
 	velocity = move_direction * get_movement_speed()
 	move_and_slide()
-	if global_position.distance_to(wall_target.global_position) <= WALL_CONTACT_DISTANCE:
-		wall_contact.emit()
-		_enter_state(State.ATTACK)
+	if global_position.distance_to(wall_target.global_position) <= wall_contact_radius:
+		_reach_wall()
+
+func _process_attack() -> void:
+	if wall_target == null:
+		return
+	var distance_to_wall := global_position.distance_to(wall_target.global_position)
+	if distance_to_wall > wall_contact_radius + 1.0:
+		_enter_state(State.APPROACH)
+	elif distance_to_wall < wall_contact_radius:
+		_clamp_to_wall_edge()
+
+func _reach_wall() -> void:
+	_clamp_to_wall_edge()
+	wall_contact.emit()
+	_enter_state(State.ATTACK)
+
+func _clamp_to_wall_edge() -> void:
+	if wall_target == null:
+		return
+	var offset := global_position - wall_target.global_position
+	if offset.is_zero_approx():
+		offset = Vector2.RIGHT
+	global_position = wall_target.global_position + offset.normalized() * wall_contact_radius
 
 func _process_support(delta: float) -> void:
 	if enemy_type != null and enemy_type.special_behaviour_tag == EnemyTypeDef.BEHAVIOUR_COMMANDER:
