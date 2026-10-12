@@ -116,3 +116,53 @@ func test_grouped_entries_count_as_one_displayed_wave() -> void:
 	manager.mission_config = config
 	# c has no display number so it uses its position, 3
 	assert_eq(manager._compute_max_display_wave_number(), 3)
+
+
+# seconds a zombie of this speed needs to reach the ring from a spawn point
+func _seconds_to_ring(spawn_at: Vector2, speed: float) -> float:
+	var half := Vector2(640, 360)
+	var scale := ZombieManager.travel_scale_for(spawn_at, wall.global_position, manager.wall_contact_radius, half)
+	return (spawn_at.distance_to(wall.global_position) - manager.wall_contact_radius) / (speed * scale)
+
+
+func _spawn_point(angle: float) -> Vector2:
+	return ZombieManager.spawn_position(wall.global_position, Vector2(640, 360), angle, ZombieManager.SPAWN_MARGIN)
+
+
+# a zombie from the bottom middle and one from the middle left arrive together
+func test_every_side_reaches_the_ring_at_the_same_time() -> void:
+	var from_left := _seconds_to_ring(_spawn_point(PI), WALKER_TYPE.speed)
+	for angle in [0.0, PI * 0.5, PI * 1.5, PI * 0.25, PI * 1.2]:
+		assert_almost_eq(_seconds_to_ring(_spawn_point(angle), WALKER_TYPE.speed), from_left, 0.01)
+
+
+# a side zombie takes as long to reach the ring as it took to reach the base before the ring
+func test_side_pace_matches_the_game_before_the_ring() -> void:
+	var before_ring := (640.0 + ZombieManager.SPAWN_MARGIN - Zombie.WALL_CONTACT_DISTANCE) / WALKER_TYPE.speed
+	assert_almost_eq(_seconds_to_ring(_spawn_point(PI), WALKER_TYPE.speed), before_ring / ZombieManager.ZOMBIE_PACE, 0.01)
+
+
+func test_a_bigger_ring_does_not_change_arrival_time() -> void:
+	var normal := _seconds_to_ring(_spawn_point(PI * 0.5), WALKER_TYPE.speed)
+	manager.wall_contact_radius = 120.0
+	assert_almost_eq(_seconds_to_ring(_spawn_point(PI * 0.5), WALKER_TYPE.speed), normal, 0.01)
+
+
+func test_wave_zombies_get_their_travel_scale_and_extras_do_not() -> void:
+	manager._spawn_zombie(WALKER_TYPE)
+	var wave_zombie: Zombie = manager.active_zombies.back()
+	var expected := ZombieManager.travel_scale_for(wave_zombie.global_position, wall.global_position, manager.wall_contact_radius, manager.get_viewport_rect().size * 0.5)
+	assert_almost_eq(wave_zombie.travel_scale, expected, 0.0001)
+	var extra := manager.spawn_extra(WALKER_TYPE, Vector2(500, 360))
+	assert_eq(extra.travel_scale, 1.0)
+
+
+# the accessibility speed setting still slows zombies on top of the travel scale
+func test_travel_scale_stacks_with_the_zombie_speed_setting() -> void:
+	var saved := SettingsState.zombie_speed_index
+	manager._spawn_zombie(WALKER_TYPE)
+	var zombie: Zombie = manager.active_zombies.back()
+	zombie.travel_scale = 0.5
+	SettingsState.zombie_speed_index = 1
+	assert_almost_eq(zombie.get_movement_speed(), WALKER_TYPE.speed * 0.5 * SettingsState.ZOMBIE_SPEED_MULTIPLIERS[1], 0.001)
+	SettingsState.zombie_speed_index = saved

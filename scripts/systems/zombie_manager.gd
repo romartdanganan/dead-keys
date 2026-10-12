@@ -12,6 +12,8 @@ signal wave_started(wave_number: int, is_final_wave: bool)
 @export_range(90.0, 120.0, 1.0) var wall_contact_radius: float = 105.0
 
 const SPAWN_MARGIN: float = 100.0
+# overall pace for wave zombies, below 1.0 slows every one of them down
+const ZOMBIE_PACE: float = 1.0
 # side only spawns stay within 45 degrees of horizontal, which still covers the corners
 const SIDE_SPAWN_SPREAD: float = PI / 4.0
 
@@ -121,6 +123,7 @@ func _spawn_zombie(type: EnemyTypeDef, side_only: bool = false, allowed_buckets:
 		zombie.death_finished.connect(_on_zombie_death_finished)
 	
 	zombie.setup(type, wall_target, wall_contact_radius)
+	zombie.travel_scale = travel_scale_for(zombie.global_position, wall_target.global_position, wall_contact_radius, viewport_half_size)
 	zombie.allowed_buckets = allowed_buckets
 	active_zombies.append(zombie)
 	zombie_spawned.emit(zombie)
@@ -132,7 +135,17 @@ func spawn_extra(type: EnemyTypeDef, at: Vector2, allowed_buckets: Array[int] = 
 		return null
 	var zombie: Zombie = active_zombies.back()
 	zombie.global_position = at
+	# placed mid fight next to the boss, so it walks at its normal speed
+	zombie.travel_scale = 1.0
 	return zombie
+
+
+# every wave zombie reaches the ring in the time a side zombie took to reach the base before the ring
+# so top, bottom and corner spawns are as fair as side ones, and pacing matches the old game
+static func travel_scale_for(spawn_at: Vector2, centre: Vector2, contact_radius: float, half_size: Vector2) -> float:
+	var reference_walk: float = half_size.x + SPAWN_MARGIN - Zombie.WALL_CONTACT_DISTANCE
+	var walk_to_ring: float = maxf(spawn_at.distance_to(centre) - contact_radius, 1.0)
+	return walk_to_ring / reference_walk * ZOMBIE_PACE
 
 static func pick_spawn_angle(side_only: bool) -> float:
 	if not side_only:

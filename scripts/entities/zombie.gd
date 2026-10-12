@@ -22,6 +22,8 @@ var current_state: State = State.APPROACH
 var health: float = 0.0
 var wall_target: Node2D = null
 var wall_contact_radius: float = WALL_CONTACT_DISTANCE
+# speed multiplier set at spawn so every wave zombie reaches the ring in the same time
+var travel_scale: float = 1.0
 var current_word: String = "" #TODO: Under the assumption an external system will adjust this
 var is_pooled: bool = false
 var _time_alive: float = 0.0
@@ -73,6 +75,8 @@ func setup(type: EnemyTypeDef, wall: Node2D, contact_radius: float = WALL_CONTAC
 	health = type.health
 	wall_target = wall
 	wall_contact_radius = maxf(contact_radius, WALL_CONTACT_DISTANCE)
+	# a pooled zombie must not keep the pace of its last spawn spot
+	travel_scale = 1.0
 	current_word = ""
 	_time_alive = 0.0
 	_support_target = null
@@ -270,7 +274,7 @@ func _has_nearby_support_target() -> bool:
 func get_movement_speed() -> float:
 	if enemy_type == null:
 		return 0.0
-	var movement_speed := enemy_type.speed
+	var movement_speed := enemy_type.speed * travel_scale
 	for node in get_tree().get_nodes_in_group("zombies"):
 		var commander := node as Zombie
 		if commander == null or commander == self or commander.current_state == State.DEAD:

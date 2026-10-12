@@ -33,7 +33,9 @@ const RUNNER_TYPE: EnemyTypeDef = preload("res://resources/enemies/runner.tres")
 @onready var ability_name_label: Label = $HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent/AbilitySection/AbilityNameLabel
 @onready var projectile_container: Node2D = $World/ProjectileContainer
 @onready var wall_target: Marker2D = $World/WallAttackLine
-@onready var barrier_ring: BarrierRing = $World/BarrierRing
+# preloaded instead of the class name so fresh checkouts and command line runs find it
+const BarrierRingScript := preload("res://scripts/entities/barrier_ring.gd")
+@onready var barrier_ring: BarrierRingScript = $World/BarrierRing
 @onready var status_timer: Timer = $StatusTimer
 @onready var supply_landing_point: Marker2D = $World/SupplyLandingPoint
 @onready var supply_container: Node2D = $World/SupplyContainer
