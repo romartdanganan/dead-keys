@@ -15,6 +15,7 @@ signal closed
 @onready var longer_crate_timer_toggle: CheckButton = %LongerCrateTimerToggle
 @onready var large_word_text_toggle: CheckButton = %LargeWordTextToggle
 @onready var hold_to_fire_toggle: CheckButton = %HoldToFireToggle
+@onready var reduce_screen_shake_toggle: CheckButton = %ReduceScreenShakeToggle
 @onready var window_mode_option: OptionButton = %WindowModeOption
 @onready var resolution_option: OptionButton = %ResolutionOption
 @onready var fire_button: Button = %FireButton
@@ -46,6 +47,7 @@ func _ready() -> void:
 	longer_crate_timer_toggle.set_pressed_no_signal(SettingsState.longer_crate_timer)
 	large_word_text_toggle.set_pressed_no_signal(SettingsState.large_word_text)
 	hold_to_fire_toggle.set_pressed_no_signal(SettingsState.hold_to_fire)
+	reduce_screen_shake_toggle.set_pressed_no_signal(SettingsState.reduce_screen_shake)
 	_update_volume_labels()
 	_populate_display_options()
 	_populate_zombie_speed_options()
@@ -251,6 +253,10 @@ func _on_large_word_text_toggle_toggled(toggled_on: bool) -> void:
 
 func _on_hold_to_fire_toggle_toggled(toggled_on: bool) -> void:
 	SettingsState.set_hold_to_fire(toggled_on)
+
+
+func _on_reduce_screen_shake_toggle_toggled(toggled_on: bool) -> void:
+	SettingsState.set_reduce_screen_shake(toggled_on)
 
 
 func _on_window_mode_option_item_selected(index: int) -> void:

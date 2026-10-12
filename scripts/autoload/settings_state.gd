@@ -35,6 +35,8 @@ var zombie_speed_index: int = 0
 var longer_crate_timer: bool = false
 var large_word_text: bool = false
 var hold_to_fire: bool = false
+# camera shake on wall hits, lost lives and boss moments
+var reduce_screen_shake: bool = false
 
 # default physical keycodes for the three supply slots
 const DEFAULT_SUPPLY_KEYS: Array[int] = [KEY_1, KEY_2, KEY_3]
@@ -126,6 +128,12 @@ func set_large_word_text(value: bool) -> void:
 # font size for the words above zombies and crates
 func get_word_font_size() -> int:
 	return LARGE_WORD_FONT_SIZE if large_word_text else WORD_FONT_SIZE
+
+
+func set_reduce_screen_shake(value: bool) -> void:
+	reduce_screen_shake = value
+	save_settings()
+	settings_changed.emit()
 
 
 # mission_1.gd keeps firing while the fire button is held when this is on
@@ -299,6 +307,7 @@ func save_settings() -> void:
 	config.set_value("settings", "longer_crate_timer", longer_crate_timer)
 	config.set_value("settings", "large_word_text", large_word_text)
 	config.set_value("settings", "hold_to_fire", hold_to_fire)
+	config.set_value("settings", "reduce_screen_shake", reduce_screen_shake)
 	for i in 3:
 		config.set_value("settings", "supply_key_%d" % i, get_supply_key(i))
 	_save_pointer_binding(config, "fire", "fire", DEFAULT_FIRE_BUTTON)
@@ -354,6 +363,7 @@ func load_settings() -> void:
 	longer_crate_timer = config.get_value("settings", "longer_crate_timer", longer_crate_timer)
 	large_word_text = config.get_value("settings", "large_word_text", large_word_text)
 	hold_to_fire = config.get_value("settings", "hold_to_fire", hold_to_fire)
+	reduce_screen_shake = config.get_value("settings", "reduce_screen_shake", reduce_screen_shake)
 
 	_is_loading = true
 	# cleared first so swapped keys (slot 1 on 2, slot 2 on 1) don't clash with the defaults

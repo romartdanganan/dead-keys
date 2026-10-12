@@ -10,8 +10,8 @@ const POPUP_OFFSET: Vector2 = Vector2(0, -95)
 const AMMO_COLOUR: Color = Color(1.0, 0.85, 0.3)
 const EMPTY_COLOUR: Color = Color(1.0, 0.35, 0.3)
 const OUT_OF_AMMO_COOLDOWN: float = 1.0
-const DEATH_BURST_SECONDS: float = 0.45
-const DEATH_BURST_PARTICLES: int = 16
+const DEATH_BURST_SCENE := preload("res://scenes/effects/death_burst.tscn")
+const FLOATING_POPUP_SCENE := preload("res://scenes/effects/floating_popup.tscn")
 
 var _typing_controller: TypingController
 var _ammo_system: AmmoSystem
@@ -79,28 +79,13 @@ func _on_zombie_death_finished(zombie: Zombie) -> void:
 
 
 func spawn_death_burst(at: Vector2, colour: Color) -> CPUParticles2D:
-	var burst := CPUParticles2D.new()
-	burst.one_shot = true
-	burst.amount = DEATH_BURST_PARTICLES
-	burst.lifetime = DEATH_BURST_SECONDS
-	burst.explosiveness = 1.0
-	burst.spread = 180.0
-	burst.gravity = Vector2.ZERO
-	burst.initial_velocity_min = 60.0
-	burst.initial_velocity_max = 140.0
-	burst.damping_min = 80.0
-	burst.damping_max = 120.0
-	burst.scale_amount_min = 3.0
-	burst.scale_amount_max = 5.0
-	# fades the particles out over their short life so the burst never hides a word
-	var fade := Gradient.new()
-	fade.set_color(0, colour)
-	fade.set_color(1, Color(colour, 0.0))
-	burst.color_ramp = fade
+	var burst: CPUParticles2D = DEATH_BURST_SCENE.instantiate()
+	# the scene's fade ramp is white, so this tints the whole burst to the zombie's colour
+	burst.color = colour
 	burst.global_position = at
 	add_child(burst)
+	burst.finished.connect(burst.queue_free)
 	burst.emitting = true
-	get_tree().create_timer(DEATH_BURST_SECONDS + 0.2, false).timeout.connect(burst.queue_free)
 	return burst
 
 
@@ -140,13 +125,9 @@ func _on_fired_without_ammo() -> void:
 
 
 func _spawn_popup(text: String, at: Vector2, colour: Color) -> Label:
-	var popup := Label.new()
+	var popup: Label = FLOATING_POPUP_SCENE.instantiate()
 	popup.text = text
-	popup.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	popup.add_theme_font_size_override("font_size", 24)
 	popup.add_theme_color_override("font_color", colour)
-	popup.add_theme_color_override("font_outline_color", Color.BLACK)
-	popup.add_theme_constant_override("outline_size", 6)
 	add_child(popup)
 	# centre the text on the point it belongs to
 	popup.position = at - Vector2(popup.get_minimum_size().x / 2.0, 0)

@@ -39,7 +39,7 @@ var shockwave_knockback: float = 0.0
 const HOMING_TURN_RATE: float = 10.0
 
 # visual ring for explosion and shockwave radius
-const IMPACT_RING_EFFECT := preload("res://scripts/effects/impact_ring_effect.gd")
+const IMPACT_RING_SCENE := preload("res://scenes/effects/impact_ring_effect.tscn")
 const EXPLOSION_COLOUR: Color = Color(1.0, 0.5, 0.1)
 const SHOCKWAVE_COLOUR: Color = Color(0.5, 0.85, 1.0)
 
@@ -97,6 +97,9 @@ func _try_damage_target(target: Node) -> void:
 	# prevents a fat hitbox from re-triggering area_entered on the same
 	# zombie more than once, matters most for Piercing Shot (#38)
 	if target is Zombie and target in _hit_zombies:
+		return
+	# a dying zombie is just a corpse, the bullet keeps flying to whatever is behind it
+	if target is Zombie and target.current_state == Zombie.State.DEAD:
 		return
 
 	target.take_damage(damage)
@@ -177,7 +180,7 @@ func _spawn_impact_ring(radius: float, colour: Color, show_sparks: bool) -> void
 	var parent := get_parent()
 	if parent == null:
 		return
-	var effect := IMPACT_RING_EFFECT.new()
+	var effect := IMPACT_RING_SCENE.instantiate()
 	effect.radius = radius
 	effect.colour = colour
 	effect.show_sparks = show_sparks

@@ -44,6 +44,15 @@ theme_override_font_sizes/font_size = 24
 text = "MISSION COMPLETE!!!"
 horizontal_alignment = 1
 
+[node name="MedalIcon" type="TextureRect" parent="CenterContainer/MenuPanel/MenuMargin/MenuList" unique_id=1584037216]
+texture_filter = 1
+custom_minimum_size = Vector2(96, 96)
+layout_mode = 2
+size_flags_horizontal = 4
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
 [node name="Stats" type="Label" parent="CenterContainer/MenuPanel/MenuMargin/MenuList" unique_id=238503722]
 layout_mode = 2
 text = "Gold Earned: "

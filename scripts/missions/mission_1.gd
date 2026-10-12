@@ -33,7 +33,9 @@ const RUNNER_TYPE: EnemyTypeDef = preload("res://resources/enemies/runner.tres")
 @onready var ability_name_label: Label = $HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent/AbilitySection/AbilityNameLabel
 @onready var projectile_container: Node2D = $World/ProjectileContainer
 @onready var wall_target: Marker2D = $World/WallAttackLine
-@onready var barrier_ring: BarrierRing = $World/BarrierRing
+# preloaded instead of the class name so fresh checkouts and command line runs find it
+const BarrierRingScript := preload("res://scripts/entities/barrier_ring.gd")
+@onready var barrier_ring: BarrierRingScript = $World/BarrierRing
 @onready var status_timer: Timer = $StatusTimer
 @onready var supply_landing_point: Marker2D = $World/SupplyLandingPoint
 @onready var supply_container: Node2D = $World/SupplyContainer
@@ -79,6 +81,12 @@ const HUD_WARNINGS_SCRIPT := preload("res://scripts/missions/hud_warnings.gd")
 const BOSS_HEALTH_BAR_SCENE := preload("res://scenes/ui/boss_health_bar.tscn")
 const WordLabelStyle := preload("res://scripts/ui/word_label_style.gd")
 const MissionRating := preload("res://scripts/missions/mission_rating.gd")
+const BOSS_FIGHT_SCRIPT := preload("res://scripts/missions/boss_fight.gd")
+# shake strengths, trauma from 0 to 1
+const WALL_HIT_SHAKE: float = 0.18
+const LIFE_LOST_SHAKE: float = 0.7
+@onready var camera: Camera2D = $Camera
+var boss_fight: Node
 var kill_count := 0
 var mission_rating: MissionRating
 # filled in when the mission is won, read by the success overlay
@@ -387,6 +395,7 @@ func _start_mission() -> void:
 	_setup_wave_counter()
 	_setup_hud_warnings()
 	_setup_boss_health_bar()
+	_setup_boss_fight()
 	$HUD/HUDRoot/MissionPanel/MissionMargin/MissionNameLabel.text = "MISSION: %s" % mission.mission_name.to_upper()
 
 	status_timer.timeout.connect(_on_status_timer_timeout)
@@ -419,6 +428,14 @@ func _setup_boss_health_bar() -> void:
 	var boss_bar := BOSS_HEALTH_BAR_SCENE.instantiate()
 	add_child(boss_bar)
 	boss_bar.setup(zombie_manager)
+
+# entrance, phases and finale for any boss, idle in missions without one
+func _setup_boss_fight() -> void:
+	boss_fight = BOSS_FIGHT_SCRIPT.new()
+	add_child(boss_fight)
+	boss_fight.setup(zombie_manager, camera, wave_announcement)
+	# killing the boss ends the mission once its cinematic is over
+	boss_fight.finale_finished.connect(_on_all_waves_cleared)
 
 func _setup_wave_counter() -> void:
 	var wave_counter := WAVE_COUNTER_SCENE.instantiate()
@@ -545,18 +562,24 @@ func _on_zombie_damaged(damaged_zombie: Zombie) -> void:
 	print("Zombie health now: ", damaged_zombie.health)
 
 func _on_wall_hit(damage: float) -> void:
+	# the boss is already beaten, nothing can cost the player during the cinematic
+	if boss_fight != null and boss_fight.finale_playing:
+		return
 	var effective_damage := damage * EMERGENCY_WALL_REDUCTION_FACTOR if wall_damage_reduction_active else damage
 	wall_health = max(wall_health - effective_damage, 0.0)
 	_update_wall_hud()
 	print("Wall hit for ", effective_damage, " damage. Wall health: ", wall_health)
 	if wall_health <= 0.0:
 		_spend_life()
+	else:
+		camera.add_trauma(WALL_HIT_SHAKE)
 	Audio.play("wall_damage")
 
 func _spend_life() -> void:
 	Audio.play("life_lost")
 	# losing a life rules out a gold medal
 	mission_rating.record_life_lost()
+	camera.add_trauma(LIFE_LOST_SHAKE)
 	lives_remaining -= 1
 	_update_lives_hud()
 
@@ -633,12 +656,7 @@ func _display_mission_success_overlay() -> void:
 	add_child(mission_success_overlay)
 	
 	mission_success_overlay.stats.text = _success_stats_text()
-	# medal sprite above the stats, added in code so the overlay scene stays as it is
-	var medal_icon := MissionRating.make_medal_icon(_result.medal, 96)
-	medal_icon.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	var stats_list := mission_success_overlay.stats.get_parent()
-	stats_list.add_child(medal_icon)
-	stats_list.move_child(medal_icon, mission_success_overlay.stats.get_index())
+	mission_success_overlay.medal_icon.texture = MissionRating.get_medal_texture(_result.medal)
 	
 	mission_success_overlay.replay_requested.connect(_on_mission_success_replay_requested)
 	mission_success_overlay.next_mission_requested.connect(_on_mission_success_next_mission_requested)

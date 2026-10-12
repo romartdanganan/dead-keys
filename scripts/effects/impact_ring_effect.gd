@@ -1,6 +1,7 @@
 extends Node2D
 
 # animated ring showing an ability's area of effect, frees itself when done
+# spawned from impact_ring_effect.tscn, which draws it above the zombies
 
 const DURATION: float = 0.4
 const SPARK_COUNT: int = 10
@@ -9,11 +10,6 @@ var radius: float = 100.0
 var colour: Color = Color(1.0, 0.55, 0.15)
 var show_sparks: bool = false
 var _elapsed: float = 0.0
-
-
-func _ready() -> void:
-	# draw above zombies so the blast is never hidden behind them
-	z_index = 10
 
 
 func _process(delta: float) -> void:

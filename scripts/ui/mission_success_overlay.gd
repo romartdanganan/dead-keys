@@ -14,6 +14,7 @@ signal return_home_requested
 signal replay_requested
 
 @onready var stats: Label = $CenterContainer/MenuPanel/MenuMargin/MenuList/Stats
+@onready var medal_icon: TextureRect = $CenterContainer/MenuPanel/MenuMargin/MenuList/MedalIcon
 
 func _ready() -> void:
 	_display_stats(0)

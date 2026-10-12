@@ -24,11 +24,13 @@ func before_each() -> void:
 		"longer_crate_timer": SettingsState.longer_crate_timer,
 		"large_word_text": SettingsState.large_word_text,
 		"hold_to_fire": SettingsState.hold_to_fire,
+		"reduce_screen_shake": SettingsState.reduce_screen_shake,
 	}
 	SettingsState.zombie_speed_index = 0
 	SettingsState.longer_crate_timer = false
 	SettingsState.large_word_text = false
 	SettingsState.hold_to_fire = false
+	SettingsState.reduce_screen_shake = false
 
 
 func after_each() -> void:
@@ -149,3 +151,10 @@ func test_accessibility_settings_survive_save_and_load() -> void:
 	assert_true(SettingsState.longer_crate_timer)
 	assert_true(SettingsState.large_word_text)
 	assert_true(SettingsState.hold_to_fire)
+
+
+func test_reduce_screen_shake_survives_save_and_load() -> void:
+	SettingsState.set_reduce_screen_shake(true)
+	SettingsState.reduce_screen_shake = false
+	SettingsState.load_settings()
+	assert_true(SettingsState.reduce_screen_shake)

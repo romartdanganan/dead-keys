@@ -11,7 +11,8 @@
 [ext_resource type="Texture2D" uid="uid://cngk02pywnos6" path="res://assets/ui/ammo_icon.png" id="10_ammoicon"]
 [ext_resource type="PackedScene" path="res://scenes/ui/wave_announcement.tscn" id="10_wave"]
 [ext_resource type="Texture2D" uid="uid://c1m8brksixm7k" path="res://assets/ui/life_icon.png" id="11_lifeicon"]
-[ext_resource type="Script" path="res://scripts/entities/barrier_ring.gd" id="12_barrier_ring"]
+[ext_resource type="Script" uid="uid://cn8sy043u1gt" path="res://scripts/missions/screen_shake.gd" id="12_camera"]
+[ext_resource type="Script" uid="uid://fgtac5fymsk3" path="res://scripts/entities/barrier_ring.gd" id="12_barrier_ring"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_combo_bg"]
 bg_color = Color(0.2, 0.16, 0.1, 1)
@@ -33,14 +34,18 @@ crosshair_texture = ExtResource("2_2o0v8")
 
 [node name="BackgroundColour" type="ColorRect" parent="." unique_id=1693243801]
 custom_minimum_size = Vector2(1280, 720)
-offset_right = 1280.0
-offset_bottom = 720.0
+offset_left = -24.0
+offset_top = -24.0
+offset_right = 1304.0
+offset_bottom = 744.0
 mouse_filter = 2
 color = Color(1.08294e-06, 0.385634, 0.179398, 1)
 
 [node name="Background" type="TextureRect" parent="." unique_id=2024653669]
-offset_right = 1280.0
-offset_bottom = 720.0
+offset_left = -24.0
+offset_top = -24.0
+offset_right = 1304.0
+offset_bottom = 744.0
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 6
@@ -62,7 +67,7 @@ position = Vector2(0, -22)
 [node name="WallAttackLine" type="Marker2D" parent="World" unique_id=689915184]
 position = Vector2(640, 360)
 
-[node name="BarrierRing" type="Node2D" parent="World"]
+[node name="BarrierRing" type="Node2D" parent="World" unique_id=1406671283]
 position = Vector2(640, 360)
 z_index = 1
 script = ExtResource("12_barrier_ring")
@@ -526,3 +531,7 @@ script = ExtResource("9_67u5c")
 autostart = true
 
 [node name="WaveAnnouncement" parent="." unique_id=1340575687 instance=ExtResource("10_wave")]
+
+[node name="Camera" type="Camera2D" parent="." unique_id=1748203961]
+position = Vector2(640, 360)
+script = ExtResource("12_camera")
