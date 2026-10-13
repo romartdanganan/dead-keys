@@ -33,10 +33,20 @@ extends Control
 	/MissionTable/MissionGrid/Mission1Card
 )
 
+@onready var mission_grid: GridContainer = $MainMargin/MainLayout/HubContent/MissionArea/MissionTable/MissionGrid
+
+@onready var launch_button: Button = (
+	$MainMargin/MainLayout/HubContent/MissionDetailsPanel
+	/MissionDetailsMargin/MissionDetails/LaunchMissionButton
+)
+
 const SETTINGS_MENU_SCENE := preload("res://scenes/ui/settings_menu.tscn")
 var settings_menu: Node = null
 
 const MissionRating := preload("res://scripts/missions/mission_rating.gd")
+
+const MissionCatalog := preload("res://scripts/resources/mission_catalog.gd")
+var selected_card: MissionCard
 
 
 func _ready() -> void:
@@ -51,7 +61,11 @@ func _ready() -> void:
 	_show_mission_details(mission_1_card)
 	ProgressionManager.gold_changed.connect(_on_gold_changed)
 	_on_gold_changed(ProgressionManager.get_gold())
-
+	
+	for card in mission_grid.get_children():
+		card.set_locked(not ProgressionManager.is_mission_unlocked(card.mission_id))
+		if card != mission_1_card:
+				card.pressed.connect(_show_mission_details.bind(card))
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
@@ -83,11 +97,15 @@ func _on_mission_1_card_pressed() -> void:
 
 
 func _show_mission_details(card: MissionCard) -> void:
+	selected_card = card
+	launch_button.disabled = (
+	not ProgressionManager.is_mission_unlocked(card.mission_id)
+	or not MissionCatalog.has_mission(card.mission_id)
+	)
 	mission_title_label.text = "%d. %s" % [
 		card.mission_id,
 		card.mission_name
 	]
-
 	mission_description_label.text = card.mission_description
 	# best medal comes from the save now instead of the card's placeholder
 	var best_medal := ProgressionManager.get_best_medal(card.mission_id)
@@ -102,9 +120,12 @@ func _show_mission_details(card: MissionCard) -> void:
 
 
 func _on_launch_mission_button_pressed() -> void:
+	var path := MissionCatalog.get_scene_path(selected_card.mission_id)
+	if path.is_empty():
+		return
 	Audio.clear_music()
 	Audio.play("play_music")
-	get_tree().change_scene_to_file("res://scenes/missions/mission_1.tscn")
+	get_tree().change_scene_to_file(path)
 
 
 func _on_upgrades_button_pressed() -> void:
@@ -144,3 +165,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		# debug reset also brings back every tutorial callout
 		TutorialState.reset()
 		print("Progression reset.")
+		get_tree().reload_current_scene() 
+	# press U to unlock the next mission 
+	if event is InputEventKey and event.pressed and event.keycode == KEY_U:
+		
+		ProgressionManager.unlock_next_mission(ProgressionManager.highest_unlocked)
+		ProgressionManager.save_progression()
+		get_tree().reload_current_scene()

@@ -29,3 +29,8 @@ func _update_card() -> void:
 
 	lock_overlay.visible = locked
 	disabled = locked
+
+func set_locked(value: bool) -> void:
+	locked = value
+	_update_card()
+	
