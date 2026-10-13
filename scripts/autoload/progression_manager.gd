@@ -150,3 +150,13 @@ func purchase_ability(ability_id: String) -> bool:
 	save_progression()
 	Audio.play("purchase")
 	return true
+	
+func is_mission_unlocked(mission_id: int) -> bool:
+	return mission_id >= 1 and mission_id <= highest_unlocked
+	
+
+func unlock_next_mission(completed_id: int) -> void:
+	#only move forward only (replaying mission 1 never relocked mission 2)
+	highest_unlocked = maxi(highest_unlocked, completed_id + 1)
+	if highest_unlocked > 6:
+		highest_unlocked = 6

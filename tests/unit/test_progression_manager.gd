@@ -101,3 +101,23 @@ func test_purchase_upgrade_fails_when_unaffordable() -> void:
 	ProgressionManager.gold = 0
 	assert_false(ProgressionManager.purchase_upgrade("fire_rate"))
 	assert_eq(ProgressionManager.get_upgrade_level("fire_rate"), 0)
+	
+
+func test_only_mission_1_unlocked_on_fresh_save() -> void:
+	ProgressionManager.highest_unlocked = 1
+	
+	assert_true(ProgressionManager.is_mission_unlocked(1))
+	assert_false(ProgressionManager.is_mission_unlocked(2))
+	
+func test_completing_mission_1_unlocks_only_mission_2() -> void:
+	ProgressionManager.highest_unlocked = 1
+	ProgressionManager.unlock_next_mission(1)
+	
+	assert_true(ProgressionManager.is_mission_unlocked(2))
+	assert_false(ProgressionManager.is_mission_unlocked(3))
+	
+func test_replaying_earlier_mission_does_not_relock() -> void:
+	ProgressionManager.highest_unlocked = 6
+	ProgressionManager.unlock_next_mission(1)
+	assert_eq(ProgressionManager.highest_unlocked, 6)
+	

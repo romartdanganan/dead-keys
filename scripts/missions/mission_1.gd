@@ -375,6 +375,7 @@ func _on_ability_charged_changed(_is_charged: bool) -> void:
 
 func _start_mission() -> void:
 	var mission := _build_mission_config()
+	
 
 	zombie_manager = ZombieManager.new()
 	add_child(zombie_manager)
@@ -404,6 +405,9 @@ func _start_mission() -> void:
 
 	print("Mission started: ", mission.mission_name)
 	print("Type any active word shown above a zombie.")
+	
+
+
 
 # tutorial and new enemy hints live in their own script, the mission only creates it
 func _setup_tutorial_callouts() -> void:
@@ -597,6 +601,7 @@ func _on_all_waves_cleared() -> void:
 	_result = _rate_mission()
 	ProgressionManager.add_gold(_result.total_gold)
 	ProgressionManager.set_best_medal(mission_number, _result.medal)
+	ProgressionManager.unlock_next_mission(mission_number)
 	ProgressionManager.save_progression()
 	
 	_display_mission_success_overlay()
