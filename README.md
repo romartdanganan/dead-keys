@@ -76,15 +76,43 @@ Main Menu
 
 | Input | Action |
 |---|---|
-| Keyboard letters | Type the words above Walkers |
+| Keyboard letters | Type the words above zombies and supply crates |
 | Mouse movement | Aim the crosshair |
-| Left mouse button | Fire toward the cursor |
-| F4 | Reset ammunition for temporary debugging |
-| F5 | Increase maximum ammunition for temporary debugging |
-| F6 | Add ammunition for temporary debugging |
-| F7 | Consume ammunition for temporary debugging |
+| Left mouse button | Fire toward the cursor (rebindable in Settings) |
+| Right mouse button | Fire your charged ability toward the cursor (rebindable in Settings) |
+| 1, 2, 3 | Call in the supply in that slot (rebindable in Settings) |
+| Escape | Pause |
 
-The F4–F7 controls are temporary prototype/debug controls.
+### Accessibility
+
+The **Accessibility** tab in Settings is aimed at slower or newer typists.
+Every option saves between sessions and can be changed mid mission from the
+Pause menu.
+
+| Option | Effect |
+|---|---|
+| Zombie Speed | Normal, 85%, 70% or 55% movement speed for every zombie |
+| Longer Crate Timer | Supply crates stay for 12 seconds instead of 8 |
+| Large Word Text | Words above zombies and crates use bigger text |
+| Hold To Fire | Holding the fire button keeps shooting at your fire rate |
+| Reduce Flashing | Hit flashes are turned off and warnings use a steady colour |
+
+### Developer debug keys (editor only)
+
+These only work when the game is run from the Godot editor. They are disabled
+in exported builds.
+
+| Input | Where | Action |
+|---|---|---|
+| F1 | Mission | Charge the equipped ability |
+| F4 | Mission | Reset ammunition |
+| F5 | Mission | Increase maximum ammunition |
+| F6 | Mission | Add ammunition |
+| F7 | Mission | Consume ammunition |
+| G | Home Base | Add 50 gold |
+| H | Home Base | Try to spend 10000 gold |
+| S | Home Base | Save progression |
+| R | Home Base | Reset all progression |
 
 
 # Important Prototype Behaviour
@@ -126,7 +154,7 @@ complete word
 ## Current MVP limitations
 
 - Some art and audio are placeholders.
-- Temporary debug controls are still present.
+- Debug controls are still in the code but only work when run from the editor.
 - The word list is limited.
 - Final progression, abilities, permanent upgrades, supplies and saving are not
   part of the Milestone 2 MVP.

@@ -11,3 +11,4 @@ speed = 30.0
 special_behaviour_tag = "medic"
 silhouette_modulate = Color(0.55, 0.95, 0.85, 1)
 word_label_border_color = Color(0.2, 0.95, 0.75, 1)
+heal_per_second = 5.0

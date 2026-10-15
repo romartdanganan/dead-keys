@@ -1,0 +1,4 @@
+{ 
+    "themes": ["zombie", "city", "suburb", "hospital", "shopping", "rescue", "military", "challenge"], 
+    "word_count": 60, 
+    "allowed_buckets": [3, 4] }

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="EnemyTypeDef" format=3 uid="uid://e40p3xgfmt27"]
+
+[ext_resource type="Script" uid="uid://sylq37045jm3" path="res://scripts/resources/enemy_type_def.gd" id="1_a44ie"]
+
+[resource]
+script = ExtResource("1_a44ie")
+enemy_id = "commander"
+display_name = "Commander"
+speed = 20.0
+word_pool_tag = "short"
+special_behaviour_tag = "commander"
+silhouette_scale = Vector2(0.85, 0.85)
+silhouette_modulate = Color(0.9, 0.35, 0.75, 1)
+word_label_border_color = Color(1, 0.2, 0.7, 1)
+support_radius = 240.0

@@ -48,6 +48,8 @@ func test_freeze_reverts_to_approach_after_duration() -> void:
 func test_freeze_resumes_attack_if_zombie_was_attacking() -> void:
 	# forces ATTACK directly rather than walking the zombie to the wall,
 	# only the state matters here, not how it got there
+	# attackers stand on the ring edge, anywhere else they walk back in
+	zombie.global_position = wall.global_position + Vector2(-zombie.wall_contact_radius, 0)
 	zombie._enter_state(Zombie.State.ATTACK)
 	zombie.apply_freeze(0.05)
 	assert_eq(zombie.current_state, Zombie.State.FROZEN)

@@ -6,9 +6,8 @@ const AbilityCatalog := preload("res://scripts/resources/ability_catalog.gd")
 
 # equipped ability + mission-charge state (#24).
 #
-# #23 (Combo system) sets is_charged true at combo == 5 via set_charged().
-# Per #23's own issue text, the charge is "consumed elsewhere", that's here,
-# in WeaponController.try_fire().
+# the combo in MistakeSystem charges this after 5 typed words in a row, the charge
+# is stored until the player presses use_ability (WeaponController.try_fire_ability)
 
 signal charged_changed(is_charged: bool)
 

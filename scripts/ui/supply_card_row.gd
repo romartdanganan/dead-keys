@@ -45,4 +45,5 @@ func refresh(selected_slot_occupied: bool = false) -> void:
 
 
 func _on_buy_pressed() -> void:
+	Audio.play("purchase")
 	buy_pressed.emit(supply_id)

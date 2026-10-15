@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://taqwuesdfybl"]
+
+[ext_resource type="PackedScene" uid="uid://bfhjsurifryia" path="res://scenes/missions/mission_1.tscn" id="1_base"]
+[ext_resource type="Script" uid="uid://bc1veqlkg3pwu" path="res://scripts/missions/mission_2.gd" id="2_script"]
+
+[node name="Mission2" unique_id=1947134281 instance=ExtResource("1_base")]
+script = ExtResource("2_script")
+
+[node name="BackgroundColour" parent="." index="0" unique_id=1693243801]
+color = Color(0.32, 0.42, 0.45, 1)
+
+[node name="TypingController" parent="." index="5" unique_id=1294852722]
+word_list_path = "res://resources/word_lists/missions_words/mission2_words.json"

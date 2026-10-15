@@ -1,0 +1,17 @@
+{
+  "theme": "suburb",
+  "words": [
+	"bin", "bus", "car", "cat", "dog", "mow", "bike", "deck", "door", "gate", "home",
+	"hose", "lawn", "pool", "road", "roof", "shed", "tree",
+
+	"fence", "hedge", "house", "mower", "porch", "swing", "garden", "gutter", "lounge",
+	"school", "sprawl", "street", "suburb", "window", "bicycle", "carport", "kitchen",
+	"sandpit", "section",
+
+	"backyard", "barbecue", "bungalow", "doorbell", "driveway", "lamppost", "pavement",
+	"suburbia", "letterbox", "neighbour", "sprinkler", "playground", "roundabout",
+	"trampoline",
+
+	"clothesline", "residential", "streetlight"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "theme": "hospital",
+  "words": [
+	"bed", "cast", "cure", "drip", "heal", "help", "mask", "pain", "pill", "rest",
+	"scan", "sick", "test", "ward",
+
+	"alert", "blood", "clean", "fever", "nurse", "pulse", "virus", "clinic", "crutch",
+	"doctor", "gloves", "injury", "medkit", "oxygen", "plasma", "scrubs", "splint",
+	"tablet", "triage", "bandage", "illness", "inhaler", "monitor", "patient",
+	"recover", "scalpel", "sterile", "surgeon", "surgery", "syringe", "vaccine",
+
+	"hospital", "medicine", "outbreak", "pharmacy", "recovery", "sanitise", "stitches",
+	"ambulance", "diagnosis", "disinfect", "emergency", "infection", "isolation",
+	"operation", "paramedic", "stretcher", "treatment", "antibiotic", "quarantine",
+	"wheelchair",
+
+	"examination", "resuscitate", "thermometer", "prescription", "defibrillator",
+    "rehabilitation"
+  ]
+}

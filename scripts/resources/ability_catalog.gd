@@ -8,35 +8,60 @@ const ABILITIES: Array[Dictionary] = [
 	{
 		"id": "spread_shot",
 		"display_name": "Spread Shot",
-		"description": "Next shot after Combo charges fires 3 bullets in a cone instead of 1.",
+		"description": "Ability shot fires 3 bullets in a cone instead of 1.",
 		"implemented": true,
 		"cost": 0,
 	},
 	{
 		"id": "ricochet",
 		"display_name": "Ricochet",
-		"description": "Next shot after Combo charges bounces to 2 nearby zombies after its first hit, 3 zombies hit total.",
+		"description": "Ability shot bounces to 2 nearby zombies after its first hit, 3 zombies hit total.",
 		"implemented": true,
 		"cost": 200,
 	},
 	{
 		"id": "freeze_round",
 		"display_name": "Freeze Round",
-		"description": "Next shot after Combo charges fully freezes the hit zombie and nearby zombies in a small radius for a few seconds.",
+		"description": "Ability shot fully freezes the hit zombie and nearby zombies in a small radius for a few seconds.",
 		"implemented": true,
 		"cost": 200,
 	},
 	{
 		"id": "piercing_shot",
 		"display_name": "Piercing Shot",
-		"description": "Next shot after Combo charges pierces every zombie in its path with no limit, until it leaves the arena.",
+		"description": "Ability shot pierces every zombie in its path with no limit, until it leaves the arena.",
 		"implemented": true,
 		"cost": 200,
 	},
-	{"id": "ability_5", "display_name": "LOCKED", "description": "Coming in a future sprint.", "implemented": false, "cost": 0},
-	{"id": "ability_6", "display_name": "LOCKED", "description": "Coming in a future sprint.", "implemented": false, "cost": 0},
-	{"id": "ability_7", "display_name": "LOCKED", "description": "Coming in a future sprint.", "implemented": false, "cost": 0},
-	{"id": "ability_8", "display_name": "LOCKED", "description": "Coming in a future sprint.", "implemented": false, "cost": 0},
+	# replaces the four locked placeholder slots
+	{
+		"id": "explosive_round",
+		"display_name": "Explosive Round",
+		"description": "Ability shot explodes on impact, damaging every zombie in a small radius.",
+		"implemented": true,
+		"cost": 200,
+	},
+	{
+		"id": "heavy_round",
+		"display_name": "Heavy Round",
+		"description": "Ability shot deals 5x damage to the zombie it hits.",
+		"implemented": true,
+		"cost": 200,
+	},
+	{
+		"id": "homing_shot",
+		"display_name": "Homing Shot",
+		"description": "Ability shot curves towards the nearest zombie.",
+		"implemented": true,
+		"cost": 200,
+	},
+	{
+		"id": "shockwave_round",
+		"display_name": "Shockwave Round",
+		"description": "Ability shot knocks the hit zombie and nearby zombies back.",
+		"implemented": true,
+		"cost": 200,
+	},
 ]
 
 

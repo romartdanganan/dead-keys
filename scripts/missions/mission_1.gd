@@ -3,9 +3,14 @@ extends Node2D
 # preload rather than rely on the class_name global (needs an editor rescan
 # to register on a fresh checkout / new machine)
 const AbilityCatalog := preload("res://scripts/resources/ability_catalog.gd")
+const MissionCatalog := preload("res://scripts/resources/mission_catalog.gd")
+
+# later missions extend this script and set their own number in _init()
+var mission_number: int = 1
 
 
 @export var crosshair_texture: Texture2D
+@export_range(90.0, 120.0, 1.0) var barrier_radius: float = 105.0
 
 # base enemy types used to build Mission 1's waves in _build_mission_config()
 const WALKER_TYPE: EnemyTypeDef = preload("res://resources/enemies/walker.tres")
@@ -28,6 +33,9 @@ const RUNNER_TYPE: EnemyTypeDef = preload("res://resources/enemies/runner.tres")
 @onready var ability_name_label: Label = $HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent/AbilitySection/AbilityNameLabel
 @onready var projectile_container: Node2D = $World/ProjectileContainer
 @onready var wall_target: Marker2D = $World/WallAttackLine
+# preloaded instead of the class name so fresh checkouts and command line runs find it
+const BarrierRingScript := preload("res://scripts/entities/barrier_ring.gd")
+@onready var barrier_ring: BarrierRingScript = $World/BarrierRing
 @onready var status_timer: Timer = $StatusTimer
 @onready var supply_landing_point: Marker2D = $World/SupplyLandingPoint
 @onready var supply_container: Node2D = $World/SupplyContainer
@@ -51,7 +59,38 @@ var pause_menu: PauseMenu = null
 const SETTINGS_MENU_SCENE := preload("res://scenes/ui/settings_menu.tscn")
 var settings_menu: Node = null
 
+# How To Play overlay, instanced here rather than by PauseMenu itself so it
+# stays reusable across missions, same reasoning as PauseMenu's own signals
+const HOW_TO_PLAY_SCENE := preload("res://scenes/ui/how_to_play.tscn")
+var how_to_play_overlay: Node = null
+
+const MissionSuccess := preload("res://scripts/ui/mission_success_overlay.gd")
+const MISSION_SUCCESS_SCENE := preload("res://scenes/ui/mission_success_overlay.tscn")
+var mission_success_overlay: MissionSuccess = null
+
+const MissionFail := preload("res://scripts/ui/mission_fail_overlay.gd")
+const MISSION_FAIL_SCENE := preload("res://scenes/ui/mission_fail_overlay.tscn")
+var mission_fail_overlay: MissionFail = null
+
 var zombie_manager: ZombieManager
+
+const TUTORIAL_CALLOUTS_SCRIPT := preload("res://scripts/missions/tutorial_callouts.gd")
+const COMBAT_FEEDBACK_SCRIPT := preload("res://scripts/missions/combat_feedback.gd")
+const WAVE_COUNTER_SCENE := preload("res://scenes/ui/wave_counter.tscn")
+const HUD_WARNINGS_SCRIPT := preload("res://scripts/missions/hud_warnings.gd")
+const BOSS_HEALTH_BAR_SCENE := preload("res://scenes/ui/boss_health_bar.tscn")
+const WordLabelStyle := preload("res://scripts/ui/word_label_style.gd")
+const MissionRating := preload("res://scripts/missions/mission_rating.gd")
+const BOSS_FIGHT_SCRIPT := preload("res://scripts/missions/boss_fight.gd")
+# shake strengths, trauma from 0 to 1
+const WALL_HIT_SHAKE: float = 0.18
+const LIFE_LOST_SHAKE: float = 0.7
+@onready var camera: Camera2D = $Camera
+var boss_fight: Node
+var kill_count := 0
+var mission_rating: MissionRating
+# filled in when the mission is won, read by the success overlay
+var _result: Dictionary = {}
 
 # base wall HP, overridden by the Fortified Wall upgrade (#25) in _ready()
 var WALL_MAX_HEALTH: float = 100.0
@@ -86,6 +125,7 @@ var supply_call_supply_id: String = ""
 var wall_damage_reduction_active: bool = false
 
 func _ready() -> void:
+	barrier_ring.radius = barrier_radius
 	_apply_upgrades()
 	_setup_cursor()
 	_setup_ammo_hud()
@@ -93,6 +133,7 @@ func _ready() -> void:
 	_setup_lives_hud()
 	_setup_weapon()
 	_setup_typing()
+	_setup_rating()
 	_setup_ability_hud()
 	_setup_supplies()
 	_start_mission()
@@ -107,6 +148,22 @@ func _apply_upgrades() -> void:
 	wall_health = WALL_MAX_HEALTH
 	lives_remaining = ProgressionManager.get_upgrade_value("extra_life")
 
+# only used for the hold to fire accessibility option for now
+func _process(_delta: float) -> void:
+	_process_hold_to_fire()
+
+
+# hold to fire accessibility setting keeps shooting at the weapon's fire rate
+func _process_hold_to_fire() -> void:
+	if not SettingsState.hold_to_fire or not Input.is_action_pressed("fire"):
+		return
+	# overlays don't pause the tree, and empty or jammed shots would spam their sounds
+	if mission_success_overlay or mission_fail_overlay or pause_menu:
+		return
+	if ammo_system.current_ammo <= 0 or weapon_controller.set_jammed:
+		return
+	weapon_controller.try_fire(get_global_mouse_position())
+
 func _exit_tree() -> void:
 	# reset custom cursor back to system default on scene exit
 	Input.set_custom_mouse_cursor(null)
@@ -119,9 +176,23 @@ func _unhandled_input(event: InputEvent) -> void:
 	# check for fire action (default left click, rebindable via Settings)
 	if event.is_action_pressed("fire"):
 		weapon_controller.try_fire(get_global_mouse_position())
+	# the charged ability waits for its own input instead of firing on the next shot
+	elif event.is_action_pressed("use_ability"):
+		weapon_controller.try_fire_ability(get_global_mouse_position())
+	elif event.is_action_pressed("call_supply_1"):
+		_call_supply(0)
+	elif event.is_action_pressed("call_supply_2"):
+		_call_supply(1)
+	elif event.is_action_pressed("call_supply_3"):
+		_call_supply(2)
+	# debug keys only work when running from the editor, never in exported builds
+	elif OS.is_debug_build():
+		_handle_debug_input(event)
 
-	# debug inputs to manually manipulate ammo system
-	elif event.is_action_pressed("debug_add_ammo"):
+
+# F1 charges the ability, F4 to F7 change ammo, for testing only
+func _handle_debug_input(event: InputEvent) -> void:
+	if event.is_action_pressed("debug_add_ammo"):
 		ammo_system.add_ammunition(1)
 	elif event.is_action_pressed("debug_use_ammo"):
 		ammo_system.consume_ammunition(1)
@@ -130,13 +201,6 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_pressed("debug_reset_ammo"):
 		ammo_system.reset_ammunition()
 		print("Ammunition reset")
-	elif event.is_action_pressed("call_supply_1"):
-		_call_supply(0)
-	elif event.is_action_pressed("call_supply_2"):
-		_call_supply(1)
-	elif event.is_action_pressed("call_supply_3"):
-		_call_supply(2)
-	# TODO: remove once #23 (Combo system) actually charges the ability
 	elif event.is_action_pressed("debug_charge_ability"):
 		AbilityState.set_charged(true)
 
@@ -178,6 +242,11 @@ func _setup_typing() -> void:
 	typing_controller.word_completed.connect(_on_typing_word_completed)
 	typing_controller.supply_word_completed.connect(_on_supply_word_completed)
 
+# counts keystrokes and lost lives for the end of mission medal
+func _setup_rating() -> void:
+	mission_rating = MissionRating.new()
+	mission_rating.setup(typing_controller)
+
 func _setup_supplies() -> void:
 	for i in supply_slot_icons.size():
 		var supply_id := SupplyState.get_slot(i)
@@ -207,6 +276,7 @@ func _call_supply(slot_index: int) -> void:
 
 	_update_supply_call_label()
 	print("Supply called: ", supply_id, " (slot ", slot_index + 1, ")")
+	Audio.play("supply_call")
 
 	var countdown_timer := Timer.new()
 	countdown_timer.wait_time = 1.0
@@ -242,6 +312,8 @@ func _spawn_supply_crate(supply_id: String) -> void:
 	crate.expired.connect(_on_crate_expired)
 
 	var word_label: RichTextLabel = crate.get_node("WordLabel")
+	# bigger word text if the large word text setting is on
+	WordLabelStyle.apply(word_label)
 	typing_controller.register_target(crate, word_label, "supply")
 
 	active_crate = crate
@@ -252,11 +324,13 @@ func _on_supply_word_completed(crate: Node, _word: String) -> void:
 		crate.claim()
 
 func _on_crate_claimed(crate: SupplyCrate) -> void:
+	Audio.play("supply_claim")
 	active_crate = null
 	_apply_supply_effect(crate.supply_type)
 	print("Supply claimed: ", crate.supply_type)
 
 func _on_crate_expired(crate: SupplyCrate) -> void:
+	Audio.play("supply_expired")
 	active_crate = null
 	typing_controller.unregister_target(crate)
 	print("Supply crate expired unclaimed: ", crate.supply_type)
@@ -301,11 +375,13 @@ func _on_ability_charged_changed(_is_charged: bool) -> void:
 
 func _start_mission() -> void:
 	var mission := _build_mission_config()
+	
 
 	zombie_manager = ZombieManager.new()
 	add_child(zombie_manager)
 	zombie_manager.mission_config = mission
 	zombie_manager.wall_target = wall_target
+	zombie_manager.wall_contact_radius = barrier_radius
 	zombie_manager.all_waves_cleared.connect(_on_all_waves_cleared)
 	zombie_manager.zombie_spawned.connect(_on_zombie_spawned)
 	zombie_manager.wave_started.connect(_on_wave_started)
@@ -314,12 +390,67 @@ func _start_mission() -> void:
 	# the mission actually starts, so this is set here rather than in configure()
 	weapon_controller.set_zombie_manager(zombie_manager)
 
+	# hooked up before the waves start so the first wave callout isn't missed
+	_setup_tutorial_callouts()
+	_setup_combat_feedback()
+	_setup_wave_counter()
+	_setup_hud_warnings()
+	_setup_boss_health_bar()
+	_setup_boss_fight()
+	$HUD/HUDRoot/MissionPanel/MissionMargin/MissionNameLabel.text = "MISSION: %s" % mission.mission_name.to_upper()
+
 	status_timer.timeout.connect(_on_status_timer_timeout)
 
 	zombie_manager.start_mission()
 
 	print("Mission started: ", mission.mission_name)
 	print("Type any active word shown above a zombie.")
+	
+
+
+
+# tutorial and new enemy hints live in their own script, the mission only creates it
+func _setup_tutorial_callouts() -> void:
+	var callouts := TUTORIAL_CALLOUTS_SCRIPT.new()
+	add_child(callouts)
+	callouts.setup(typing_controller, zombie_manager, weapon_controller)
+
+# hit flash, ammo popups and the out of ammo prompt live in their own script
+func _setup_combat_feedback() -> void:
+	var feedback := COMBAT_FEEDBACK_SCRIPT.new()
+	add_child(feedback)
+	feedback.setup(typing_controller, zombie_manager, weapon_controller, ammo_system, $HUD/HUDRoot/AmmoPanel)
+
+# low wall pulse and ability ready glow live in their own script
+func _setup_hud_warnings() -> void:
+	var warnings := HUD_WARNINGS_SCRIPT.new()
+	add_child(warnings)
+	warnings.setup(wall_health_bar, $HUD/HUDRoot/WallPanelAnchor/WallPanel, $HUD/HUDRoot/CombatUtilityPanel/CombatUtilityMargin/CombatUtilityContent/AbilitySection)
+
+# boss bar stays hidden until a boss type spawns, so missions without one are unaffected
+func _setup_boss_health_bar() -> void:
+	var boss_bar := BOSS_HEALTH_BAR_SCENE.instantiate()
+	add_child(boss_bar)
+	boss_bar.setup(zombie_manager)
+
+# entrance, phases and finale for any boss, idle in missions without one
+func _setup_boss_fight() -> void:
+	boss_fight = BOSS_FIGHT_SCRIPT.new()
+	add_child(boss_fight)
+	boss_fight.setup(zombie_manager, camera, wave_announcement)
+	# killing the boss ends the mission once its cinematic is over
+	boss_fight.finale_finished.connect(_on_all_waves_cleared)
+
+func _setup_wave_counter() -> void:
+	var wave_counter := WAVE_COUNTER_SCENE.instantiate()
+	add_child(wave_counter)
+	wave_counter.setup(zombie_manager)
+
+# pause automatically if the player alt-tabs away mid-wave. skipped inside the editor's
+# Game tab, where clicking its toolbar (like the speed setting) also takes focus away
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_APPLICATION_FOCUS_OUT and is_inside_tree() and not Engine.is_embedded_in_editor():
+		_open_pause_menu()
 
 func _on_wave_started(wave_number: int, is_final_wave: bool) -> void:
 	if is_final_wave:
@@ -338,6 +469,11 @@ func _build_mission_config() -> MissionConfigDef:
 	wave_1.count = 3
 	wave_1.spawn_interval = 3.5
 	wave_1.start_delay = 1.0
+	
+	# DEBUG PURPOSES
+	#wave_1.count = 1
+	#wave_1.spawn_interval = 1.0
+	#wave_1.start_delay = 1.0
 
 	# wave 2: introduces Runner alongside Walker. two WaveEntry rows sharing
 	# display_wave_number = 2 so the player sees one "WAVE 2" announcement
@@ -349,11 +485,11 @@ func _build_mission_config() -> MissionConfigDef:
 	wave_2a.count = 2
 	wave_2a.spawn_interval = 3.0
 	wave_2a.start_delay = 2.5
-	wave_2a.display_wave_number = 2
-
+	
 	var wave_2b := WaveEntry.new()
 	wave_2b.enemy_type = RUNNER_TYPE
-	wave_2b.count = 2
+	wave_2b.allowed_buckets = [1]
+	wave_2b.count = 1
 	wave_2b.spawn_interval = 2.5
 	wave_2b.start_delay = 1.5
 	wave_2b.display_wave_number = 2
@@ -370,6 +506,7 @@ func _build_mission_config() -> MissionConfigDef:
 
 	var wave_3b := WaveEntry.new()
 	wave_3b.enemy_type = RUNNER_TYPE
+	wave_3b.allowed_buckets = [1]
 	wave_3b.count = 2
 	wave_3b.spawn_interval = 2.5
 	wave_3b.start_delay = 1.5
@@ -379,6 +516,8 @@ func _build_mission_config() -> MissionConfigDef:
 	mission.mission_id = "mission_1"
 	mission.mission_name = "Defend the Suburbs"
 	mission.waves = [wave_1, wave_2a, wave_2b, wave_3a, wave_3b]
+	# DEBUG PURPOSES
+	# mission.waves = [wave_1]
 	mission.base_coin_reward = 50
 	return mission
 
@@ -404,8 +543,9 @@ func _on_status_timer_timeout() -> void:
 
 func _on_zombie_spawned(spawned_zombie: Zombie) -> void:
 	var word_label: RichTextLabel = spawned_zombie.get_node("WordLabel")
-	typing_controller.register_target(spawned_zombie, word_label)
-
+	# restyled on every spawn since pooled zombies reuse their label
+	WordLabelStyle.apply(word_label)
+	typing_controller.register_target(spawned_zombie, word_label, "zombie", spawned_zombie.allowed_buckets)
 	# guarded connections since pooled zombies are reused nodes, an unguarded
 	# connect (especially an anonymous lambda) would stack a duplicate
 	# connection on every respawn of the same instance
@@ -419,22 +559,31 @@ func _on_zombie_spawned(spawned_zombie: Zombie) -> void:
 		spawned_zombie.wall_contact.connect(mistake_system.combo_reset)
 
 func _on_zombie_died(dead_zombie: Zombie) -> void:
+	kill_count += 1
 	typing_controller.unregister_target(dead_zombie)
 
 func _on_zombie_damaged(damaged_zombie: Zombie) -> void:
-	Audio.play("hit_zombie")
 	print("Zombie health now: ", damaged_zombie.health)
 
 func _on_wall_hit(damage: float) -> void:
+	# the boss is already beaten, nothing can cost the player during the cinematic
+	if boss_fight != null and boss_fight.finale_playing:
+		return
 	var effective_damage := damage * EMERGENCY_WALL_REDUCTION_FACTOR if wall_damage_reduction_active else damage
 	wall_health = max(wall_health - effective_damage, 0.0)
 	_update_wall_hud()
 	print("Wall hit for ", effective_damage, " damage. Wall health: ", wall_health)
 	if wall_health <= 0.0:
 		_spend_life()
+	else:
+		camera.add_trauma(WALL_HIT_SHAKE)
 	Audio.play("wall_damage")
 
 func _spend_life() -> void:
+	Audio.play("life_lost")
+	# losing a life rules out a gold medal
+	mission_rating.record_life_lost()
+	camera.add_trauma(LIFE_LOST_SHAKE)
 	lives_remaining -= 1
 	_update_lives_hud()
 
@@ -444,15 +593,122 @@ func _spend_life() -> void:
 		_update_wall_hud()
 	else:
 		print("Wall destroyed. No lives remaining. Returning to home base.")
-		Audio.play("game_over")
-		return_to_home_base()
+		_display_mission_fail_overlay()
 
 func _on_all_waves_cleared() -> void:
 	print("Mission complete. Returning to home base.")
-	ProgressionManager.add_gold(zombie_manager.mission_config.base_coin_reward)
+	# pays the base reward plus medal and perfect accuracy bonuses, keeps the best medal
+	_result = _rate_mission()
+	ProgressionManager.add_gold(_result.total_gold)
+	ProgressionManager.set_best_medal(mission_number, _result.medal)
+	ProgressionManager.unlock_next_mission(mission_number)
 	ProgressionManager.save_progression()
+	
+	_display_mission_success_overlay()
+
+# medal, bonus gold and accuracy for the success screen
+func _rate_mission() -> Dictionary:
+	var base_reward: int = zombie_manager.mission_config.base_coin_reward
+	var medal := mission_rating.get_medal(wall_health / WALL_MAX_HEALTH)
+	var medal_bonus := MissionRating.get_medal_bonus(medal)
+	var accuracy_bonus := mission_rating.get_perfect_accuracy_bonus(base_reward)
+	return {
+		"medal": medal,
+		"accuracy": mission_rating.get_accuracy(),
+		"base_gold": base_reward,
+		"medal_bonus": medal_bonus,
+		"accuracy_bonus": accuracy_bonus,
+		"total_gold": base_reward + medal_bonus + accuracy_bonus,
+	}
+
+func _display_mission_fail_overlay() -> void:
+	if zombie_manager:
+		zombie_manager.stop_mission()
+	
+	Audio.clear_music()
+	Audio.play("game_over")
+	mission_fail_overlay = MISSION_FAIL_SCENE.instantiate()
+	add_child(mission_fail_overlay)
+	
+	mission_fail_overlay.stats.text = """
+		Zombies killed: %d
+		Reached %s
+		""" % [kill_count, wave_announcement.wave_label.text]
+	
+	mission_fail_overlay.replay_requested.connect(_on_mission_fail_replay_requested)
+	mission_fail_overlay.return_home_requested.connect(_on_mission_fail_return_home_requested)
+	get_tree().paused = true
+
+func _on_mission_fail_replay_requested() -> void:
+	get_tree().paused = false
+	mission_fail_overlay.queue_free()
+	mission_fail_overlay = null
+	get_tree().reload_current_scene()
+	Audio.clear_sounds()
+	Audio.play("play_music")
+
+func _on_mission_fail_return_home_requested() -> void:
+	get_tree().paused = false
+	mission_fail_overlay.queue_free()
+	mission_fail_overlay = null
 	return_to_home_base()
 
+
+func _display_mission_success_overlay() -> void:
+	Audio.clear_music()
+	Audio.play("success")
+	mission_success_overlay = MISSION_SUCCESS_SCENE.instantiate()
+	add_child(mission_success_overlay)
+	
+	mission_success_overlay.stats.text = _success_stats_text()
+	mission_success_overlay.medal_icon.texture = MissionRating.get_medal_texture(_result.medal)
+	
+	mission_success_overlay.replay_requested.connect(_on_mission_success_replay_requested)
+	mission_success_overlay.next_mission_requested.connect(_on_mission_success_next_mission_requested)
+	mission_success_overlay.return_home_requested.connect(_on_mission_success_return_home_requested)
+
+	# grey out next mission when the next one hasn't been built yet
+	var next_button: Button = mission_success_overlay.get_node("CenterContainer/MenuPanel/MenuMargin/MenuList/Next Mission")
+	next_button.disabled = not MissionCatalog.has_mission(mission_number + 1)
+
+# medal and gold breakdown on top of the kills and health stats from before
+func _success_stats_text() -> String:
+	var lines: Array[String] = [
+		"%s MEDAL" % _result.medal,
+		"+%d Gold" % _result.total_gold,
+		"Mission reward: %d" % _result.base_gold,
+		"Medal bonus: +%d" % _result.medal_bonus,
+	]
+	if _result.accuracy_bonus > 0:
+		lines.append("Perfect accuracy bonus: +%d" % _result.accuracy_bonus)
+	lines.append("Typing accuracy: %d%%" % floori(_result.accuracy * 100))
+	lines.append("Zombies killed: %d" % kill_count)
+	lines.append("Health Remaining: %.2f" % wall_health_bar.value)
+	return "\n".join(lines)
+
+func _on_mission_success_replay_requested() -> void:
+	mission_success_overlay.queue_free()
+	mission_success_overlay = null
+	get_tree().reload_current_scene()
+	Audio.clear_sounds()
+	Audio.play("play_music")
+
+func _on_mission_success_next_mission_requested() -> void:
+	var next_path := MissionCatalog.get_scene_path(mission_number + 1)
+	if next_path.is_empty():
+		return
+	mission_success_overlay.queue_free()
+	mission_success_overlay = null
+	# supplies are bought per mission, so skipping home base clears them too
+	SupplyState.clear_loadout()
+	Audio.clear_music()
+	Audio.play("play_music")
+	get_tree().change_scene_to_file(next_path)
+
+func _on_mission_success_return_home_requested() -> void:
+	mission_success_overlay.queue_free()
+	mission_success_overlay = null
+	return_to_home_base()
 
 
 func _on_pause_menu_return_home_requested() -> void:
@@ -462,7 +718,7 @@ func _on_pause_menu_return_home_requested() -> void:
 	return_to_home_base()
 
 func _open_pause_menu() -> void:
-	if pause_menu != null:
+	if pause_menu or mission_success_overlay or mission_fail_overlay != null:
 		return
 
 	Audio.play("pause")
@@ -471,6 +727,7 @@ func _open_pause_menu() -> void:
 	pause_menu.resume_requested.connect(_on_pause_menu_resume_requested)
 	pause_menu.return_home_requested.connect(_on_pause_menu_return_home_requested)
 	pause_menu.settings_requested.connect(_on_pause_menu_settings_requested)
+	pause_menu.how_to_play_requested.connect(_on_pause_how_to_play_overlay_requested)
 	get_tree().paused = true
 
 func _on_pause_menu_resume_requested() -> void:
@@ -489,10 +746,21 @@ func _on_pause_menu_settings_requested() -> void:
 	add_child(settings_menu)
 	settings_menu.closed.connect(_on_settings_menu_closed)
 
-
 func _on_settings_menu_closed() -> void:
 	settings_menu.queue_free()
 	settings_menu = null
+
+
+func _on_pause_how_to_play_overlay_requested() -> void:
+	if how_to_play_overlay != null:
+		return
+	how_to_play_overlay = HOW_TO_PLAY_SCENE.instantiate()
+	pause_menu.add_child(how_to_play_overlay)
+	how_to_play_overlay.closed.connect(_on_how_to_play_closed)
+
+func _on_how_to_play_closed() -> void:
+	how_to_play_overlay.queue_free()
+	how_to_play_overlay = null
 
 func return_to_home_base() -> void:
 	# Supplies are repurchased every mission per GDD §2.6, not persistent

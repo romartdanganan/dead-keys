@@ -23,13 +23,30 @@ extends Control
 	/MissionDetailsMargin/MissionDetails/BestMedalLabel
 )
 
+@onready var best_medal_icon: TextureRect = (
+	$MainMargin/MainLayout/HubContent/MissionDetailsPanel
+	/MissionDetailsMargin/MissionDetails/BestMedalIcon
+)
+
 @onready var mission_1_card: MissionCard = (
 	$MainMargin/MainLayout/HubContent/MissionArea
 	/MissionTable/MissionGrid/Mission1Card
 )
 
+@onready var mission_grid: GridContainer = $MainMargin/MainLayout/HubContent/MissionArea/MissionTable/MissionGrid
+
+@onready var launch_button: Button = (
+	$MainMargin/MainLayout/HubContent/MissionDetailsPanel
+	/MissionDetailsMargin/MissionDetails/LaunchMissionButton
+)
+
 const SETTINGS_MENU_SCENE := preload("res://scenes/ui/settings_menu.tscn")
 var settings_menu: Node = null
+
+const MissionRating := preload("res://scripts/missions/mission_rating.gd")
+
+const MissionCatalog := preload("res://scripts/resources/mission_catalog.gd")
+var selected_card: MissionCard
 
 
 func _ready() -> void:
@@ -44,7 +61,11 @@ func _ready() -> void:
 	_show_mission_details(mission_1_card)
 	ProgressionManager.gold_changed.connect(_on_gold_changed)
 	_on_gold_changed(ProgressionManager.get_gold())
-
+	
+	for card in mission_grid.get_children():
+		card.set_locked(not ProgressionManager.is_mission_unlocked(card.mission_id))
+		if card != mission_1_card:
+				card.pressed.connect(_show_mission_details.bind(card))
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
@@ -76,22 +97,35 @@ func _on_mission_1_card_pressed() -> void:
 
 
 func _show_mission_details(card: MissionCard) -> void:
+	selected_card = card
+	launch_button.disabled = (
+	not ProgressionManager.is_mission_unlocked(card.mission_id)
+	or not MissionCatalog.has_mission(card.mission_id)
+	)
 	mission_title_label.text = "%d. %s" % [
 		card.mission_id,
 		card.mission_name
 	]
-
 	mission_description_label.text = card.mission_description
-	best_medal_label.text = card.best_medal
+	# best medal comes from the save now instead of the card's placeholder
+	var best_medal := ProgressionManager.get_best_medal(card.mission_id)
+	best_medal_label.text = best_medal
+	best_medal_icon.texture = MissionRating.get_medal_texture(best_medal)
+	best_medal_icon.visible = best_medal_icon.texture != null
+	# the sprite replaces the medal name, the label only stays for NONE
+	best_medal_label.visible = not best_medal_icon.visible
 
 	if card.mission_image != null:
 		selected_mission_image.texture = card.mission_image
 
 
 func _on_launch_mission_button_pressed() -> void:
+	var path := MissionCatalog.get_scene_path(selected_card.mission_id)
+	if path.is_empty():
+		return
 	Audio.clear_music()
 	Audio.play("play_music")
-	get_tree().change_scene_to_file("res://scenes/missions/mission_1.tscn")
+	get_tree().change_scene_to_file(path)
 
 
 func _on_upgrades_button_pressed() -> void:
@@ -111,6 +145,9 @@ func _on_gold_changed(new_gold: int) -> void:
 
 #Progression Manger Debug Keys
 func _unhandled_input(event: InputEvent) -> void:
+	# debug keys only work when running from the editor, never in exported builds
+	if not OS.is_debug_build():
+		return
 	#Add gold
 	if event is InputEventKey and event.pressed and event.keycode == KEY_G:
 		ProgressionManager.add_gold(50)
@@ -125,4 +162,13 @@ func _unhandled_input(event: InputEvent) -> void:
 	#Reset save check
 	if event is InputEventKey and event.pressed and event.keycode == KEY_R:
 		ProgressionManager.reset_progression()
+		# debug reset also brings back every tutorial callout
+		TutorialState.reset()
 		print("Progression reset.")
+		get_tree().reload_current_scene() 
+	# press U to unlock the next mission 
+	if event is InputEventKey and event.pressed and event.keycode == KEY_U:
+		
+		ProgressionManager.unlock_next_mission(ProgressionManager.highest_unlocked)
+		ProgressionManager.save_progression()
+		get_tree().reload_current_scene()

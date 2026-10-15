@@ -19,13 +19,15 @@ const EXPIRY_SECONDS: float = 8.0
 
 
 func _ready() -> void:
-	expiry_timer.wait_time = EXPIRY_SECONDS
+	# longer crate timer accessibility setting stretches the claim window
+	var expiry_seconds := EXPIRY_SECONDS * SettingsState.get_crate_timer_multiplier()
+	expiry_timer.wait_time = expiry_seconds
 	expiry_timer.one_shot = true
 	expiry_timer.timeout.connect(_on_expiry_timeout)
 	expiry_timer.start()
 
-	time_bar.max_value = EXPIRY_SECONDS
-	time_bar.value = EXPIRY_SECONDS
+	time_bar.max_value = expiry_seconds
+	time_bar.value = expiry_seconds
 
 	# keeps icon.svg placeholder if supply_type has no drawn crate yet
 	var texture := SupplyTextures.get_texture(supply_type)

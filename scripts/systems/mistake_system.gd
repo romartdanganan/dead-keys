@@ -27,7 +27,10 @@ var mistakes_since_ammo_loss: int = 0
 func _ready() -> void:
 	typing_controller.typing_mistake.connect(_typing_mistake)
 	typing_controller.correct_stroke.connect(_correct_stroke)
-	typing_controller.target_unregistered.connect(_combo_increment)
+	# combo now counts typed words (zombie and crate words), not kills
+	typing_controller.word_completed.connect(_on_word_completed)
+	typing_controller.supply_word_completed.connect(_on_supply_word_completed)
+	AbilityState.charged_changed.connect(_on_ability_charged_changed)
 	
 	_apply_upgrades()
 	jam_time = jam_cooldown
@@ -56,7 +59,22 @@ func _reset_jam() -> void:
 	jam_time = jam_cooldown
 
 
+func _on_word_completed(_word: String, _ammunition_reward: int) -> void:
+	_combo_increment()
+
+
+func _on_supply_word_completed(_crate: Node, _word: String) -> void:
+	_combo_increment()
+
+
+func _on_ability_charged_changed(_is_charged: bool) -> void:
+	update_combo_HUD()
+
+
 func _combo_increment() -> void:
+	# the charge doesn't stack, so the streak waits until the ability is used
+	if AbilityState.is_charged:
+		return
 	combo += 1
 	
 	if combo >= COMBO_MAX:
@@ -129,6 +147,11 @@ func combo_reset() -> void:
 
 
 func update_combo_HUD() -> void:
-	ability_status_label.text = "COMBO: "+ str(combo) +" / "+ str(COMBO_MAX)
 	ability_combo_bar.max_value = COMBO_MAX
+	# a stored charge shows a full bar and the key that fires it
+	if AbilityState.is_charged:
+		ability_status_label.text = "READY: " + SettingsState.get_ability_label().to_upper()
+		ability_combo_bar.value = COMBO_MAX
+		return
+	ability_status_label.text = "COMBO: "+ str(combo) +" / "+ str(COMBO_MAX)
 	ability_combo_bar.value = combo

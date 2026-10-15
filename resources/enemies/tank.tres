@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="EnemyTypeDef" format=3]
+
+[ext_resource type="Script" uid="uid://sylq37045jm3" path="res://scripts/resources/enemy_type_def.gd" id="1_tank"]
+
+[resource]
+script = ExtResource("1_tank")
+enemy_id = "tank"
+display_name = "Tank"
+health = 500.0
+speed = 12.0
+wall_damage = 20.0
+word_pool_tag = "long"
+silhouette_scale = Vector2(2, 2)
+word_label_border_color = Color(0.95, 0.15, 0.15, 1)

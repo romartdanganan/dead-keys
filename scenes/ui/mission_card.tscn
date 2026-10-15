@@ -1,6 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://k1bityq7o6hv"]
+[gd_scene format=3 uid="uid://k1bityq7o6hv"]
 
-[ext_resource type="Texture2D" uid="uid://bgmlfxoymbhlh" path="res://icon.svg" id="1_tetin"]
+[ext_resource type="Texture2D" uid="uid://dtxygfe036xnp" path="res://icon.svg" id="1_tetin"]
 [ext_resource type="Script" uid="uid://ct64nm1vvpbw1" path="res://scripts/ui/mission_card.gd" id="1_uwixq"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card_normal"]
@@ -27,16 +27,16 @@ corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
-[node name="MissionCard" type="Button"]
+[node name="MissionCard" type="Button" unique_id=579246615]
 custom_minimum_size = Vector2(135, 138)
 offset_right = 8.0
 offset_bottom = 8.0
 theme_override_styles/normal = SubResource("StyleBoxFlat_card_normal")
-theme_override_styles/hover = SubResource("StyleBoxFlat_card_hover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_card_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_card_hover")
 script = ExtResource("1_uwixq")
 
-[node name="CardMargin" type="MarginContainer" parent="."]
+[node name="CardMargin" type="MarginContainer" parent="." unique_id=1349537567]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -49,12 +49,12 @@ theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="CardContent" type="VBoxContainer" parent="CardMargin"]
+[node name="CardContent" type="VBoxContainer" parent="CardMargin" unique_id=2042957307]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 6
 
-[node name="MissionImage" type="TextureRect" parent="CardMargin/CardContent"]
+[node name="MissionImage" type="TextureRect" parent="CardMargin/CardContent" unique_id=519261896]
 custom_minimum_size = Vector2(0, 82)
 layout_mode = 2
 size_flags_vertical = 3
@@ -63,7 +63,7 @@ texture = ExtResource("1_tetin")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="MissionNameLabel" type="Label" parent="CardMargin/CardContent"]
+[node name="MissionNameLabel" type="Label" parent="CardMargin/CardContent" unique_id=607482681]
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.3, 0.2, 0.1, 1)
@@ -73,7 +73,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 
-[node name="LockOverlay" type="ColorRect" parent="."]
+[node name="LockOverlay" type="ColorRect" parent="." unique_id=82101318]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -83,7 +83,7 @@ grow_vertical = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 0.215686)
 
-[node name="LockCentre" type="CenterContainer" parent="LockOverlay"]
+[node name="LockCentre" type="CenterContainer" parent="LockOverlay" unique_id=1886991865]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -91,7 +91,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="LockLabel" type="Label" parent="LockOverlay/LockCentre"]
+[node name="LockLabel" type="Label" parent="LockOverlay/LockCentre" unique_id=1997341151]
 layout_mode = 2
 text = "LOCKED🔒"
 horizontal_alignment = 1

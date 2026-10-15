@@ -12,6 +12,17 @@ signal return_home_requested
 # same delegation as the two signals above
 signal settings_requested
 
+# emitted on How To Play, the owning mission instances the HowToPlay overlay (#58),
+# same delegation as the two signals above
+signal how_to_play_requested
+
+func _input(event):
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+			if get_viewport().gui_get_hovered_control() is Button:
+				Audio.play("click")
+			else:
+				Audio.play("thud")
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
@@ -29,3 +40,7 @@ func _on_return_home_button_pressed() -> void:
 
 func _on_settings_button_pressed() -> void:
 	settings_requested.emit()
+
+
+func _on_how_to_play_pressed() -> void:
+	how_to_play_requested.emit()
