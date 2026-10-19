@@ -1,10 +1,29 @@
 # Dead Keys
 
-**Dead Keys** is a top-down typing and shooting game built in **Godot 4.7**.
+**Dead Keys** is a top-down typing and shooting game built in **Godot 4.7** by
+Romart Danganan, William Johnston, Nicole Lai and Josiah Natanielu for CGRA 359.
 
-The player types words above Walkers to generate ammunition, aims with the mouse,
-and fires projectiles to stop the Walkers before they overwhelm the defensive
-wall.
+Zombies walk towards your base from every side of the screen. Type the word
+above a zombie to load ammunition, then aim with the mouse and fire to stop
+them before they break the wall.
+
+## What is in the game
+
+- **Three campaign missions:** Defend the Suburbs, Hold the Hospital and Secure
+  the Shopping Centre, which ends with the Tank boss fight.
+- **Endless mode:** rounds keep coming until the last life is lost, with a
+  saved best score and a game over screen that counts the score up.
+- **Six enemy types:** Walker, Runner, Brute, Medic, Commander and the Tank boss.
+- **Eight abilities:** Spread Shot, Ricochet, Piercing Shot, Freeze Round,
+  Explosive Round, Heavy Round, Homing Shot and Shockwave Round. Typing 5 words
+  in a row charges the equipped ability.
+- **Four supply crates:** Ammo, Medical, Combat and Emergency, bought before a
+  mission and claimed by typing the word on the crate.
+- **Seven permanent upgrades:** Fire Rate, Bullet Damage, Magazine Capacity,
+  Fortified Wall, Extra Life, Jam Duration and Mistake Leniency.
+- **Medals:** Bronze, Silver or Gold for each mission from typing accuracy,
+  wall health left and lives lost. The best medal is saved.
+- **Settings:** audio, gameplay, display, key rebinding and an Accessibility tab.
 
 # Build and Run Instructions
 
@@ -63,14 +82,22 @@ If Godot asks for a main scene, select:
 res://scenes/ui/main_menu.tscn
 ```
 
-Expected flow:
+Game flow:
 
 ```text
 Main Menu
-→ Operations Hub
-→ Mission 1
-→ Gameplay Prototype
+→ Start: Home Base (Upgrades, Abilities, Supplies, mission table)
+→ Mission 1, 2 or 3
+→ Mission Complete (medal and gold) or Mission Failed
+→ back to Home Base or on to the Next Mission
+
+Main Menu
+→ Endless
+→ Endless game over screen (score, best score, accuracy, WPM)
 ```
+
+Progress, settings and Endless scores save automatically to the Godot `user://`
+folder.
 
 ## Controls
 
@@ -96,6 +123,7 @@ Pause menu.
 | Large Word Text | Words above zombies and crates use bigger text |
 | Hold To Fire | Holding the fire button keeps shooting at your fire rate |
 | Reduce Flashing | Hit flashes are turned off and warnings use a steady colour |
+| Reduce Screen Shake | Turns off the camera shake on wall hits, lost lives and boss moments |
 
 ### Developer debug keys (editor only)
 
@@ -112,14 +140,16 @@ in exported builds.
 | G | Home Base | Add 50 gold |
 | H | Home Base | Try to spend 10000 gold |
 | S | Home Base | Save progression |
-| R | Home Base | Reset all progression |
+| R | Home Base | Reset all progression and tutorial callouts |
+| U | Home Base | Unlock the next mission |
 
 
-# Important Prototype Behaviour
+# How the Main Systems Work
 
-## Multi-Walker typing
+## Shared typing
 
-One shared `TypingController` manages all active Walker words.
+One shared `TypingController` manages every word on screen, for zombies and
+supply crates.
 
 If multiple words share a prefix, all matching words stay highlighted until the
 typed prefix narrows the target.
@@ -138,9 +168,9 @@ When a word is completed:
 
 ```text
 complete word
-→ gain ammunition
-→ the same living Walker receives a new unique word
-→ the Walker remains alive until shot
+→ gain ammunition (1 to 4 bullets by word length)
+→ the same living zombie receives a new unique word
+→ the zombie remains alive until shot
 ```
 
 ## Mistakes and weapon jams
@@ -150,15 +180,14 @@ complete word
 - While jammed, firing is disabled.
 - Mistakes made during the jam still remove ammunition.
 - Mistakes made during the jam do not build toward another jam.
+- The mistake system can be turned off in the Gameplay tab of Settings.
 
-## Current MVP limitations
+## Known limitations
 
-- Some art and audio are placeholders.
+- The ability cards and some supply slots still use placeholder icons.
+- Zombies can walk under the HUD panels near the screen edges.
 - Debug controls are still in the code but only work when run from the editor.
-- The word list is limited.
-- Final progression, abilities, permanent upgrades, supplies and saving are not
-  part of the Milestone 2 MVP.
-- A polished mission-complete/results screen is not required for the MVP.
+- See `milestone3.md` for the full known issues list.
 
 # Technical Tests and Playtesting
 
@@ -207,20 +236,16 @@ under:
 tests/unit/
 ```
 
-Tests all current systems that have unit test coverage, this grows over time
-as new systems are added, check the folder itself for what's currently
-covered rather than relying on this list.
+There are 299 test functions across 33 test scripts, covering the typing,
+ammo, weapon, abilities, projectiles, zombies, spawning, missions, boss fight,
+Endless mode, medals, settings, saving and word lists. Tests that touch save
+files back them up first and restore them afterwards.
 
 ### One-time setup
 
-1. Open the project in Godot.
-2. Go to the top of the editor and look for a tab called **AssetLib** or
-   **Asset Store** (the exact name varies by Godot version).
-3. Search for `GUT`. The listing's title may vary, look for the one whose
-   description mentions unit testing for GDScript.
-4. Install it.
-5. Go to **Project → Project Settings → Plugins** and ensure GUT (may be
-   listed as "Gut" or similar) is checked/enabled.
+GUT is already included in the repository under `addons/gut/` and is enabled
+in `project.godot`, so there is nothing to install. If the GUT panel does not
+appear, go to **Project → Project Settings → Plugins** and tick **Gut**.
 
 ### Running the tests
 
@@ -258,11 +283,14 @@ Human playtest findings are stored under:
 playtesting/
 ```
 
-The Milestone 2 internal playtest is recorded in:
+| Record | File |
+|---|---|
+| Playtest #1 (Milestone 2) | `playtesting/2026-08-milestone-2.md` |
+| Playtest #2 (Sprint 4) | `playtesting/2026-09-sprint-4.md` |
+| Playtest #3 (Milestone 3) | `playtesting/2026-10-milestone-3.md` |
 
-```text
-playtesting/2026-08-milestone-2.md
-```
+Design documents: `GDD.md` (Game Design Document) and `Dead_Keys_TechSpec.md`
+(Technical Specification).
 
 # Development Workflow
 
@@ -277,9 +305,9 @@ feature branch
 
 Branch purposes:
 
-- `main` — stable milestone/release branch
-- `dev` — shared integration branch
-- feature branches — one issue or feature per branch
+- `main`: stable milestone and release branch
+- `dev`: shared integration branch
+- feature branches: one issue or feature per branch
 
 Before starting new work:
 
@@ -328,6 +356,17 @@ Use **F6** for individual test scenes.
 ## Wrong Godot version
 
 Open the project using **Godot 4.7**.
+
+# Credits
+
+- **Team:** Romart Danganan, William Johnston, Nicole Lai and Josiah Natanielu.
+- **Art:** HUD icons, supply crates, coin and medals by Romart Danganan. Main
+  Menu and Home Base backgrounds and logos by Romart's partner. Cat and dog
+  zombie sprite sheets by Nicole Lai.
+- **Audio:** audio system by Josiah Natanielu, with placeholder sound effects
+  and music he gathered under `assets/audio/temp_sounds/`.
+- **Fonts:** Jersey 10 and VT323 (SIL Open Font License).
+- **Testing:** [GUT](https://github.com/bitwes/Gut) by bitwes.
 
 # Repository
 
