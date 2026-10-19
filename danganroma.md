@@ -11,7 +11,7 @@
 
 **Development process (45, up from 33).** I ran the team's process for the whole project: every GitLab issue, the branching and Merge Request rules, sprint planning, keeping the team updated on Discord, reviewing and merging branches, the `dev` into `main` syncs, the GUT test suite, every manual test record and the playtests. It is the area with the most evidence behind it, so I want my mark to depend on it the most.
 
-**Use of Engine features (30, down from 33).** Close to the default. Many of the engine-heavy systems are mine (signals and autoloads, resources, physics, pooling, input handling, tweens and the camera, GUT), so I am happy to be marked on it.
+**Use of Engine features (30, down from 33).** Close to the default. Many of the engine-heavy systems are mine (signals and autoloads, physics and deferred calls, input handling and `InputMap` rebinding, `AnimationPlayer` and particles, tweens and the camera, `ConfigFile` saves, GUT), so I am happy to be marked on it.
 
 **Quality of Game (25, down from 34).** I built a large part of the playable game and I am proud of it, but the final game is a team result, so I would rather put the extra weight on the process work I led from start to finish.
 
@@ -21,7 +21,7 @@ Lead Programmer, Project Manager, and Integration and Testing Lead. I also wrote
 
 **Project management.** I set up the GitLab project and created every issue, label and milestone. I wrote the team's branching, commit and Merge Request rules and posted workflow announcements and status updates on Discord. I ran sprint planning, rebalanced work when it piled up, reviewed and merged branches, and kept `main` in sync with `dev` (#53).
 
-**Lead programming.** I built the core systems everything else plugs into: the scene flow and HUD, the ammo and weapon systems, the shared typing controller, all eight abilities, the missions, the Tank boss, Endless mode, medals and the Settings menu. I also wired the zombie art into the game: every walk and death animation, and the death effect with its particle burst.
+**Lead programming.** I built the core systems everything else plugs into: the scene flow and HUD, the ammo and weapon systems, the shared typing controller, all eight abilities, the seven upgrade tracks, the supply drops, the missions, the Tank boss, Endless mode, medals and the Settings menu. I also wired the zombie art into the game: every walk and death animation, and the death effect with its particle burst.
 
 **Integration and testing.** I set up GUT and wrote 289 of the project's 299 automated tests, wrote all 22 manual test records and ran the playtests. I also fixed the problems that only appeared once separately built systems were joined together.
 
@@ -37,6 +37,8 @@ Claims use the course scale. Line counts come from `git blame` on the current `d
 | Main Menu, Home Base and hub screens | Most | Main Menu and Home Base (#6), Upgrade Shop (#25), Ability Select and ability purchasing (#24, #36), Mission Supplies screens and loadout (#29), best medal display (#65), Endless button (#68) | `home_base.gd` 108 of 174 lines, `upgrade_shop.gd`, `ability_row.gd`, `mission_supplies.gd`, `supply_slot_row.gd` |
 | HUD and combat feedback | All | HUD layout and readability passes (#7, #35), wave announcement (#42), wave counter, hit flash, ammo popups, out of ammo prompt, low wall warning and ability glow (#62), boss health bar with phase marks (#63, #67) | `combat_feedback.gd`, `hud_warnings.gd`, `wave_counter.gd`, `boss_health_bar.gd` |
 | AmmoSystem | All | Current and maximum ammo, rewards, consumption, capacity upgrades, HUD signals (#9) | `ammo_system.gd` 81 of 82 lines |
+| Upgrades | All | `UpgradeCatalog` with all seven upgrade tracks and their costs and values, the Upgrade Shop rows and buying flow, and applying each upgrade in missions (#25), the `UpgradeState` placeholder before `ProgressionManager` (#26) | `upgrade_catalog.gd` 139 of 139, `upgrade_row.gd` 51 of 54, `upgrade_shop.gd` 37 of 47 |
+| Supply drops | All | `SupplyCatalog` with the four crates, `SupplyState` for the three slot loadout with buy, sell and save, calling crates in with keys 1 to 3, the crate scene with its claim timer, typing the crate's word to claim it, and each crate's effect (#29) | `supply_catalog.gd` 41 of 41, `supply_state.gd` 105 of 107, `supply_crate.gd` 50 of 50, `supply_slot_row.gd` 88 of 88, `supply_card_row.gd` 47 of 49 |
 | Weapon, projectiles and all 8 abilities | All | Aiming, firing and projectiles with the shared `take_damage()` interface (#10); `AbilityState`, the ability catalog and all eight abilities (#24, #36, #37, #38, #54); the separate ability input (#64); impact ring effects | `weapon_controller.gd` 218 of 231, `projectile.gd` 238 of 242, `ability_catalog.gd` 72 of 72 |
 | Typing system | Most | Rewrote the single target controller into one shared controller for every word on screen (#22), freed target fixes (#18), ammo by word length (#50), supply crate words (#29) | `typing_controller.gd` 296 of 362 |
 | Missions and mission flow | Most | `mission_1.gd` base mission, Mission 1 waves (#42), Mission 2 (#31), Mission 3 (#63), mission catalog and Next Mission | `mission_1.gd` 557 of 785, `mission_2.gd`, `mission_3.gd` |
@@ -51,12 +53,53 @@ Claims use the course scale. Line counts come from `git blame` on the current `d
 | Automated testing (GUT) | Most | Set up GUT (#34), the runner scene and the save backup helper | 289 of 299 test functions |
 | Manual testing and playtesting | All | All 22 manual test records, playtest records | `tests/manual/`, `playtesting/` |
 | Documentation | Most | GDD (Milestone 1 to v1.4), Tech Spec (v0.1 to v0.6), README, `milestone2.md`, `milestone3.md` | doc commits |
-| Enemies and wave spawning | Some | Edge spawning and side only spawns (#63), equal ring arrival time (#71), freeze state (#37), knockback slide (#54), Medic heal delay (#63), wave overlap (`wait_for_clear`, #31), AttackTimer fix, Tank data | `zombie.gd` 145 of 404, `zombie_manager.gd` 89 of 173 |
+| Enemies and wave spawning | Touched | Edge spawning and side only spawns (#63), equal ring arrival time (#71), freeze state (#37), knockback slide (#54), Medic heal delay (#63), wave overlap (`wait_for_clear`, #31), AttackTimer fix, Tank data | `zombie.gd` 145 of 404, `zombie_manager.gd` 89 of 173 |
 | Mistake system and combo | Some | Jam fix (#20), combo bar fix (#35), mistake toggle (#46), combo charging from typed words (#64) | `mistake_system.gd` 88 of 157 |
 | Audio system | Some | Music and SFX buses and the volume functions for the Settings sliders, music continuity fixes, the music loop fix | `audio_bus.gd` 67 of 173 |
 | Progression and save | Some | The original `UpgradeState` placeholder that let the shop be built first, its removal after the switch (#26), best medal storage (#65) | `progression_manager.gd` 19 of 162 |
 | Word lists | Touched | Original Mission 2 and 3 lists, restored the Tank's long words after the merge (#43, #63) | `mission_3.gd` buckets |
 | Success and failed screens, How to Play | Touched | Medal icon on the success screen (#65), How to Play text for the ability key and accessibility (#64, #66) | small edits |
+
+## What I built in Milestone 3
+
+### Shared typing controller
+Nicole's original typing controller locked onto one zombie at a time. I rewrote it into one controller that tracks every word on screen at once, so the player can start typing any visible word and the controller works out which target they mean (#22). A finished word gives ammo based on its length (#50), and the same controller handles supply crate words (#29). I also fixed the crashes that happened when a target was freed while the player was halfway through its word (#18).
+
+### Ammo, weapon and projectiles
+`AmmoSystem` holds current and maximum ammo, adds rewards from typed words, spends ammo on each shot and applies capacity upgrades, and sends signals so the HUD updates without polling (#9). The weapon aims at the mouse and fires projectiles that call a shared `take_damage()` function, so every zombie type and the Tank take hits the same way (#10).
+
+### All eight abilities
+I built `AbilityState`, the ability catalog and all eight abilities: Spread Shot (#24), Ricochet (#36), Freeze Round (#37), Piercing Shot (#38), and Explosive Round, Heavy Round, Homing Shot and Shockwave Round (#54). The catalog is the one place each ability is defined, so the Ability Select screen, the purchase flow and the in game ability all read from the same data. Abilities charge from 5 typed words and fire on right click through their own input action (#64). Explosive Round and Shockwave Round show an impact ring so the player can see the area they hit.
+
+### Upgrades
+I built the permanent upgrade system (#25). `UpgradeCatalog` is the single source of truth for all seven tracks: Fire Rate, Bullet Damage and Magazine Capacity for the weapon, and Fortified Wall, Extra Life, Jam Duration and Mistake Leniency for the base. Each track has a base value and a cost and value for every level, so the Upgrade Shop rows, the price of the next level and the value used in a mission all come from the same table. Before Nicole's `ProgressionManager` existed I used an `UpgradeState` placeholder so the shop could be built first, then moved it over to her gold and save system and removed the placeholder (#26).
+
+### Supply drops
+I built the Mission Supplies system (#29). `SupplyCatalog` defines the four crates: the Ammo Crate refills ammo, the Medical Crate repairs half the wall, the Combat Crate gives +50% bullet damage for the rest of the mission and the Emergency Crate halves wall damage for 15 seconds and refills half the ammo. On the Mission Supplies screen the player buys crates into three slots with the same gold as the shop, and `SupplyState` saves the loadout and refunds a crate when it is sold. In a mission, keys 1 to 3 call in a crate, which lands with its own word and a timer bar. Typing the word before the timer runs out claims it and applies its effect, and the accessibility crate timer setting gives slower typists longer.
+
+### Missions and the mission flow
+`mission_1.gd` is the base mission that runs waves, rewards, win and loss, and the HUD hookups. Mission 2 and Mission 3 build on it with their own word lists and waves (#31, #63). A mission catalog drives the Next Mission button, so the game moves from one mission to the next without each screen knowing the order.
+
+### Tank boss fight
+The Tank is the Mission 3 boss (#63, #67). It has a boss health bar with marks at each phase. When it breaks a phase it roars, pushes itself and nearby zombies away from the base, then calls in helpers. It can be limited to spawning from the sides so it has the long walk across the screen, and the final kill plays in slow motion with screen shake.
+
+### Endless mode
+Endless mode ramps up each round, saves high scores, and ends on its own game over screen with score, best score, accuracy and WPM (#68). The WPM only counts time spent actually typing, so round breaks and the boss slow motion do not change it.
+
+### Mission rating and medals
+At the end of a mission the player is graded and earns a medal, bonus gold and an extra bonus for perfect accuracy (#65). The best medal for each mission is saved and shown on the Home Base, and I drew the medal sprites.
+
+### Settings and accessibility
+`SettingsState` saves every setting and the tabbed Settings menu shows them (#46, #66). Controls can be rebound, including fire to a mouse button, with a guard that stops two actions sharing a key. The Gameplay tab has a toggle to turn mistake penalties off, and the Accessibility tab came from playtesting, with a zombie speed setting, reduce flashing and reduce screen shake (#67).
+
+### Hub screens, HUD and zombie art
+I built most of the Main Menu and Home Base (#6), and the Upgrade Shop, Ability Select and Mission Supplies screens (#24, #25, #29, #36). In missions, the HUD shows the wave announcement and counter, hit flashes, ammo popups, an out of ammo prompt, a low wall warning and a glow when an ability is ready (#42, #61, #62). I also wired Nicole's sprite sheets into the zombie scene with an `AnimationPlayer` so every zombie type walks, faces the way it moves and plays a death animation followed by a particle burst (#35, #61).
+
+### Pause menu and tutorial callouts
+The pause menu stops the mission and its timers and can return to the hub safely mid wave (#44, #45). Mission 1 shows one-time tutorial callouts, and each new enemy type gets a callout the first time it appears, saved per player in `TutorialState` so they are not shown again (#60).
+
+### Testing and playtesting
+I set up GUT (#34) with a runner scene and a helper that backs up and restores the save file, and wrote 289 of the 299 automated tests across the ammo, typing, abilities, upgrades, supplies, zombies, missions, boss, Endless, medals, settings and tutorial systems. For the bullet bugs (#69) I wrote a test that fires real projectiles instead of calling `take_damage()` directly. I wrote all 22 manual test records in `tests/manual/`, each written before the MR for the feature it covers, and ran and wrote up the three playtests in `playtesting/` (Milestone 2, sprint 4 and Milestone 3).
 
 ## Commentary
 

@@ -14,7 +14,7 @@ Dead Keys is a 2D top-down zombie defence game for PC, built in Godot 4.7. Every
 - Nicole Lai (CGRA 359, tools and systems programming: original typing controller, progression, gold and save system, mission unlocks, word list system, zombie sprite sheets)
 - Josiah Natanielu (CGRA 359, FX and audio programming: mistake and jam system, combo counter, audio system and sound effects, mission success and failed screens, How to Play page)
 
-Each student's contribution claims and commentary are in their own file: [danganroma.md](danganroma.md), [johnstwill1.md](johnstwill1.md), [lainico.md](lainico.md) and [natanijosi.md](natanijosi.md).
+Each student's contribution claims and commentary are in their own file: [danganroma.md](danganroma.md), [johnstwill1-m3.md](johnstwill1-m3.md), [lainico.md](lainico.md) and [natanijosi.md](natanijosi.md).
 
 All four of us are CGRA 359 programming students. No GAME 390 design students joined the team, so nobody on the team was a dedicated artist or game designer. Romart drew the HUD icons, supply crates, coin and medals; the Main Menu and Home Base backgrounds and logos were drawn by Romart's partner, who offered to help; and Nicole provided the zombie cat and dog sprite sheets.
 
@@ -244,7 +244,7 @@ For the game, the boss fight and the feel of typing a word, seeing "+2 AMMO" pop
 
 ### AI assistance
 
-Romart used Claude (Anthropic) as a pair programmer during Milestone 3, following the CGRA 359 AI assistance policy. It debugged and double checked code on his machine under his direction and drafted issues, MR descriptions, tests and documents. Romart made the code design decisions, reviewed every change before committing, ran all git commands and did the playtesting. Each team member describes their own use of AI tools in their individual file.
+Each team member declares their own use of AI tools in their individual file.
 
 ### Known issues at submission
 
