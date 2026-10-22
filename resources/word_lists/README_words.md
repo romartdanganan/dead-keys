@@ -1,6 +1,6 @@
 # Word Lists
 
-How mission words work (#43). A new mission only needs **JSON files, no code changes**.
+How mission words work (#43). A new mission only needs **JSON files and one Inspector setting, no code changes**.
 
 ## How it works
 
@@ -27,8 +27,23 @@ word_lists/
 ```
 
 - The **file name is the theme's ID**: `suburb.json` is referred to as `"suburb"`.
-- Aim for **15 to 25 words** per theme.
-- A theme can be reused by any mission (e.g. `zombie` is in Missions 1 and 2).
+- Each theme needs **at least 10 words** (the tests check this). Bigger themes give more variety between playthroughs.
+- A theme can be reused by any mission (e.g. `zombie` is in every mission).
+
+
+## Current themes and missions
+
+| Mission | Themes | Words | Buckets |
+|---|---|---|---|
+| 1. Defend the Suburbs | zombie, positive, suburb | 20 | 1, 2, 3 |
+| 2. Hold the Hospital | zombie, positive, hospital | 25 | 1, 2, 3 |
+| 3. Secure the Shopping Centre | zombie, positive, shopping | 40 | all |
+| 4. Rescue the Survivors | zombie, positive, rescue | 25 | all |
+| 5. Protect the Military Base | zombie, military | 30 | 2, 3, 4 |
+| 6. Final Stand: Downtown | zombie, city, suburb, hospital, shopping, rescue, military, challenge | 35 | 3, 4 |
+
+- `challenge` holds rare words (e.g. ebullient, indomitable). Keep it out of early missions so new players don't get surprised.
+- Missions 4-6 have word lists ready, but their scenes still need **Word List Path** set once they're built.
 
 ## Mission file: `missions_words/missionN_words.json`
 
@@ -71,7 +86,7 @@ wave_2b.allowed_buckets = [1]
 ## Word rules
 
 - **Lowercase a-z only**: no capitals, spaces, hyphens or accents, since the player can't type them.
-- **British/NZ spelling.** Skip words spelt differently in US and UK English (colour/color) so no one gets caught out.
+- **British/NZ spelling.** We use British/NZ spelling over US spelling (e.g. colour, not color).
 - **Common words first.** Mission 1 is the tutorial, so nothing over 10 letters (GDD §5.1).
 - **Accessibility:** think about players with dyslexia. Prefer regular spellings, and avoid silent letters and words that are easy to mix up.
 - **No duplicates within a theme.** Duplicates across themes are fine, the loader removes them when merging.
@@ -92,3 +107,5 @@ wave_2b.allowed_buckets = [1]
 - every theme a mission names actually has a file (a typo would otherwise be skipped silently)
 - every mission can fill its `word_count` after bucket filtering
 - Mission 1 has no word over 10 letters
+- Missions 1-6 all have a mission file
+- Mission 3's themes have at least 15 words of 9+ letters for the Tank boss
