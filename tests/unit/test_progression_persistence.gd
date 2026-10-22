@@ -37,7 +37,7 @@ func test_owned_abilities_and_upgrades_survive_save_and_reload() -> void:
 	assert_true(ProgressionManager.is_ability_owned("ricochet"))
 	assert_eq(ProgressionManager.get_upgrade_level("fire_rate"), 2)
 	
-func test_unlocked_missions_curvive_save_and_reload() -> void:
+func test_unlocked_missions_survive_save_and_reload() -> void:
 	ProgressionManager.highest_unlocked = 1
 	ProgressionManager.unlock_next_mission(1)
 	ProgressionManager.save_progression()
