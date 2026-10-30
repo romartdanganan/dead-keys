@@ -1,17 +1,21 @@
 # Milestone 4 - Josiah Natanielu
 
+- **Game Name:** Dead Keys
+- **Name:** Josiah Natanielu (natanijosi)
+- **Role:** FX and Audio Programming
+
 ## Weights
 
 | Criterion | Weight | Default | Range |
 |---|---|---|---|
-| Code video | 10 | 15 | 10 to 20 |
-| Good code | 20 | 20 | 10 to 30 |
-| Bad code | 20 | 20 | 10 to 30 |
-| Development process | 20 | 20 | 10 to 30 |
+| Code video | 15 | 15 | 10 to 20 |
+| Good code | 15 | 20 | 10 to 30 |
+| Bad code | 25 | 20 | 10 to 30 |
+| Development process | 15 | 20 | 10 to 30 |
 | Reflection | 30 | 25 | 10 to 40 |
 | **Total** | **100** | | |
 
-I weighted more heavily towards Reflection. I believe I didn't contribute as much as the others unfortunately but through this I was able to learn much more than I was able to offer. I do believe I was the least skilled but through this I was given the opportunity to upskill and learn from the other group members
+I weighted more heavily to Reflection and Bad Code because I felt that it was easier to discover what of my code was bad than it was good. As well as I believe I learned more from this project in terms of reflection.
 
 ## Team Summary (Milestone 3)
 
@@ -49,7 +53,7 @@ The MistakeSystem uses Godot signals to respond to events from the TypingControl
 
 ### 3. Audio player cleanup
 
-The audio system creates a separate AudioStreamPlayer for each sound effect, allowing multiple sounds to play independently without interrupting one another. It stores these players in the _active array and connects each player's finished signal to a callback that removes the player from the array and queues it for deletion once playback ends. This provides automatic resource cleanup without requiring other game systems to keep track of individual sound players. The active-player list also allows `clear_sounds()` to stop and remove tracked sound effects when needed. Keeping this lifecycle management inside the audio manager makes sound playback easier for the rest of the game to use and helps prevent finished audio players from accumulating unnecessarily in the scene tree.
+The audio system creates a separate `AudioStreamPlayer` for each sound effect, allowing multiple sounds to play independently. It stores these players in the _active array and provides `clear_sounds()` and `clear_music()` methods to stop and remove audio when needed. This allows other systems to control sound effects and music without managing individual audio players themselves. Keeping audio cleanup within the audio manager centralises this responsibility, makes playback easier to manage, and helps keep the system organised and maintainable.
 
 ## Bad Code
 
@@ -81,11 +85,11 @@ The MistakeSystem uses long, hardcoded node paths to access UI elements, such as
 
 ### Preparing To Learn
 
-At the beginning of the project, I was less experienced with some of the programming and development concepts required to build a complete game. I was particularly interested in improving my understanding of Godot and gaining more practical experience working within a team project. I knew I would have to learn new concepts along the way, so I approached the project as an opportunity to develop my skills and become more confident with game development.
+At the beginning of the project, I recognised that I was less experienced than some of the other members of the team, particularly when it came to implementing more complex game systems. I saw the project as an opportunity to improve my programming skills, become more familiar with Godot and learn from the experience of working alongside other developers. Rather than expecting to understand everything beforehand, I knew I would need to research, experiment and ask for help when encountering unfamiliar concepts.
 
 ### Learning Through Development
 
-Throughout development, I gained experience implementing systems that I had not worked with extensively before. Working on the audio manager taught me how to organise sound resources, manage audio playback and handle multiple sound effects independently. I also learned more about connecting audio to gameplay events and integrating menus into the existing game. Composing music and implementing sound effects also gave me an opportunity to contribute creatively alongside my programming work. A lot of my learning came from experimenting, identifying problems and making adjustments as the game developed.
+A lot of my learning came from working through unfamiliar tasks and figuring out how different systems could be implemented. Through the development of the mistake system i became more acquainted with the use of signals as well as their more orderly functionality which helps Developing the audio manager, working with sound effects and composing music gave me experience beyond just writing gameplay code. I also gained experience connecting systems together and making sure they functioned correctly within the existing game. I found that understanding a concept in theory was different from actually implementing it, as problems often only became apparent once I started testing my work. This taught me the importance of experimenting, evaluating the results and making adjustments throughout development.
 
 ### Key Concepts
 
