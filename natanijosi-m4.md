@@ -45,13 +45,22 @@ In development we initially pushed straight to main during the building of the f
 
 ### 1. Centralized audio manager
 
+- [Audio Bus](scripts/autoload/audio_bus.gd), `var SFX`, `play()`
+
 The audio system centralises sound resources in the SFX dictionary and provides a shared `Audio.play()` function that other scripts can call using descriptive sound names. This means other systems do not need to know audio file paths or manage playback themselves. For example, the mistake system can play a sound using `Audio.play("wrong_keystroke")`. This reduces duplicated code and makes sounds easier to replace or maintain, while checking that the requested sound exists helps prevent errors
 
 ### 2. Signal drive Mistake System
 
+- [Mistake System](scripts/systems/mistake_system.gd), `ready()`, `_typing_mistake()`, `_correct_stroke()`
+
+- [Typing Controller](scripts/typing/typing_controller.gd), `check_letter()`
+
 The MistakeSystem uses Godot signals to respond to events from the TypingController and AbilityState, including incorrect keystrokes, correct keystrokes, completed words and ability charge changes. This separates mistake tracking and combo management from the code responsible for detecting typing input. For example, the typing controller emits a signal when a word is completed, allowing the mistake system to increment the combo without needing to handle the word-processing logic itself. This makes the system easier to understand and maintain because each component has a more clearly defined responsibility. It also allows the systems to be modified independently, reducing the need to change the mistake system whenever the underlying typing implementation changes, provided the relevant signals remain consistent.
 
 ### 3. Audio player cleanup
+
+- [Audio Bus](scripts/autoload/audio_bus.gd), `clear_music()`, `clear_sounds()`
+- [Mission 1](scripts/missions/mission_1.gd), `_display_mission_success_overlay()`, `_display_mission_fail_overlay()`
 
 The audio system creates a separate `AudioStreamPlayer` for each sound effect, allowing multiple sounds to play independently. It stores these players in the _active array and provides `clear_sounds()` and `clear_music()` methods to stop and remove audio when needed. This allows other systems to control sound effects and music without managing individual audio players themselves. Keeping audio cleanup within the audio manager centralises this responsibility, makes playback easier to manage, and helps keep the system organised and maintainable.
 
@@ -59,13 +68,20 @@ The audio system creates a separate `AudioStreamPlayer` for each sound effect, a
 
 ### 1. Hard-coded sound volumes in Audio
 
+- [Audio Bus](scripts/autoload/audio_bus.gd), `play()`
+
 The audio system currently uses multiple conditional statements inside `Audio.play()` to assign specific volume levels to individual sound effects. Although this allowed me to adjust sounds that were too loud or quiet during development, the approach can become messy and difficult to maintain as more sounds are added. Each new sound that requires a volume adjustment must be added to one of the conditions, while changing an existing sound's volume requires modifying the playback function itself. This also means the volume parameter passed into `Audio.play()` is overridden for sounds included in these conditions, which can make the function's behaviour less predictable. A better approach would be to store per-sound volume levels in a separate dictionary and retrieve the appropriate value during playback. This would keep audio configuration separate from playback logic and make individual volume adjustments easier to manage.
 
 ### 2. Input Handling for Audio
 
+- [Main Menu](scripts/ui/main_menu.gd), `_input()`
+- [Home Base](scripts/ui/home_base.gd), `_input()`
+
 The `_input()` function plays audio directly when the player clicks the mouse. It checks whether the cursor is hovering over a Button and plays either a click or thud sound. While this works, it combines input detection with audio handling, making the function responsible for two different tasks. As more interactions are added, this could make input code more cluttered and harder to maintain. A better approach would be to separate input detection from the action being performed, allowing the relevant UI or gameplay system to trigger the appropriate sound.
 
 ### 3. Deeply hard-coded node paths
+
+- - [Mistake System](scripts/systems/mistake_system.gd), variable declarations (top of page)
 
 The MistakeSystem uses long, hardcoded node paths to access UI elements, such as the mistake counter and ability status label. For example, the mistake label is accessed through several levels of the HUD hierarchy using a path that depends on the current scene structure. Although this works with the existing scene, it makes the script more fragile because moving or renaming one of the parent nodes can break the reference. The long paths also make the declarations harder to read and mean the mistake system depends on the internal layout of the HUD rather than interacting with a more clearly defined interface. One possible improvement would be to expose the required node references through exported variables and assign them in the Godot Inspector, or to create dedicated HUD methods for updating the mistake counter and combo display. This would reduce dependence on the scene hierarchy and make future UI changes easier to manage, although exported references would still need to be assigned correctly.
 
