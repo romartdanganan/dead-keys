@@ -39,7 +39,9 @@ In development we initially pushed straight to main during the building of the f
 
 ## Code Video
 
-- Link: 
+- Link: https://youtu.be/KxE6tZnAhgw
+- This goes into depth about the code I was able to contribute to CGRA359 project.
+
 
 ## Good Code
 
